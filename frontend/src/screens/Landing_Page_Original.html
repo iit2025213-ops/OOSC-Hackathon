@@ -1,0 +1,318 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ADHIKAAR - Authority through Transparency</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#ffdad6",
+                      "error": "#ffb4ab",
+                      "tertiary": "#bbc7dc",
+                      "secondary": "#bfc6dc",
+                      "tertiary-container": "#8b97ab",
+                      "on-background": "#e1e3e4",
+                      "on-surface": "#e1e3e4",
+                      "on-primary-container": "#5b1604",
+                      "on-secondary-container": "#adb5ca",
+                      "surface-container-low": "#191c1d",
+                      "surface-container": "#1d2021",
+                      "tertiary-fixed-dim": "#bbc7dc",
+                      "on-primary": "#5d1805",
+                      "on-tertiary": "#253141",
+                      "inverse-on-surface": "#2e3132",
+                      "background": "#111415",
+                      "secondary-fixed-dim": "#bfc6dc",
+                      "surface-dim": "#111415",
+                      "outline": "#a38b86",
+                      "secondary-fixed": "#dbe2f9",
+                      "on-secondary": "#293041",
+                      "surface-container-lowest": "#0c0f10",
+                      "on-tertiary-container": "#242f40",
+                      "primary-fixed-dim": "#ffb4a1",
+                      "error-container": "#93000a",
+                      "surface-variant": "#323536",
+                      "inverse-primary": "#9a442d",
+                      "on-primary-fixed-variant": "#7c2e19",
+                      "surface-container-high": "#282a2b",
+                      "surface": "#111415",
+                      "tertiary-fixed": "#d7e3f9",
+                      "inverse-surface": "#e1e3e4",
+                      "on-tertiary-fixed": "#101c2c",
+                      "on-tertiary-fixed-variant": "#3c4859",
+                      "on-error": "#690005",
+                      "on-surface-variant": "#dbc1ba",
+                      "surface-tint": "#ffb4a1",
+                      "on-secondary-fixed-variant": "#3f4759",
+                      "primary-container": "#e07a5f",
+                      "outline-variant": "#55423e",
+                      "secondary-container": "#3f4759",
+                      "primary": "#ffb4a1",
+                      "surface-container-highest": "#323536",
+                      "surface-bright": "#373a3b",
+                      "on-primary-fixed": "#3c0800",
+                      "on-secondary-fixed": "#141b2c",
+                      "primary-fixed": "#ffdbd2"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "8px",
+                      "container-max": "1280px",
+                      "gutter": "24px",
+                      "margin-desktop": "64px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Manrope"],
+                      "headline-lg": ["Manrope"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "display-md": ["Manrope"],
+                      "label-sm": ["JetBrains Mono"],
+                      "headline-lg-mobile": ["Manrope"]
+              },
+              "fontSize": {
+                      "display-lg": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display-md": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .animate-fade-in-up {
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(180deg, rgba(17, 20, 21, 0.4) 0%, rgba(17, 20, 21, 0.8) 50%, rgba(17, 20, 21, 1) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-container-max rounded-xl dark:bg-black/10 backdrop-blur-xl border border-white/10 shadow-2xl z-50 flex justify-between items-center px-gutter py-4 bg-surface-container">
+<div class="font-display-md text-display-md font-bold text-on-surface tracking-tight text-primary">
+            ADHIKAAR
+        </div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-primary font-semibold border-b-2 border-primary pb-1" href="#">How It Works</a>
+<a class="text-on-surface/70 font-medium hover:text-primary transition-colors duration-300" href="#">What We Help With</a>
+<a class="text-on-surface/70 font-medium hover:text-primary transition-colors duration-300" href="#">Trust &amp; Safety</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:block font-body-md text-body-md text-on-surface hover:text-primary transition-colors duration-300">Sign In</button>
+<button class="bg-primary text-on-primary font-body-md text-body-md px-6 py-2 rounded-full font-medium hover:bg-primary-fixed transition-colors">Get Started</button>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative min-h-screen flex flex-col justify-end pb-24 md:pb-32 px-margin-mobile md:px-margin-desktop w-full overflow-hidden">
+<!-- Video Background Placeholder -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-surface-container-lowest object-cover opacity-60">
+
+</div>
+<div class="absolute inset-0 bg-gradient-to-tr from-background to-transparent via-background"></div>
+</div>
+<div class="relative z-10 w-full max-w-container-max mx-auto flex flex-col items-start mt-32">
+<h1 class="font-display-lg text-display-lg text-on-surface max-w-4xl mb-6 animate-fade-in-up">
+                Know your rights.<br>
+<span class="text-primary">Know your next step.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-10 animate-fade-in-up delay-100">
+                ADHIKAAR turns confusing civic and legal problems into simple explanations, practical action plans, and ready-to-use documents.
+            </p>
+<div class="flex flex-wrap gap-4 mb-8 animate-fade-in-up delay-200">
+<button class="bg-primary text-on-primary font-body-md text-body-md px-8 py-4 rounded-full font-semibold hover:scale-95 transition-transform duration-200">
+                    Understand My Problem
+                </button>
+<button class="glass-panel text-on-surface font-body-md text-body-md px-8 py-4 rounded-full font-medium hover:bg-white/10 transition-colors duration-200">
+                    See How It Works
+                </button>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant/60 font-label-sm text-label-sm animate-fade-in-up delay-300">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="">Plain-language guidance</span>
+<span class="mx-2">•</span>
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="">Source-backed information</span>
+<span class="mx-2">•</span>
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="">Built for citizens</span>
+</div>
+</div>
+<!-- Scroll Indicator -->
+<div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce flex flex-col items-center gap-2 text-on-surface-variant opacity-50">
+<span class="font-label-sm text-label-sm">Scroll</span>
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</section>
+<!-- Problem Recognition -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop bg-surface relative z-20">
+<div class="max-w-container-max mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="font-headline-lg md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-6 text-on-surface">
+                        Civic processes shouldn't feel like a maze.
+                    </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8">
+                        Whether you are dealing with a property dispute, applying for essential identity documents, or navigating consumer rights, the system often feels opaque. We provide clarity.
+                    </p>
+<div class="space-y-6">
+<div class="glass-panel p-6 rounded-xl flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-error-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<h4 class="font-body-lg text-body-lg font-medium text-on-surface mb-2">The Problem</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Complex legalese and unclear procedures lead to delays, exploitation, and lost rights.</p>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex items-start gap-4 border-primary/30">
+<div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+</div>
+<div>
+<h4 class="font-body-lg text-body-lg font-medium text-on-surface mb-2">The Solution</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Actionable, step-by-step guidance tailored to your specific situation, generated instantly.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative h-[600px] w-full rounded-2xl overflow-hidden glass-panel flex items-center justify-center group">
+<div class="absolute inset-0 bg-surface-container-low/50 backdrop-blur-md"></div>
+<!-- Decorative elements indicating complex documents being simplified -->
+<div class="relative z-10 w-3/4 aspect-[3/4] bg-surface-container rounded-lg shadow-2xl p-8 flex flex-col gap-4 border border-outline-variant/30 transform group-hover:scale-105 transition-transform duration-500">
+<div class="h-4 w-1/3 bg-on-surface-variant/20 rounded"></div>
+<div class="h-8 w-2/3 bg-on-surface-variant/40 rounded mb-4"></div>
+<div class="space-y-3">
+<div class="h-3 w-full bg-on-surface-variant/20 rounded"></div>
+<div class="h-3 w-5/6 bg-on-surface-variant/20 rounded"></div>
+<div class="h-3 w-4/6 bg-on-surface-variant/20 rounded"></div>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant/30 flex justify-between items-center">
+<div class="h-10 w-1/2 bg-primary/20 rounded-full flex items-center justify-center">
+<span class="text-primary font-label-sm">Simplified Action Plan</span>
+</div>
+<span class="material-symbols-outlined text-primary">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Categories / Bento Grid -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-4">What we help you navigate</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Select a category to see how we break down the complexity.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Large Bento Item -->
+<div class="md:col-span-2 glass-panel p-8 rounded-2xl relative overflow-hidden group cursor-pointer hover:bg-white/5 transition-colors duration-300">
+<div class="absolute right-0 bottom-0 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">gavel</span>
+</div>
+<div class="relative z-10 h-full flex flex-col">
+<span class="material-symbols-outlined text-primary text-4xl mb-6" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<h3 class="font-headline-lg text-headline-lg-mobile text-on-surface mb-2 mt-auto">Property &amp; Land Rights</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Navigate inheritance, registration, disputes, and tenancy agreements with clear legal framing.</p>
+</div>
+</div>
+<!-- Normal Bento Items -->
+<div class="glass-panel p-8 rounded-2xl group cursor-pointer hover:bg-white/5 transition-colors duration-300 flex flex-col">
+<span class="material-symbols-outlined text-secondary text-4xl mb-6" style="font-variation-settings: 'FILL' 1;">badge</span>
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface mb-2 mt-auto">Identity Documents</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Aadhar, PAN, Voter ID corrections and applications.</p>
+</div>
+<div class="glass-panel p-8 rounded-2xl group cursor-pointer hover:bg-white/5 transition-colors duration-300 flex flex-col">
+<span class="material-symbols-outlined text-tertiary text-4xl mb-6" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface mb-2 mt-auto">Consumer Rights</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Defective products, service failures, and filing consumer complaints.</p>
+</div>
+<div class="md:col-span-2 glass-panel p-8 rounded-2xl group cursor-pointer hover:bg-white/5 transition-colors duration-300 flex flex-col">
+<span class="material-symbols-outlined text-primary-fixed-dim text-4xl mb-6" style="font-variation-settings: 'FILL' 1;">work</span>
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface mb-2 mt-auto">Employment Disputes</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">PF withdrawal issues, unfair termination, and workplace harassment protocols.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust & CTA -->
+<section class="py-32 px-margin-mobile md:px-margin-desktop bg-surface relative overflow-hidden">
+<div class="absolute inset-0 flex items-center justify-center opacity-5">
+<span class="material-symbols-outlined text-[800px]" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div class="max-w-3xl mx-auto text-center relative z-10">
+<h2 class="font-display-md text-display-md text-on-surface mb-8">Ready to reclaim your authority?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-12">
+                Join thousands of citizens who have found clarity and confidence through ADHIKAAR's transparent guidance.
+            </p>
+<button class="bg-primary text-on-primary font-body-md text-body-md px-10 py-5 rounded-full font-bold text-lg hover:scale-95 transition-transform duration-200 shadow-[0_0_40px_rgba(255,180,161,0.3)] hover:shadow-[0_0_60px_rgba(255,180,161,0.5)]">
+                Start Your Journey
+            </button>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full py-16 bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="max-w-container-max mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div>
+<div class="font-display-lg text-display-lg font-extrabold text-on-surface text-primary mb-4">
+                    ADHIKAAR
+                </div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm mb-6">
+                    Authority through Transparency. Empowering citizens with clear, actionable legal and civic guidance.
+                </p>
+<p class="font-label-sm text-label-sm text-on-surface-variant/50">
+                    © 2024 ADHIKAAR. Authority through Transparency.
+                </p>
+</div>
+<div class="flex flex-col md:items-end justify-center gap-4">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Terms of Service</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Legal Disclaimer</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Contact Us</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Press Kit</a>
+</div>
+</div>
+</footer>
+
+
+</body></html>

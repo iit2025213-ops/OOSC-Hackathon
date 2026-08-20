@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ADHIKAAR - Civic Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#ffb4a1",
+                        "on-primary-fixed": "#3c0800",
+                        "on-secondary-container": "#adb5ca",
+                        "primary-fixed-dim": "#ffb4a1",
+                        "on-secondary": "#293041",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#dbe2f9",
+                        "on-secondary-fixed-variant": "#3f4759",
+                        "surface-tint": "#ffb4a1",
+                        "inverse-on-surface": "#2e3132",
+                        "primary-fixed": "#ffdbd2",
+                        "tertiary": "#bbc7dc",
+                        "surface-container": "#1d2021",
+                        "surface": "#111415",
+                        "outline-variant": "#55423e",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#9a442d",
+                        "primary-container": "#e07a5f",
+                        "surface-dim": "#111415",
+                        "on-secondary-fixed": "#141b2c",
+                        "inverse-surface": "#e1e3e4",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#242f40",
+                        "surface-bright": "#373a3b",
+                        "surface-container-high": "#282a2b",
+                        "surface-container-lowest": "#0c0f10",
+                        "on-tertiary-fixed": "#101c2c",
+                        "on-background": "#e1e3e4",
+                        "on-primary-container": "#5b1604",
+                        "background": "#111415",
+                        "surface-container-highest": "#323536",
+                        "secondary": "#bfc6dc",
+                        "secondary-container": "#3f4759",
+                        "tertiary-fixed": "#d7e3f9",
+                        "tertiary-container": "#8b97ab",
+                        "secondary-fixed-dim": "#bfc6dc",
+                        "on-surface": "#e1e3e4",
+                        "tertiary-fixed-dim": "#bbc7dc",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#191c1d",
+                        "on-tertiary-fixed-variant": "#3c4859",
+                        "on-primary-fixed-variant": "#7c2e19",
+                        "on-tertiary": "#253141",
+                        "surface-variant": "#323536",
+                        "on-surface-variant": "#dbc1ba",
+                        "on-primary": "#5d1805",
+                        "outline": "#a38b86"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Manrope"],
+                        "label-sm": ["JetBrains Mono"],
+                        "display-md": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Manrope"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-md": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["72px", { "lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        
+        .glass-panel {
+            background: rgba(25, 28, 29, 0.4);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+
+        .glow-effect {
+            position: relative;
+        }
+        .glow-effect::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, theme('colors.primary/20') 0%, transparent 50%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .glow-effect:hover::before {
+            opacity: 1;
+        }
+
+        .ambient-glow {
+            position: absolute;
+            width: 60vw;
+            height: 60vh;
+            background: radial-gradient(circle, theme('colors.primary/10') 0%, transparent 70%);
+            filter: blur(100px);
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen overflow-x-hidden font-body-md text-body-md flex selection:bg-primary selection:text-on-primary">
+<!-- Decorative Ambient Background -->
+<div class="fixed inset-0 z-[-2] bg-surface"></div>
+<div class="ambient-glow top-0 left-0 translate-x-[-20%] translate-y-[-20%]"></div>
+<div class="ambient-glow bottom-0 right-0 translate-x-[20%] translate-y-[20%]" style="background: radial-gradient(circle, theme('colors.tertiary/10') 0%, transparent 70%);"></div>
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex bg-surface-container-low/20 dark:bg-surface-container-low/20 backdrop-blur-2xl font-headline-lg text-headline-lg font-extrabold text-on-surface docked left-0 h-full w-64 border-r border-white/5 shadow-sm fixed left-0 top-0 h-screen flex-col pt-24 pb-8 z-40">
+<div class="px-6 mb-12">
+<h1 class="font-headline-lg text-headline-lg font-extrabold tracking-tight">Civic Portal</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mt-1">Legal Empowerment</p>
+</div>
+<div class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-4 bg-primary-container/20 text-primary border-r-4 border-primary px-4 py-3 rounded-l-lg hover:bg-white/5 transition-all duration-200 opacity-100 font-label-sm text-label-sm group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="group-hover:translate-x-1 transition-transform">Home</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 rounded-lg hover:bg-white/5 transition-all duration-200 hover:text-primary font-label-sm text-label-sm group" href="#">
+<span class="material-symbols-outlined">gavel</span>
+<span class="group-hover:translate-x-1 transition-transform">My Cases</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 rounded-lg hover:bg-white/5 transition-all duration-200 hover:text-primary font-label-sm text-label-sm group" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="group-hover:translate-x-1 transition-transform">Documents</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 rounded-lg hover:bg-white/5 transition-all duration-200 hover:text-primary font-label-sm text-label-sm group" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="group-hover:translate-x-1 transition-transform">Action Plans</span>
+</a>
+</div>
+<div class="px-6 mt-auto">
+<button class="w-full bg-primary text-on-primary-fixed py-3 rounded-lg font-label-sm text-label-sm flex items-center justify-center gap-2 hover:bg-primary-fixed transition-colors shadow-[0_0_20px_rgba(255,180,161,0.2)]">
+<span class="material-symbols-outlined">add</span>
+                New Case
+            </button>
+<div class="mt-6 flex items-center gap-3 pt-6 border-t border-white/5">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-white/10 shrink-0">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A cinematic, high-contrast headshot of a professional Indian woman in her 30s, looking slightly off-camera with a confident yet approachable expression. Lit with soft rim lighting against a deep charcoal background, exuding trust and modern competence. Warm skin tones with subtle cool shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDIiZrJnwNFSYVp0z3W8gRFGYhb4NBoXLZpsK4cIOZFIr0-FesOYupovwjbcBvaRO-a8fS6vI3JBoO5dr25tLLC86TURA3AKAW8Sc9FIYwgBT_p6_AU0Df1mklBnQwIlxqLgAdY8IrAQVqb3BCvwW8RXvniljHAoiKftNlf_GcqafpyqLB-AqqNx2H6iTX7sHe44bvZ1Kt57_HbioJGQrP4gs_zAlIChN9QHIgPsHdKzPTn1ssqABW7Q"/>
+</div>
+<div class="overflow-hidden">
+<p class="font-label-sm text-label-sm text-on-surface truncate">A. Sharma</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate opacity-60">asharma@example.com</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- TopNavBar (Mobile Only) -->
+<nav class="md:hidden bg-surface/10 dark:bg-surface/10 backdrop-blur-xl text-primary dark:text-primary-fixed docked full-width top-0 border-b border-white/10 shadow-2xl fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile py-4">
+<div class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface dark:text-on-surface">Civic Portal</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 pt-20 md:pt-0 min-h-screen relative flex flex-col">
+<!-- Header Utility Bar -->
+<header class="hidden md:flex justify-end items-center px-margin-desktop py-6 h-24 shrink-0">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm bg-surface-container/50 px-3 py-1.5 rounded-full border border-white/5">
+<span class="material-symbols-outlined text-sm">language</span>
+<select class="bg-transparent border-none focus:ring-0 cursor-pointer uppercase appearance-none py-0 pl-1 pr-4">
+<option>EN</option>
+<option>HI</option>
+</select>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<!-- Hero Section -->
+<div class="flex-1 flex flex-col justify-center px-margin-mobile md:px-margin-desktop max-w-[1000px] w-full mx-auto py-12 md:py-0">
+<div class="space-y-6 mb-12">
+<h2 class="font-display-md md:font-display-lg text-display-md md:text-display-lg text-on-surface tracking-tight leading-tight">
+                    What can we help you with?
+                </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                    Describe your legal or civic issue naturally. We'll guide you to the right forms, next steps, and action plans tailored to your situation.
+                </p>
+</div>
+<!-- Primary Interaction Zone -->
+<div class="glass-panel rounded-2xl p-6 md:p-8 relative glow-effect mb-16 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+<div class="flex flex-col gap-4">
+<div class="relative">
+<textarea class="w-full bg-surface-container/30 border-0 border-b-2 border-white/10 rounded-t-lg p-4 pb-12 font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 focus:border-primary resize-none transition-colors" placeholder="Describe your problem in your own words..." rows="3"></textarea>
+<div class="absolute bottom-4 right-4 flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-white/5" title="Voice Input">
+<span class="material-symbols-outlined">mic</span>
+</button>
+<button class="bg-primary text-on-primary-fixed px-4 py-2 rounded-full font-label-sm text-label-sm font-semibold flex items-center gap-2 hover:bg-primary-fixed hover:scale-95 transition-all shadow-lg">
+                                Analyze
+                                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<div class="h-[1px] flex-1 bg-white/5"></div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest opacity-50">OR</span>
+<div class="h-[1px] flex-1 bg-white/5"></div>
+</div>
+<button class="w-full py-4 border border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined text-2xl">upload_file</span>
+<span class="font-body-md text-body-md">Upload a document for analysis</span>
+<span class="font-label-sm text-label-sm opacity-50">PDF, JPG, PNG (Max 10MB)</span>
+</button>
+</div>
+</div>
+<!-- Quick Start Grid -->
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">bolt</span>
+                    Common Problems
+                </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<a class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform group relative overflow-hidden border border-white/5 hover:border-primary/30" href="#">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl">home_repair_service</span>
+</div>
+<h4 class="font-body-lg text-body-lg font-semibold text-on-surface mb-2 group-hover:text-primary transition-colors">Security Deposit</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Landlord refusing to return deposit after move out.</p>
+</a>
+<!-- Card 2 -->
+<a class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform group relative overflow-hidden border border-white/5 hover:border-primary/30" href="#">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl">shopping_cart</span>
+</div>
+<h4 class="font-body-lg text-body-lg font-semibold text-on-surface mb-2 group-hover:text-primary transition-colors">Consumer Complaint</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Defective product or unfair service practices.</p>
+</a>
+<!-- Card 3 -->
+<a class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform group relative overflow-hidden border border-white/5 hover:border-primary/30" href="#">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl">policy</span>
+</div>
+<h4 class="font-body-lg text-body-lg font-semibold text-on-surface mb-2 group-hover:text-primary transition-colors">RTI Application</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Draft a Right to Information request for public data.</p>
+</a>
+<!-- Card 4 -->
+<a class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform group relative overflow-hidden border border-white/5 hover:border-primary/30" href="#">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl">family_restroom</span>
+</div>
+<h4 class="font-body-lg text-body-lg font-semibold text-on-surface mb-2 group-hover:text-primary transition-colors">Domestic Dispute</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Information on legal rights and protective measures.</p>
+</a>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 glass-panel border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center h-16">
+<a class="flex flex-col items-center gap-1 text-primary p-2" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-[10px] uppercase tracking-wider">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">gavel</span>
+<span class="font-label-sm text-[10px] uppercase tracking-wider">Cases</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-sm text-[10px] uppercase tracking-wider">Plans</span>
+</a>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ADHIKAAR - Authentication</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#ffb4a1",
+                      "on-primary-fixed": "#3c0800",
+                      "on-secondary-container": "#adb5ca",
+                      "primary-fixed-dim": "#ffb4a1",
+                      "on-secondary": "#293041",
+                      "on-error": "#690005",
+                      "secondary-fixed": "#dbe2f9",
+                      "on-secondary-fixed-variant": "#3f4759",
+                      "surface-tint": "#ffb4a1",
+                      "inverse-on-surface": "#2e3132",
+                      "primary-fixed": "#ffdbd2",
+                      "tertiary": "#bbc7dc",
+                      "surface-container": "#1d2021",
+                      "surface": "#111415",
+                      "outline-variant": "#55423e",
+                      "on-error-container": "#ffdad6",
+                      "inverse-primary": "#9a442d",
+                      "primary-container": "#e07a5f",
+                      "surface-dim": "#111415",
+                      "on-secondary-fixed": "#141b2c",
+                      "inverse-surface": "#e1e3e4",
+                      "error-container": "#93000a",
+                      "on-tertiary-container": "#242f40",
+                      "surface-bright": "#373a3b",
+                      "surface-container-high": "#282a2b",
+                      "surface-container-lowest": "#0c0f10",
+                      "on-tertiary-fixed": "#101c2c",
+                      "on-background": "#e1e3e4",
+                      "on-primary-container": "#5b1604",
+                      "background": "#111415",
+                      "surface-container-highest": "#323536",
+                      "secondary": "#bfc6dc",
+                      "secondary-container": "#3f4759",
+                      "tertiary-fixed": "#d7e3f9",
+                      "tertiary-container": "#8b97ab",
+                      "secondary-fixed-dim": "#bfc6dc",
+                      "on-surface": "#e1e3e4",
+                      "tertiary-fixed-dim": "#bbc7dc",
+                      "error": "#ffb4ab",
+                      "surface-container-low": "#191c1d",
+                      "on-tertiary-fixed-variant": "#3c4859",
+                      "on-primary-fixed-variant": "#7c2e19",
+                      "on-tertiary": "#253141",
+                      "surface-variant": "#323536",
+                      "on-surface-variant": "#dbc1ba",
+                      "on-primary": "#5d1805",
+                      "outline": "#a38b86"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "64px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "unit": "8px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Manrope"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "display-md": [
+                              "Manrope"
+                      ],
+                      "headline-lg": [
+                              "Manrope"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Manrope"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-md": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "72px",
+                              {
+                                      "lineHeight": "80px",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+          .glass-panel {
+              background: rgba(17, 20, 21, 0.4);
+              backdrop-filter: blur(32px);
+              -webkit-backdrop-filter: blur(32px);
+              border: 1px solid rgba(255, 255, 255, 0.05);
+              box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+          }
+          .input-focus-glow:focus-within {
+              border-color: theme('colors.primary');
+              box-shadow: 0 1px 0 0 theme('colors.primary');
+          }
+      </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex items-center justify-center relative overflow-hidden font-body-md selection:bg-primary/30 selection:text-primary">
+<!-- Background Cinematic Gradient/Image Placeholder -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center opacity-60" data-alt="A cinematic, deeply atmospheric abstract background featuring dark midnight blue tones blending with subtle, glowing copper and saffron light trails. The mood is high-tech, legal, and trustworthy. Soft focus, professional corporate aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAGnwTGeDarjrwQxgKHB-Gs9JqOIJQJfA0doGy7vXyRFi71R4E6q1Jmlk5CjQqJM7j1dUfTqk66UEzZAG9OEcfovnzUMh5B_UkAMagjwwaBK3F0y_e6UwsIpYrxA68Qssb1-2M_A-K1Kr5-Y3dnFzOvTujKqnZEFVXTMBuKgwt3bCtY7H_GhOp9akzBB8wj4qweckylndbm-EB1bk4lsdaM4WIHzyeURln0TtgK_tn4UCWGBbTGPfv5wA')"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-surface/80 via-surface/40 to-surface"></div>
+</div>
+<!-- Main Container -->
+<main class="relative z-10 w-full max-w-md px-margin-mobile md:px-0 mx-auto">
+<!-- Authentication Card -->
+<div class="glass-panel rounded-xl p-8 md:p-10 w-full flex flex-col gap-8">
+<!-- Header Section -->
+<header class="flex flex-col gap-3 text-center sm:text-left">
+<div class="flex items-center justify-center sm:justify-start gap-2 mb-2">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-3xl" data-icon="gavel" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="font-headline-lg text-headline-lg font-bold tracking-tight text-on-surface">ADHIKAAR</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">Let's get you started.</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Save your cases, documents, and action plans so you can return anytime.</p>
+</header>
+<!-- Form Section -->
+<form class="flex flex-col gap-6" onsubmit="event.preventDefault();">
+<!-- Input Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="auth-input">Mobile Number or Email</label>
+<div class="relative input-focus-glow border-b border-white/20 transition-colors duration-300">
+<span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant/50 ml-3" data-icon="contact_mail">contact_mail</span>
+<input class="w-full bg-surface-container-low/50 text-on-surface font-body-md text-body-md py-3 pl-11 pr-4 rounded-t-DEFAULT border-none focus:ring-0 focus:outline-none placeholder:text-on-surface-variant/40" id="auth-input" placeholder="Enter details to verify" type="text"/>
+</div>
+</div>
+<!-- CTA Button -->
+<button class="w-full bg-primary hover:bg-primary-fixed-dim text-on-primary-fixed font-label-sm text-label-sm uppercase tracking-wider py-4 rounded-DEFAULT transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-2 mt-2 shadow-lg shadow-primary/20" type="submit">
+<span>Send Verification Code</span>
+<span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Divider -->
+<div class="flex items-center justify-center gap-4 my-2 opacity-50">
+<div class="h-px bg-white/10 flex-1"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Or</span>
+<div class="h-px bg-white/10 flex-1"></div>
+</div>
+<!-- Alternate Login Options (Ghost Buttons) -->
+<button class="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-on-surface font-label-sm text-label-sm py-3 rounded-DEFAULT transition-colors duration-200 flex items-center justify-center gap-3" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span>Login with QR Code</span>
+</button>
+</form>
+<!-- Footer / Legal Section -->
+<footer class="flex flex-col gap-4 text-center mt-4">
+<p class="font-label-sm text-label-sm text-on-surface-variant/70 leading-relaxed max-w-[90%] mx-auto">
+                    By proceeding, you agree to our <a class="text-primary hover:underline underline-offset-2" href="#">Terms of Service</a> and acknowledge our <a class="text-primary hover:underline underline-offset-2" href="#">Privacy Policy</a>.
+                </p>
+<!-- Disclaimer Chip -->
+<div class="inline-flex items-center justify-center gap-2 bg-surface-container-low/50 border border-white/5 rounded-full px-4 py-2 mx-auto">
+<span class="material-symbols-outlined text-on-surface-variant text-[14px]" data-icon="shield">shield</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Secure &amp; Encrypted Connection</span>
+</div>
+</footer>
+</div>
+</main>
+<!-- Subtle interactive glow effect based on mouse position (Optional JS for cinematic feel) -->
+<script>
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.glass-panel');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+<style>
+        .glass-panel::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: radial-gradient(
+                800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                rgba(255, 180, 161, 0.15),
+                transparent 40%
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+    </style>
+</body></html>

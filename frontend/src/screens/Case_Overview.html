@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Civic Portal - Case Result Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&amp;family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .glass-panel {
+                @apply bg-surface/10 backdrop-blur-3xl border border-white/5;
+            }
+            .glass-card {
+                @apply bg-surface-container-low/40 backdrop-blur-2xl border border-white/5 rounded-xl;
+            }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#ffb4a1",
+                        "on-primary-fixed": "#3c0800",
+                        "on-secondary-container": "#adb5ca",
+                        "primary-fixed-dim": "#ffb4a1",
+                        "on-secondary": "#293041",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#dbe2f9",
+                        "on-secondary-fixed-variant": "#3f4759",
+                        "surface-tint": "#ffb4a1",
+                        "inverse-on-surface": "#2e3132",
+                        "primary-fixed": "#ffdbd2",
+                        "tertiary": "#bbc7dc",
+                        "surface-container": "#1d2021",
+                        "surface": "#111415",
+                        "outline-variant": "#55423e",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#9a442d",
+                        "primary-container": "#e07a5f",
+                        "surface-dim": "#111415",
+                        "on-secondary-fixed": "#141b2c",
+                        "inverse-surface": "#e1e3e4",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#242f40",
+                        "surface-bright": "#373a3b",
+                        "surface-container-high": "#282a2b",
+                        "surface-container-lowest": "#0c0f10",
+                        "on-tertiary-fixed": "#101c2c",
+                        "on-background": "#e1e3e4",
+                        "on-primary-container": "#5b1604",
+                        "background": "#111415",
+                        "surface-container-highest": "#323536",
+                        "secondary": "#bfc6dc",
+                        "secondary-container": "#3f4759",
+                        "tertiary-fixed": "#d7e3f9",
+                        "tertiary-container": "#8b97ab",
+                        "secondary-fixed-dim": "#bfc6dc",
+                        "on-surface": "#e1e3e4",
+                        "tertiary-fixed-dim": "#bbc7dc",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#191c1d",
+                        "on-tertiary-fixed-variant": "#3c4859",
+                        "on-primary-fixed-variant": "#7c2e19",
+                        "on-tertiary": "#253141",
+                        "surface-variant": "#323536",
+                        "on-surface-variant": "#dbc1ba",
+                        "on-primary": "#5d1805",
+                        "outline": "#a38b86"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Manrope"],
+                        "label-sm": ["JetBrains Mono"],
+                        "display-md": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Manrope"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-md": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["72px", { "lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased overflow-x-hidden min-h-screen">
+<!-- Background Effect -->
+<div class="fixed inset-0 z-[-1] pointer-events-none">
+<div class="absolute inset-0 bg-gradient-to-br from-surface to-surface-container-low"></div>
+<div class="absolute top-0 right-0 w-1/2 h-1/2 bg-primary/5 blur-[150px] rounded-full mix-blend-screen translate-x-1/4 -translate-y-1/4"></div>
+<div class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-secondary/5 blur-[120px] rounded-full mix-blend-screen -translate-x-1/4 translate-y-1/4"></div>
+</div>
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex fixed left-0 top-0 h-screen flex-col pt-24 pb-8 w-64 bg-surface-container-low/20 backdrop-blur-2xl border-r border-white/5 shadow-sm z-40">
+<div class="px-6 mb-12">
+<h1 class="font-headline-lg text-headline-lg font-extrabold text-on-surface">Civic Portal</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mt-2">Legal Empowerment</p>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<a class="text-on-surface-variant px-6 py-3 hover:bg-white/5 transition-all duration-200 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="bg-primary-container/20 text-primary border-r-4 border-primary px-6 py-3 hover:bg-white/5 transition-all duration-200 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined" data-icon="gavel" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="font-label-sm text-label-sm">My Cases</span>
+</a>
+<a class="text-on-surface-variant px-6 py-3 hover:bg-white/5 transition-all duration-200 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined" data-icon="description" style="font-variation-settings: 'FILL' 0;">description</span>
+<span class="font-label-sm text-label-sm">Documents</span>
+</a>
+<a class="text-on-surface-variant px-6 py-3 hover:bg-white/5 transition-all duration-200 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined" data-icon="assignment" style="font-variation-settings: 'FILL' 0;">assignment</span>
+<span class="font-label-sm text-label-sm">Action Plans</span>
+</a>
+</div>
+<div class="px-6 mt-auto">
+<button class="w-full bg-primary text-on-primary-fixed py-3 rounded-lg font-label-sm text-label-sm uppercase tracking-wide font-bold hover:bg-primary-fixed transition-colors duration-300 flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(255,180,161,0.2)]">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                New Case
+            </button>
+</div>
+</nav>
+<!-- TopNavBar (Mobile only for full nav, but providing a simplified header for mobile) -->
+<header class="md:hidden fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile py-4 bg-surface/50 backdrop-blur-xl border-b border-white/5">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface">Civic Portal</h1>
+<button class="text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-24 md:pt-16 px-margin-mobile md:px-margin-desktop pb-32">
+<div class="max-w-container-max mx-auto">
+<!-- Page Header -->
+<header class="mb-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-tertiary-container/20 text-tertiary font-label-sm text-label-sm border border-tertiary/20">
+<span class="w-2 h-2 rounded-full bg-tertiary mr-2"></span>
+                                Analysis Complete
+                            </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Case ID: #CP-8492</span>
+</div>
+<h1 class="font-display-md text-display-md text-on-surface mb-2">Security Deposit Dispute</h1>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 rounded-lg border border-white/10 hover:bg-white/5 transition-colors duration-300 font-label-sm text-label-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 18px;">download</span>
+                            Export
+                        </button>
+<button class="px-6 py-3 rounded-lg bg-primary text-on-primary-fixed font-bold font-label-sm text-label-sm uppercase tracking-wide hover:bg-primary-fixed transition-colors duration-300 flex items-center gap-2 shadow-[0_8px_16px_rgba(255,180,161,0.2)]">
+                            View Action Plan
+                            <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="h-px w-full bg-gradient-to-r from-white/10 via-white/5 to-transparent"></div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Column (Primary Insights) -->
+<div class="md:col-span-8 flex flex-col gap-gutter">
+<!-- Your Situation -->
+<section class="glass-card p-6 md:p-8">
+<div class="flex items-start gap-4 mb-6">
+<div class="w-10 h-10 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Your Situation</h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                                    Based on your input, you vacated the rental property on March 1st with no damage reported during the final walkthrough. The landlord has withheld the ₹50,000 security deposit beyond the legally mandated 30-day window without providing an itemized list of deductions.
+                                </p>
+</div>
+</div>
+</section>
+<!-- What May Apply -->
+<section class="glass-card p-6 md:p-8">
+<div class="flex items-start gap-4 mb-6">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<div class="w-full">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">What May Apply</h2>
+<div class="grid grid-cols-1 gap-4">
+<div class="bg-surface/50 border border-white/5 rounded-lg p-5 hover:border-primary/30 transition-colors duration-300 group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-body-lg text-body-lg text-on-surface group-hover:text-primary transition-colors">Rent Control Act Violation</h3>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">chevron_right</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Failure to return the deposit within the stipulated timeframe without valid reason constitutes a breach of standard tenancy agreements under state-specific Rent Control Acts.</p>
+</div>
+<div class="bg-surface/50 border border-white/5 rounded-lg p-5 hover:border-primary/30 transition-colors duration-300 group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-body-lg text-body-lg text-on-surface group-hover:text-primary transition-colors">Deficiency in Service</h3>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">chevron_right</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">If managed by a registered agency, this may be considered a deficiency in service under consumer protection laws.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column (Analysis & Actions) -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<!-- What This Means -->
+<section class="glass-card p-6 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-surface to-surface-container-high opacity-50 z-0"></div>
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[40px] rounded-full mix-blend-screen z-0 group-hover:bg-primary/20 transition-all duration-500"></div>
+<div class="relative z-10">
+<h2 class="font-label-sm text-label-sm text-primary uppercase tracking-wider mb-4">AI Interpretation</h2>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-4">You have a strong basis for recovery.</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                                The lack of documented damage and the passage of time without communication heavily favors your position. Formalizing the demand is the critical next step.
+                            </p>
+<div class="bg-surface/40 rounded-lg p-4 border border-white/5">
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Recommended Action</span>
+<span class="font-body-lg text-body-lg text-on-surface font-semibold">Send a Legal Notice</span>
+</div>
+</div>
+</section>
+<!-- Sources / Progressive Disclosure -->
+<section class="glass-card p-6">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-4">Referenced Sources</h2>
+<details class="group [&amp;_summary::-webkit-details-marker]:hidden border border-white/5 rounded-lg bg-surface/30">
+<summary class="flex items-center justify-between p-4 cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" style="font-size: 20px;">menu_book</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Consumer Protection Act 2019</span>
+</div>
+<span class="material-symbols-outlined transition duration-300 group-open:-rotate-180 text-on-surface-variant">expand_more</span>
+</summary>
+<div class="p-4 pt-0 border-t border-white/5 mt-2 text-on-surface-variant font-body-md text-body-md">
+<p class="mb-2">Relevance: Addresses 'Deficiency in Service' if the property was leased through a commercial entity or broker.</p>
+<a class="text-primary hover:underline text-sm flex items-center gap-1" href="#">
+                                    Read full text
+                                    <span class="material-symbols-outlined" style="font-size: 14px;">open_in_new</span>
+</a>
+</div>
+</details>
+</section>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Civic Portal - Intake Step 1</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#ffb4a1",
+                      "on-primary-fixed": "#3c0800",
+                      "on-secondary-container": "#adb5ca",
+                      "primary-fixed-dim": "#ffb4a1",
+                      "on-secondary": "#293041",
+                      "on-error": "#690005",
+                      "secondary-fixed": "#dbe2f9",
+                      "on-secondary-fixed-variant": "#3f4759",
+                      "surface-tint": "#ffb4a1",
+                      "inverse-on-surface": "#2e3132",
+                      "primary-fixed": "#ffdbd2",
+                      "tertiary": "#bbc7dc",
+                      "surface-container": "#1d2021",
+                      "surface": "#111415",
+                      "outline-variant": "#55423e",
+                      "on-error-container": "#ffdad6",
+                      "inverse-primary": "#9a442d",
+                      "primary-container": "#e07a5f",
+                      "surface-dim": "#111415",
+                      "on-secondary-fixed": "#141b2c",
+                      "inverse-surface": "#e1e3e4",
+                      "error-container": "#93000a",
+                      "on-tertiary-container": "#242f40",
+                      "surface-bright": "#373a3b",
+                      "surface-container-high": "#282a2b",
+                      "surface-container-lowest": "#0c0f10",
+                      "on-tertiary-fixed": "#101c2c",
+                      "on-background": "#e1e3e4",
+                      "on-primary-container": "#5b1604",
+                      "background": "#111415",
+                      "surface-container-highest": "#323536",
+                      "secondary": "#bfc6dc",
+                      "secondary-container": "#3f4759",
+                      "tertiary-fixed": "#d7e3f9",
+                      "tertiary-container": "#8b97ab",
+                      "secondary-fixed-dim": "#bfc6dc",
+                      "on-surface": "#e1e3e4",
+                      "tertiary-fixed-dim": "#bbc7dc",
+                      "error": "#ffb4ab",
+                      "surface-container-low": "#191c1d",
+                      "on-tertiary-fixed-variant": "#3c4859",
+                      "on-primary-fixed-variant": "#7c2e19",
+                      "on-tertiary": "#253141",
+                      "surface-variant": "#323536",
+                      "on-surface-variant": "#dbc1ba",
+                      "on-primary": "#5d1805",
+                      "outline": "#a38b86"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "64px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "unit": "8px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Manrope"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "display-md": [
+                              "Manrope"
+                      ],
+                      "headline-lg": [
+                              "Manrope"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Manrope"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-md": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "72px",
+                              {
+                                      "lineHeight": "80px",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+          .glass-panel {
+              background: rgba(25, 28, 29, 0.4);
+              backdrop-filter: blur(32px);
+              -webkit-backdrop-filter: blur(32px);
+              border: 1px solid rgba(255, 255, 255, 0.05);
+          }
+          
+          .glass-input {
+              background: rgba(17, 20, 21, 0.6);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              transition: all 0.3s ease;
+          }
+          
+          .glass-input:focus {
+              border-color: theme('colors.primary');
+              box-shadow: 0 0 0 1px theme('colors.primary');
+              outline: none;
+          }
+          
+          .ai-glow {
+              box-shadow: 0 0 20px rgba(255, 180, 161, 0.15);
+          }
+      </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen font-body-md overflow-x-hidden selection:bg-primary/30 selection:text-primary">
+<!-- SideNavBar (from JSON) -->
+<aside class="hidden md:flex bg-surface-container-low/20 dark:bg-surface-container-low/20 backdrop-blur-2xl docked left-0 h-full w-64 border-r border-white/5 shadow-sm fixed top-0 flex-col pt-24 pb-8 z-40">
+<div class="px-6 mb-12">
+<h1 class="font-headline-lg text-headline-lg font-extrabold text-on-surface tracking-tight">Civic Portal</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1 uppercase tracking-widest opacity-80">Legal Empowerment</p>
+</div>
+<nav class="flex-1 flex flex-col gap-2 w-full">
+<a class="flex items-center gap-4 text-on-surface-variant px-6 py-4 hover:bg-white/5 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-primary transition-colors">home</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Home</span>
+</a>
+<a class="flex items-center gap-4 bg-primary-container/20 text-primary border-r-4 border-primary px-6 py-4 hover:bg-white/5 transition-all duration-200 group relative overflow-hidden" href="#">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent"></div>
+<span class="material-symbols-outlined text-2xl relative z-10" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold relative z-10">My Cases</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-6 py-4 hover:bg-white/5 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-primary transition-colors">description</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Documents</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-6 py-4 hover:bg-white/5 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-primary transition-colors">assignment</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Action Plans</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-surface-container border border-white/10 hover:border-primary/50 text-on-surface font-label-sm text-label-sm py-3 px-4 rounded flex items-center justify-center gap-2 transition-all duration-300 hover:text-primary group">
+<span class="material-symbols-outlined text-xl group-hover:rotate-90 transition-transform duration-300">add</span>
+<span class="uppercase tracking-widest">+ New Case</span>
+</button>
+</div>
+</aside>
+<!-- Mobile TopBar (Simplified for mobile case flow) -->
+<header class="md:hidden fixed top-0 w-full z-50 glass-panel border-b border-white/5 px-4 py-4 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface">Civic Portal</h1>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-24 md:pt-16 px-4 md:px-margin-desktop pb-24 min-h-screen flex flex-col relative z-10">
+<!-- Ambient Background Effect -->
+<div class="fixed inset-0 pointer-events-none z-0 opacity-40 mix-blend-screen" style="background: radial-gradient(circle at 70% 30%, rgba(255, 180, 161, 0.05) 0%, transparent 50%);"></div>
+<!-- Progress Indicator -->
+<div class="max-w-4xl mx-auto w-full mb-12 mt-4 md:mt-8 relative z-20">
+<div class="flex justify-between items-center mb-4 relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-px bg-white/5 -z-10"></div>
+<!-- Step 1 (Active) -->
+<div class="flex flex-col items-center gap-2 relative">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary-fixed flex items-center justify-center font-label-sm text-label-sm shadow-[0_0_15px_rgba(255,180,161,0.3)]">
+<span>01</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider absolute top-10 whitespace-nowrap">Situation</span>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center gap-2 relative">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-white/10 text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm">
+<span>02</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider absolute top-10 whitespace-nowrap opacity-50">People</span>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center gap-2 relative">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-white/10 text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm">
+<span>03</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider absolute top-10 whitespace-nowrap opacity-50">Location</span>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center gap-2 relative hidden sm:flex">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-white/10 text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm">
+<span>04</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider absolute top-10 whitespace-nowrap opacity-50">Documents</span>
+</div>
+<!-- Step 5 -->
+<div class="flex flex-col items-center gap-2 relative hidden sm:flex">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-white/10 text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm">
+<span>05</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider absolute top-10 whitespace-nowrap opacity-50">Goal</span>
+</div>
+</div>
+</div>
+<!-- Intake Form Area -->
+<div class="max-w-3xl mx-auto w-full flex-1 flex flex-col justify-center relative z-20">
+<div class="mb-10 text-center md:text-left">
+<h2 class="font-display-md text-display-md font-bold text-on-surface mb-4">Tell us what happened.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Describe the situation in your own words. Don't worry about legal jargon; our AI will help structure the details for your case file.</p>
+</div>
+<div class="relative group">
+<div class="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-transparent rounded-xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+<div class="glass-panel rounded-xl p-1 relative ai-glow">
+<textarea class="w-full h-64 md:h-80 glass-input rounded-lg p-6 font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/40 resize-none" placeholder="Start typing here... For example: 'Last Tuesday, my landlord locked me out without notice...'"></textarea>
+<!-- Floating AI Actions within Textarea -->
+<div class="absolute bottom-6 right-6 flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant opacity-70 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">mic</span> Voice Input
+                        </span>
+</div>
+</div>
+</div>
+<!-- AI Suggestions Bento -->
+<div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="glass-panel rounded-lg p-4 hover:border-primary/30 transition-colors cursor-pointer group">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-sm group-hover:scale-110 transition-transform">lightbulb</span>
+<span class="font-label-sm text-label-sm uppercase text-primary/80 tracking-wider">Suggestion</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Mentioning dates and times can help establish a clearer timeline.</p>
+</div>
+<div class="glass-panel rounded-lg p-4 hover:border-primary/30 transition-colors cursor-pointer group">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-tertiary text-sm group-hover:scale-110 transition-transform">group</span>
+<span class="font-label-sm text-label-sm uppercase text-tertiary/80 tracking-wider">Prompt</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Were there any witnesses present? Their names are helpful.</p>
+</div>
+<div class="glass-panel rounded-lg p-4 hover:border-primary/30 transition-colors cursor-pointer group hidden md:block">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-sm group-hover:scale-110 transition-transform">warning</span>
+<span class="font-label-sm text-label-sm uppercase text-secondary/80 tracking-wider">Safety Tip</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Do not share sensitive passwords or banking PINs here.</p>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="mt-12 flex justify-between items-center pt-8 border-t border-white/5">
+<button class="text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm uppercase tracking-widest transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">arrow_back</span>
+                    Cancel
+                </button>
+<button class="bg-primary text-on-primary-fixed hover:bg-primary-fixed-dim px-8 py-4 rounded font-label-sm text-label-sm uppercase tracking-widest transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,180,161,0.4)] flex items-center gap-3 group">
+                    Continue
+                    <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+</body></html>
