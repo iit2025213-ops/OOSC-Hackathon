@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3000/api';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (token) {
-      // Decode JWT payload to get user info (no verification—server does that)
+      // Decode JWT payload to get user info
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         setUser({ id: payload.sub, email: payload.email, name: payload.name || 'User' });
@@ -31,28 +31,27 @@ export function AuthProvider({ children }) {
     });
     if (!res.ok) {
       const err = await res.json();
-      throw new Error(err.detail || 'Login failed');
+      throw new Error(err.error || 'Login failed');
     }
     const data = await res.json();
-    localStorage.setItem('adhikaar_token', data.access_token);
-    setToken(data.access_token);
+    const jwt = data.session.access_token;
+    localStorage.setItem('adhikaar_token', jwt);
+    setToken(jwt);
     return data;
   };
 
   const signup = async (name, email, password) => {
-    const res = await fetch(`${API_BASE}/auth/signup`, {
+    const res = await fetch(`${API_BASE}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
     });
     if (!res.ok) {
       const err = await res.json();
-      throw new Error(err.detail || 'Signup failed');
+      throw new Error(err.error || 'Signup failed');
     }
-    const data = await res.json();
-    localStorage.setItem('adhikaar_token', data.access_token);
-    setToken(data.access_token);
-    return data;
+    // We auto-login after signup by calling the login function
+    return await login(email, password);
   };
 
   const logout = () => {

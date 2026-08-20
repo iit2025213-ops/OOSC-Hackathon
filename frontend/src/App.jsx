@@ -11,6 +11,8 @@ import DocumentsPage from './pages/DocumentsPage';
 import PlansListPage from './pages/PlansListPage';
 import DashboardLayout from './components/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
+import StaticPage from './pages/StaticPage';
+import { staticContent } from './pages/staticContent';
 
 export default function App() {
   return (
@@ -18,6 +20,14 @@ export default function App() {
       {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/auth" element={<AuthPage />} />
+      
+      {/* Static Informational Pages */}
+      <Route path="/privacy" element={<StaticPage {...staticContent.privacy} />} />
+      <Route path="/terms" element={<StaticPage {...staticContent.terms} />} />
+      <Route path="/disclaimer" element={<StaticPage {...staticContent.disclaimer} />} />
+      <Route path="/contact" element={<StaticPage {...staticContent.contact} />} />
+      <Route path="/press" element={<StaticPage {...staticContent.press} />} />
+      <Route path="/how-it-works" element={<StaticPage {...staticContent.howItWorks} />} />
 
       {/* Protected Dashboard Routes */}
       <Route

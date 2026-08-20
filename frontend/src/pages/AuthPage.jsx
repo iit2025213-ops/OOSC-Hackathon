@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function AuthPage() {
@@ -170,7 +170,7 @@ export default function AuthPage() {
 
           <footer className="flex flex-col gap-4 text-center mt-2 relative z-10">
             <p className="font-label-sm text-label-sm text-on-surface-variant/70 leading-relaxed max-w-[90%] mx-auto">
-              By proceeding, you agree to our <a className="text-primary hover:underline underline-offset-2" href="#">Terms of Service</a> and acknowledge our <a className="text-primary hover:underline underline-offset-2" href="#">Privacy Policy</a>.
+              By proceeding, you agree to our <Link className="text-primary hover:underline underline-offset-2" to="/terms">Terms of Service</Link> and acknowledge our <Link className="text-primary hover:underline underline-offset-2" to="/privacy">Privacy Policy</Link>.
             </p>
             <div className="inline-flex items-center justify-center gap-2 bg-surface-container-low/50 border border-white/5 rounded-full px-4 py-2 mx-auto">
               <span className="material-symbols-outlined text-on-surface-variant text-[14px]">shield</span>

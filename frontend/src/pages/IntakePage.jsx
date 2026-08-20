@@ -19,8 +19,12 @@ export default function IntakePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const initialQuery = location.state?.initialQuery || '';
+  const initialFile = location.state?.initialFile || null;
 
   const [currentStep, setCurrentStep] = useState(0);
+  const [evidenceFiles, setEvidenceFiles] = useState(initialFile ? [initialFile] : []);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = React.useRef(null);
   const [formData, setFormData] = useState({
     situation: initialQuery,
     people: '',
@@ -38,13 +42,122 @@ export default function IntakePage() {
     { title: 'What outcome do you want?', desc: 'Tell us your desired resolution — refund, legal notice, complaint filing, or just understanding your rights.' },
   ];
 
-  const handleContinue = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleContinue = async () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Submit — navigate to case overview with mock data
-      navigate('/dashboard/case/demo', { state: { formData } });
+      // Final Step: Submit to Node.js Backend
+      setIsSubmitting(true);
+      try {
+        const submitData = new FormData();
+        submitData.append('query', formData.situation);
+        submitData.append('details', JSON.stringify(formData));
+        
+        if (evidenceFiles.length > 0) {
+          evidenceFiles.forEach((file) => {
+            submitData.append('evidence', file);
+          });
+        }
+
+        const token = localStorage.getItem('adhikaar_token');
+        
+        const response = await fetch('http://localhost:3000/api/legal/analyze', {
+          method: 'POST',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+          body: submitData
+        });
+        
+        if (!response.ok) throw new Error('Failed to analyze case');
+        
+        const data = await response.json();
+        // Pass the backend response (Legal Brain JSON) to the overview page
+        navigate(`/dashboard/case/${data.id || 'demo'}`, { state: { caseData: data } });
+      } catch (err) {
+        console.error(err);
+        alert('Failed to connect to backend. Make sure the Node server is running on port 3000.');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
+  };
+
+  const toggleListening = () => {
+    if (isListening) {
+      if (recognitionRef.current) {
+        recognitionRef.current.manualStop = true; // Flag that the user intentionally stopped it
+        recognitionRef.current.stop();
+      }
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Your browser does not support Voice to Text. Please use Google Chrome or Microsoft Edge.");
+      return;
+    }
+    
+    const recognition = new SpeechRecognition();
+    recognition.manualStop = false;
+    recognitionRef.current = recognition;
+    
+    // Continuous allows dictating an entire paragraph without stopping
+    recognition.continuous = true; 
+    recognition.interimResults = true;
+    recognition.lang = 'en-IN'; 
+
+    recognition.onstart = () => setIsListening(true);
+    
+    let currentSessionTranscript = '';
+    const startText = formData[fieldKeys[currentStep]];
+
+    recognition.onresult = (event) => {
+      let interimTranscript = '';
+      let finalTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        } else {
+          interimTranscript += event.results[i][0].transcript;
+        }
+      }
+      
+      if (finalTranscript) {
+        currentSessionTranscript += finalTranscript;
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        [fieldKeys[currentStep]]: (startText + ' ' + currentSessionTranscript + ' ' + interimTranscript).trim()
+      }));
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error', event.error);
+      if (event.error !== 'no-speech') {
+        setIsListening(false);
+      }
+    };
+
+    recognition.onend = () => {
+      // If the user didn't click stop, but the browser auto-stopped due to silence, restart it!
+      if (!recognition.manualStop) {
+        try {
+          recognition.start();
+        } catch (e) {
+          setIsListening(false);
+        }
+      } else {
+        setIsListening(false);
+      }
+    };
+    
+    recognition.start();
   };
 
   const handleBack = () => {
@@ -98,18 +211,68 @@ export default function IntakePage() {
           <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-transparent rounded-xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
           <div className="glass-panel rounded-xl p-1 relative shadow-[0_0_20px_rgba(255,180,161,0.15)]">
             <textarea
-              className="w-full h-64 md:h-80 bg-surface/60 border border-white/10 rounded-lg p-6 font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/40 resize-none focus:ring-0 focus:border-primary focus:outline-none transition-colors"
+              className={`w-full ${currentStep === 3 ? 'h-40 md:h-48' : 'h-64 md:h-80'} bg-surface/60 border border-white/10 rounded-lg p-6 font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/40 resize-none focus:ring-0 focus:border-primary focus:outline-none transition-all`}
               placeholder={`Start typing here...`}
               value={formData[fieldKeys[currentStep]]}
               onChange={(e) => setFormData({ ...formData, [fieldKeys[currentStep]]: e.target.value })}
             />
+            
             <div className="absolute bottom-6 right-6 flex items-center gap-3">
-              <span className="font-label-sm text-label-sm text-on-surface-variant opacity-70 flex items-center gap-1">
-                <span className="material-symbols-outlined text-sm">mic</span> Voice Input
-              </span>
+              {isListening && (
+                <div className="flex items-center gap-2 text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                  </span>
+                  <span className="font-label-sm text-[10px] uppercase tracking-wider">Recording Locked</span>
+                </div>
+              )}
+              <button 
+                onClick={toggleListening}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full font-label-sm text-label-sm transition-all duration-300 ${
+                  isListening 
+                    ? 'bg-primary text-on-primary-fixed shadow-[0_4px_20px_rgba(255,180,161,0.4)] hover:bg-primary-fixed' 
+                    : 'bg-surface-container-high text-on-surface hover:text-primary hover:bg-surface-container-highest border border-white/10 hover:border-primary/30 shadow-lg'
+                }`}
+                title={isListening ? "Stop Dictating" : "Start Dictating"}
+              >
+                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: isListening ? "'FILL' 1" : "'FILL' 0" }}>
+                  {isListening ? 'mic_off' : 'mic'}
+                </span> 
+                {isListening ? 'Stop' : 'Dictate'}
+              </button>
             </div>
           </div>
         </div>
+
+        {currentStep === 3 && (
+          <div className="mt-6 relative z-30">
+            <div className="border-2 border-dashed border-white/20 rounded-xl p-8 text-center hover:bg-white/5 transition-colors cursor-pointer relative overflow-hidden group">
+              <input
+                type="file"
+                multiple
+                onChange={(e) => setEvidenceFiles(Array.from(e.target.files))}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+              />
+              <div className="flex flex-col items-center gap-3">
+                <span className="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary transition-colors">upload_file</span>
+                {evidenceFiles.length > 0 ? (
+                  <div className="text-primary font-body-md font-semibold text-center">
+                    {evidenceFiles.map((f, i) => (
+                      <div key={i}>{f.name}</div>
+                    ))}
+                    <div className="text-xs text-on-surface-variant mt-2">(Ready to upload)</div>
+                  </div>
+                ) : (
+                  <>
+                    <span className="font-body-md text-body-md text-on-surface">Click to browse or drag and drop</span>
+                    <span className="font-label-sm text-label-sm text-on-surface-variant">Supports PDF, JPG, PNG (Max 5 files)</span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* AI Suggestions */}
         {currentStep === 0 && (
@@ -134,10 +297,25 @@ export default function IntakePage() {
           </button>
           <button
             onClick={handleContinue}
-            className="bg-primary text-on-primary-fixed hover:bg-primary-fixed-dim px-8 py-4 rounded font-label-sm text-label-sm uppercase tracking-widest transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,180,161,0.4)] flex items-center gap-3 group"
+            disabled={isSubmitting}
+            className={`bg-primary text-on-primary-fixed hover:bg-primary-fixed-dim px-8 py-4 rounded font-label-sm text-label-sm uppercase tracking-widest transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,180,161,0.4)] flex items-center gap-3 group ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
-            {currentStep < steps.length - 1 ? 'Continue' : 'Submit Case'}
-            <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            {isSubmitting ? (
+              <>
+                <div className="w-5 h-5 border-2 border-on-primary-fixed border-t-transparent rounded-full animate-spin"></div>
+                Analyzing Case...
+              </>
+            ) : currentStep < steps.length - 1 ? (
+              <>
+                Continue
+                <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+              </>
+            ) : (
+              <>
+                Submit Case
+                <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+              </>
+            )}
           </button>
         </div>
       </div>

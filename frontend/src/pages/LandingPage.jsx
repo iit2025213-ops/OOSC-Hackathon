@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ShaderBackground from '../components/ShaderBackground';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -65,9 +66,11 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="bg-background text-on-background font-body-md antialiased overflow-x-hidden dark">
+    <div className="bg-transparent text-on-background font-body-md antialiased overflow-x-hidden relative min-h-screen">
+      <ShaderBackground />
+      <div className="relative z-10 w-full min-h-screen flex flex-col">
       {/* TopNavBar */}
-      <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-container-max rounded-xl dark:bg-black/10 backdrop-blur-xl border border-white/10 shadow-2xl z-50 flex justify-between items-center px-gutter py-4 bg-surface-container hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(224,122,95,0.2)] transition-all duration-500">
+      <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-container-max rounded-xl dark:bg-black/20 backdrop-blur-2xl border border-white/5 shadow-2xl z-50 flex justify-between items-center px-gutter py-4 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(224,122,95,0.2)] transition-all duration-500">
         <div className="font-display-md text-display-md font-bold text-on-surface tracking-tight text-brand-accent">
           ADHIKAAR
         </div>
@@ -84,10 +87,6 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex flex-col justify-end pb-24 md:pb-32 px-margin-mobile md:px-margin-desktop w-full overflow-hidden" id="hero-section">
-        <div className="absolute inset-0 z-0">
-          <div className="w-full h-full bg-surface-container-lowest object-cover opacity-80"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background"></div>
-        </div>
         <div className="relative z-10 w-full max-w-container-max mx-auto flex flex-col items-start mt-32" id="hero-content">
           <h1 className="font-display-lg text-display-lg text-on-surface max-w-4xl mb-6 animate-fade-in-up transition-transform duration-200 ease-out">
             Know your rights.<br/>
@@ -122,7 +121,7 @@ export default function LandingPage() {
       </section>
 
       {/* Problem Recognition */}
-      <section className="py-24 px-margin-mobile md:px-margin-desktop bg-surface relative z-20" id="how-it-works">
+      <section className="py-24 px-margin-mobile md:px-margin-desktop bg-black/20 backdrop-blur-xl relative z-20 border-t border-white/5" id="how-it-works">
         <div className="max-w-container-max mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -176,7 +175,7 @@ export default function LandingPage() {
       </section>
 
       {/* Categories */}
-      <section className="py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-lowest" id="categories">
+      <section className="py-24 px-margin-mobile md:px-margin-desktop bg-black/40 backdrop-blur-lg border-t border-white/5" id="categories">
         <div className="max-w-container-max mx-auto">
           <div className="text-center mb-16">
             <h2 className="font-headline-lg md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-4">What we help you navigate</h2>
@@ -213,8 +212,8 @@ export default function LandingPage() {
       </section>
 
       {/* Trust & CTA */}
-      <section className="py-32 px-margin-mobile md:px-margin-desktop bg-surface relative overflow-hidden" id="trust">
-        <div className="absolute inset-0 flex items-center justify-center opacity-5 text-brand-accent">
+      <section className="py-32 px-margin-mobile md:px-margin-desktop bg-black/60 backdrop-blur-2xl relative overflow-hidden border-t border-white/5" id="trust">
+        <div className="absolute inset-0 flex items-center justify-center opacity-5 text-brand-accent mix-blend-screen">
           <span className="material-symbols-outlined text-[800px]" style={{ fontVariationSettings: "'FILL' 1" }}>shield</span>
         </div>
         <div className="max-w-3xl mx-auto text-center relative z-10">
@@ -229,7 +228,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="w-full py-16 bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/20">
+      <footer className="w-full py-16 bg-black/80 backdrop-blur-3xl border-t border-white/10">
         <div className="max-w-container-max mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-gutter">
           <div>
             <div className="font-display-lg text-display-lg font-extrabold text-brand-accent mb-4">ADHIKAAR</div>
@@ -239,14 +238,16 @@ export default function LandingPage() {
             <p className="font-label-sm text-label-sm text-on-surface-variant/50">© 2024 ADHIKAAR. Authority through Transparency.</p>
           </div>
           <div className="flex flex-col md:items-end justify-center gap-4">
-            <a className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" href="#">Privacy Policy</a>
-            <a className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" href="#">Terms of Service</a>
-            <a className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" href="#">Legal Disclaimer</a>
-            <a className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" href="#">Contact Us</a>
-            <a className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" href="#">Press Kit</a>
+            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" to="/how-it-works">How It Works</Link>
+            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" to="/privacy">Privacy Policy</Link>
+            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" to="/terms">Terms of Service</Link>
+            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" to="/disclaimer">Legal Disclaimer</Link>
+            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" to="/contact">Contact Us</Link>
+            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-brand-accent transition-colors duration-500" to="/press">Press Kit</Link>
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 }

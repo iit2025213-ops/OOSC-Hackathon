@@ -66,11 +66,22 @@ export default function HomePage() {
             <span className="font-label-sm text-label-sm uppercase tracking-widest opacity-50">OR</span>
             <div className="h-[1px] flex-1 bg-white/5"></div>
           </div>
-          <button className="w-full py-4 border border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all">
+          <label className="w-full py-4 border border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer">
+            <input 
+              type="file" 
+              className="hidden" 
+              onChange={(e) => {
+                if (e.target.files[0]) {
+                  // Pass the selected file to the intake page
+                  navigate('/dashboard/intake', { state: { initialFile: e.target.files[0], initialQuery: "I want to analyze this document." } });
+                }
+              }}
+              accept="image/*,.pdf"
+            />
             <span className="material-symbols-outlined text-2xl">upload_file</span>
             <span className="font-body-md text-body-md">Upload a document for analysis</span>
             <span className="font-label-sm text-label-sm opacity-50">PDF, JPG, PNG (Max 10MB)</span>
-          </button>
+          </label>
         </div>
       </div>
 
