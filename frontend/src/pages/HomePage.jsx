@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const quickProblems = [
@@ -10,16 +10,26 @@ const quickProblems = [
 
 export default function HomePage() {
   const [query, setQuery] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const textareaRef = useRef(null);
   const navigate = useNavigate();
 
   const handleAnalyze = () => {
-    if (query.trim()) {
-      navigate('/dashboard/intake', { state: { initialQuery: query } });
+    if (query.trim() || selectedFile) {
+      navigate('/dashboard/intake', { 
+        state: { 
+          initialQuery: query.trim() || "I want to analyze this document.", 
+          initialFile: selectedFile,
+          isNewConversation: true,
+          autoSubmit: true
+        } 
+      });
     }
   };
 
   const handleQuickProblem = (title) => {
-    navigate('/dashboard/intake', { state: { initialQuery: title } });
+    navigate('/dashboard/intake', { state: { initialQuery: title, isNewConversation: true, autoSubmit: true } });
   };
 
   return (
@@ -33,55 +43,115 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Primary Interaction Zone */}
-      <div className="glass-panel rounded-2xl p-6 md:p-8 relative mb-16 shadow-[0_20px_50px_rgba(0,0,0,0.4)] group hover:border-primary/20 transition-all duration-500">
-        {/* Glow effect */}
-        <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-transparent rounded-2xl blur opacity-0 group-hover:opacity-30 transition duration-500 -z-10"></div>
-        <div className="flex flex-col gap-4">
-          <div className="relative">
-            <textarea
-              className="w-full bg-surface-container/30 border-0 border-b-2 border-white/10 rounded-t-lg p-4 pb-12 font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 focus:border-primary resize-none transition-colors"
-              placeholder="Describe your problem in your own words..."
-              rows="3"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAnalyze(); } }}
-            />
-            <div className="absolute bottom-4 right-4 flex items-center gap-2">
-              <button className="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-white/5" title="Voice Input">
-                <span className="material-symbols-outlined">mic</span>
-              </button>
-              <button
-                onClick={handleAnalyze}
-                className="bg-primary text-on-primary-fixed px-4 py-2 rounded-full font-label-sm text-label-sm font-semibold flex items-center gap-2 hover:bg-primary-fixed hover:scale-95 transition-all shadow-lg disabled:opacity-50"
-                disabled={!query.trim()}
-              >
-                Analyze
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </button>
+      {/* Premium AI Consultation Interface */}
+      <div className="bg-surface-container-low rounded-2xl p-1 relative mb-16 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/5 ring-1 ring-white/10">
+        {/* Soft Inner Highlight */}
+        <div className="absolute inset-0 rounded-2xl border-t border-white/10 pointer-events-none z-10"></div>
+        
+        <div className="bg-surface-container rounded-xl p-5 md:p-6 flex flex-col gap-5 relative z-20">
+          
+          {/* Primary Input Section */}
+          <div>
+            <label className="font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant/70 mb-2 block ml-1">
+              Tell us what happened
+            </label>
+            <div className="relative bg-surface-container-lowest border border-white/5 rounded-xl transition-colors focus-within:border-primary/30 focus-within:bg-surface-container-low">
+              <textarea
+                ref={textareaRef}
+                className="w-full bg-transparent border-none p-4 pb-14 font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/40 focus:ring-0 focus:outline-none resize-none custom-scrollbar"
+                placeholder="Describe your problem in your own words..."
+                rows="2"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  e.target.style.height = 'auto';
+                  e.target.style.height = `${Math.min(e.target.scrollHeight, 150)}px`;
+                }}
+                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAnalyze(); } }}
+              />
+              
+              {/* Bottom bar of textarea */}
+              <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+                <span className="text-[10px] text-on-surface-variant/40 font-mono pl-2">
+                  {query.length > 0 ? `${query.length} chars` : ''}
+                </span>
+                
+                <div className="flex items-center gap-2">
+                  <button className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant/60 hover:text-primary hover:bg-primary/10 transition-colors" title="Voice Input">
+                    <span className="material-symbols-outlined text-[20px]">mic</span>
+                  </button>
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={!query.trim() && !selectedFile}
+                    className="bg-primary/90 text-on-primary-fixed px-5 py-2 rounded-lg font-label-sm text-sm font-semibold flex items-center gap-2 hover:bg-primary hover:-translate-y-0.5 transition-all shadow-[0_0_15px_rgba(255,180,161,0.15)] hover:shadow-[0_0_20px_rgba(255,180,161,0.3)] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                  >
+                    Analyze
+                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-4 text-on-surface-variant">
-            <div className="h-[1px] flex-1 bg-white/5"></div>
-            <span className="font-label-sm text-label-sm uppercase tracking-widest opacity-50">OR</span>
-            <div className="h-[1px] flex-1 bg-white/5"></div>
+
+          {/* Elegant Divider */}
+          <div className="flex items-center gap-3 opacity-60">
+            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+            <span className="font-label-sm text-[10px] uppercase tracking-widest text-on-surface-variant">or</span>
+            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
           </div>
-          <label className="w-full py-4 border border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer">
-            <input 
-              type="file" 
-              className="hidden" 
-              onChange={(e) => {
-                if (e.target.files[0]) {
-                  // Pass the selected file to the intake page
-                  navigate('/dashboard/intake', { state: { initialFile: e.target.files[0], initialQuery: "I want to analyze this document." } });
-                }
+
+          {/* Secondary Upload Zone */}
+          {!selectedFile ? (
+            <label 
+              className={`w-full py-4 px-6 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer transition-all duration-300 ${isDragging ? 'bg-primary/5 border-primary/40' : 'bg-surface-container-low border-dashed border-white/10 hover:bg-surface-container-highest hover:border-white/20'}`}
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                if (e.dataTransfer.files[0]) setSelectedFile(e.dataTransfer.files[0]);
               }}
-              accept="image/*,.pdf"
-            />
-            <span className="material-symbols-outlined text-2xl">upload_file</span>
-            <span className="font-body-md text-body-md">Upload a document for analysis</span>
-            <span className="font-label-sm text-label-sm opacity-50">PDF, JPG, PNG (Max 10MB)</span>
-          </label>
+            >
+              <input 
+                type="file" 
+                className="hidden" 
+                onChange={(e) => {
+                  if (e.target.files[0]) setSelectedFile(e.target.files[0]);
+                }}
+                accept="image/*,.pdf"
+              />
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 shrink-0 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+                  <span className="material-symbols-outlined text-[20px]">upload_file</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-body-md text-sm text-on-surface font-medium">Upload a document</span>
+                  <span className="font-label-sm text-xs text-on-surface-variant/60">PDF, JPG or PNG &middot; Max 10 MB</span>
+                </div>
+              </div>
+              <div className="px-3 py-1.5 rounded-md bg-surface-container border border-white/5 font-label-sm text-xs text-on-surface-variant hover:text-on-surface transition-colors w-full sm:w-auto text-center">
+                Browse files
+              </div>
+            </label>
+          ) : (
+            <div className="w-full p-3 pl-4 rounded-xl bg-surface-container-highest border border-white/10 flex items-center justify-between">
+              <div className="flex items-center gap-3 overflow-hidden">
+                <span className="material-symbols-outlined text-primary text-[22px]">description</span>
+                <div className="flex flex-col overflow-hidden">
+                  <span className="font-body-md text-sm text-on-surface truncate max-w-[200px] md:max-w-[400px]">{selectedFile.name}</span>
+                  <span className="font-label-sm text-[10px] text-on-surface-variant/60">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
+                </div>
+              </div>
+              <button 
+                onClick={(e) => { e.preventDefault(); setSelectedFile(null); }}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors"
+                title="Remove File"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+          )}
+
         </div>
       </div>
 

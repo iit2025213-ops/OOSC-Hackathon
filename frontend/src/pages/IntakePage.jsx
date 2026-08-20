@@ -1,94 +1,202 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-
-const steps = [
-  { num: '01', label: 'Situation' },
-  { num: '02', label: 'People' },
-  { num: '03', label: 'Location' },
-  { num: '04', label: 'Documents' },
-  { num: '05', label: 'Goal' },
-];
-
-const suggestions = [
-  { icon: 'lightbulb', color: 'text-primary', label: 'Suggestion', labelColor: 'text-primary/80', text: 'Mentioning dates and times can help establish a clearer timeline.' },
-  { icon: 'group', color: 'text-tertiary', label: 'Prompt', labelColor: 'text-tertiary/80', text: 'Were there any witnesses present? Their names are helpful.' },
-  { icon: 'warning', color: 'text-secondary', label: 'Safety Tip', labelColor: 'text-secondary/80', text: 'Do not share sensitive passwords or banking PINs here.' },
-];
 
 export default function IntakePage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const isNew = location.state?.isNewConversation || false;
+  const autoSubmit = location.state?.autoSubmit || false;
   const initialQuery = location.state?.initialQuery || '';
   const initialFile = location.state?.initialFile || null;
 
-  const [currentStep, setCurrentStep] = useState(0);
-  const [evidenceFiles, setEvidenceFiles] = useState(initialFile ? [initialFile] : []);
-  const [isListening, setIsListening] = useState(false);
-  const recognitionRef = React.useRef(null);
-  const [formData, setFormData] = useState({
-    situation: initialQuery,
-    people: '',
-    location: '',
-    documents: '',
-    goal: '',
+  const [chatHistory, setChatHistory] = useState(() => {
+    if (isNew) {
+      sessionStorage.removeItem('adhikaar_intake_chatHistory');
+      sessionStorage.removeItem('adhikaar_intake_pendingAnalysis');
+    }
+    const saved = !isNew ? sessionStorage.getItem('adhikaar_intake_chatHistory') : null;
+    if (saved) return JSON.parse(saved);
+    
+    const initialHistory = [{ role: 'ai', content: "Hello! I am your Legal AI Assistant. Please describe your situation in as much detail as possible. You can also upload any relevant documents, contracts, or notices." }];
+    
+    if (isNew && autoSubmit && (initialQuery || initialFile)) {
+      let userMessage = initialQuery.trim() || "I want to analyze this document.";
+      if (initialFile) {
+        userMessage += `\n[Attached 1 file(s)]`;
+      }
+      initialHistory.push({ role: 'user', content: userMessage, isFirstNewMessage: true });
+    }
+    
+    return initialHistory;
   });
 
-  const fieldKeys = ['situation', 'people', 'location', 'documents', 'goal'];
-  const stepPrompts = [
-    { title: 'Tell us what happened.', desc: "Describe the situation in your own words. Don't worry about legal jargon; our AI will help structure the details for your case file." },
-    { title: 'Who is involved?', desc: 'List the people or organizations involved. Include names, roles, and any contact information you have.' },
-    { title: 'Where did this happen?', desc: 'Provide the location details — city, state, and any relevant addresses or jurisdictions.' },
-    { title: 'Do you have any documents?', desc: 'Mention any contracts, receipts, notices, or correspondence you have related to this issue.' },
-    { title: 'What outcome do you want?', desc: 'Tell us your desired resolution — refund, legal notice, complaint filing, or just understanding your rights.' },
-  ];
+  const [chatInput, setChatInput] = useState('');
+  const [evidenceFiles, setEvidenceFiles] = useState(!autoSubmit && initialFile ? [initialFile] : []);
+  const [isSubmitting, setIsSubmitting] = useState(isNew && autoSubmit);
+  const [loadingText, setLoadingText] = useState("Analyzing...");
+  const [isListening, setIsListening] = useState(false);
+  const [pendingAnalysis, setPendingAnalysis] = useState(() => {
+    const saved = !isNew ? sessionStorage.getItem('adhikaar_intake_pendingAnalysis') : null;
+    return saved ? JSON.parse(saved) : null;
+  });
+  
+  const hasAutoSubmitted = useRef(false);
+  const chatEndRef = useRef(null);
+  const textareaRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const recognitionRef = useRef(null);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const triggerBackendRequest = async (userMessage, files, historyForBackend) => {
+    setIsSubmitting(true);
+    try {
+      const submitData = new FormData();
+      submitData.append('query', userMessage);
+      submitData.append('history', JSON.stringify(historyForBackend));
+      
+      files.forEach((file) => {
+        submitData.append('evidence', file);
+      });
 
-  const handleContinue = async () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      // Final Step: Submit to Node.js Backend
-      setIsSubmitting(true);
-      try {
-        const submitData = new FormData();
-        submitData.append('query', formData.situation);
-        submitData.append('details', JSON.stringify(formData));
-        
-        if (evidenceFiles.length > 0) {
-          evidenceFiles.forEach((file) => {
-            submitData.append('evidence', file);
-          });
-        }
-
-        const token = localStorage.getItem('adhikaar_token');
-        
-        const response = await fetch('http://localhost:3000/api/legal/analyze', {
-          method: 'POST',
-          headers: {
-            'Authorization': token ? `Bearer ${token}` : '',
-          },
-          body: submitData
-        });
-        
-        if (!response.ok) throw new Error('Failed to analyze case');
-        
-        const data = await response.json();
-        // Pass the backend response (Legal Brain JSON) to the overview page
-        navigate(`/dashboard/case/${data.id || 'demo'}`, { state: { caseData: data } });
-      } catch (err) {
-        console.error(err);
-        alert('Failed to connect to backend. Make sure the Node server is running on port 3000.');
-      } finally {
-        setIsSubmitting(false);
+      const token = localStorage.getItem('adhikaar_token');
+      const response = await fetch('http://localhost:3000/api/legal/analyze', {
+        method: 'POST',
+        headers: { 'Authorization': token ? `Bearer ${token}` : '' },
+        body: submitData
+      });
+      
+      if (!response.ok) throw new Error('Failed to analyze case');
+      
+      const data = await response.json();
+      
+      if (data.response_type === 'question') {
+        setChatHistory(prev => [
+          ...prev, 
+          { 
+            role: 'ai', 
+            content: data.ai_message,
+            sources: data.sources || data.analysis?.sources || []
+          }
+        ]);
+      } else {
+        setPendingAnalysis(data);
+        setChatHistory(prev => [
+          ...prev, 
+          { 
+            role: 'ai', 
+            content: "I have gathered enough information to generate your comprehensive legal report. You can generate the final report now, or continue asking me questions if you have more details to add.",
+            isSystem: true
+          }
+        ]);
       }
+    } catch (err) {
+      console.error(err);
+      alert('Failed to connect to backend.');
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  // Auto-submit effect on first load if required
+  useEffect(() => {
+    if (isNew && autoSubmit && !hasAutoSubmitted.current) {
+      hasAutoSubmitted.current = true;
+      let userMsg = initialQuery.trim() || "I want to analyze this document.";
+      const files = initialFile ? [initialFile] : [];
+      if (initialFile) {
+        userMsg += `\n[Attached 1 file(s)]`;
+      }
+      
+      // Since it's a new conversation, history is just the AI's first greeting.
+      // We pass an empty history to the backend for the *very first* message to keep it clean.
+      triggerBackendRequest(userMsg, files, []);
+      
+      // Clear location state so refresh doesn't auto-submit again
+      window.history.replaceState({}, document.title);
+    }
+  }, [isNew, autoSubmit, initialQuery, initialFile]);
+
+  // Auto scroll
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatHistory, pendingAnalysis, isSubmitting]);
+
+  // Persist session
+  useEffect(() => {
+    sessionStorage.setItem('adhikaar_intake_chatHistory', JSON.stringify(chatHistory));
+    if (pendingAnalysis) {
+      sessionStorage.setItem('adhikaar_intake_pendingAnalysis', JSON.stringify(pendingAnalysis));
+    } else {
+      sessionStorage.removeItem('adhikaar_intake_pendingAnalysis');
+    }
+  }, [chatHistory, pendingAnalysis]);
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
+    }
+  }, [chatInput]);
+
+  // Dynamic loading text
+  useEffect(() => {
+    let interval;
+    if (isSubmitting) {
+      const texts = [
+        "Reading documents...", 
+        "Extracting key facts...", 
+        "Analyzing legal precedents...", 
+        "Consulting state laws...", 
+        "Synthesizing response..."
+      ];
+      let i = 0;
+      setLoadingText(texts[0]);
+      interval = setInterval(() => {
+        i = (i + 1) % texts.length;
+        setLoadingText(texts[i]);
+      }, 2500);
+    }
+    return () => clearInterval(interval);
+  }, [isSubmitting]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleChatSubmit();
+    }
+  };
+
+  const handleChatSubmit = async () => {
+    if (!chatInput.trim() && evidenceFiles.length === 0) return;
+    
+    if (pendingAnalysis) setPendingAnalysis(null);
+
+    let userMessage = chatInput.trim();
+    if (evidenceFiles.length > 0) {
+      userMessage += `\n[Attached ${evidenceFiles.length} file(s)]`;
+    }
+
+    const updatedHistory = [...chatHistory, { role: 'user', content: userMessage }];
+    setChatHistory(updatedHistory);
+    setChatInput('');
+    setEvidenceFiles([]);
+    if (textareaRef.current) textareaRef.current.style.height = 'auto';
+
+    const backendHistory = updatedHistory.slice(1, -1);
+    await triggerBackendRequest(userMessage, evidenceFiles, backendHistory);
+  };
+
+  const handleGenerateReport = () => {
+    if (!pendingAnalysis) return;
+    sessionStorage.removeItem('adhikaar_intake_chatHistory');
+    sessionStorage.removeItem('adhikaar_intake_pendingAnalysis');
+    navigate(`/dashboard/case/${pendingAnalysis.id || 'demo'}`, { state: { caseData: pendingAnalysis } });
   };
 
   const toggleListening = () => {
     if (isListening) {
       if (recognitionRef.current) {
-        recognitionRef.current.manualStop = true; // Flag that the user intentionally stopped it
+        recognitionRef.current.manualStop = true;
         recognitionRef.current.stop();
       }
       setIsListening(false);
@@ -105,7 +213,6 @@ export default function IntakePage() {
     recognition.manualStop = false;
     recognitionRef.current = recognition;
     
-    // Continuous allows dictating an entire paragraph without stopping
     recognition.continuous = true; 
     recognition.interimResults = true;
     recognition.lang = 'en-IN'; 
@@ -113,7 +220,7 @@ export default function IntakePage() {
     recognition.onstart = () => setIsListening(true);
     
     let currentSessionTranscript = '';
-    const startText = formData[fieldKeys[currentStep]];
+    const startText = chatInput;
 
     recognition.onresult = (event) => {
       let interimTranscript = '';
@@ -126,29 +233,20 @@ export default function IntakePage() {
           interimTranscript += event.results[i][0].transcript;
         }
       }
-      
-      if (finalTranscript) {
-        currentSessionTranscript += finalTranscript;
-      }
 
-      setFormData(prev => ({
-        ...prev,
-        [fieldKeys[currentStep]]: (startText + ' ' + currentSessionTranscript + ' ' + interimTranscript).trim()
-      }));
+      currentSessionTranscript += finalTranscript;
+      setChatInput(startText + (startText ? ' ' : '') + currentSessionTranscript + interimTranscript);
     };
 
     recognition.onerror = (event) => {
-      console.error('Speech recognition error', event.error);
-      if (event.error !== 'no-speech') {
-        setIsListening(false);
-      }
+      console.error("Speech recognition error", event.error);
+      setIsListening(false);
     };
 
     recognition.onend = () => {
-      // If the user didn't click stop, but the browser auto-stopped due to silence, restart it!
-      if (!recognition.manualStop) {
+      if (recognitionRef.current && !recognitionRef.current.manualStop) {
         try {
-          recognition.start();
+          recognitionRef.current.start();
         } catch (e) {
           setIsListening(false);
         }
@@ -156,167 +254,190 @@ export default function IntakePage() {
         setIsListening(false);
       }
     };
-    
+
     recognition.start();
   };
 
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    } else {
-      navigate('/dashboard');
+  const handleFileChange = (e) => {
+    if (e.target.files) {
+      setEvidenceFiles(prev => [...prev, ...Array.from(e.target.files)]);
     }
   };
 
-  return (
-    <div className="md:px-margin-desktop px-4 pb-24 min-h-[calc(100vh-96px)] flex flex-col relative z-10">
-      {/* Ambient glow */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-40 mix-blend-screen" style={{ background: 'radial-gradient(circle at 70% 30%, rgba(255, 180, 161, 0.05) 0%, transparent 50%)' }}></div>
+  const removeFile = (index) => {
+    setEvidenceFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
-      {/* Progress Indicator */}
-      <div className="max-w-4xl mx-auto w-full mb-12 mt-4 md:mt-8 relative z-20">
-        <div className="flex justify-between items-center mb-4 relative">
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-px bg-white/5 -z-10"></div>
-          {steps.map((step, i) => (
-            <div key={step.num} className={`flex flex-col items-center gap-2 relative ${i > 3 ? 'hidden sm:flex' : ''}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-label-sm text-label-sm transition-all duration-300 ${
-                i < currentStep
-                  ? 'bg-primary/30 text-primary border border-primary/30'
-                  : i === currentStep
-                  ? 'bg-primary text-on-primary-fixed shadow-[0_0_15px_rgba(255,180,161,0.3)]'
-                  : 'bg-surface-container border border-white/10 text-on-surface-variant'
-              }`}>
-                {i < currentStep ? (
-                  <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
-                ) : (
-                  <span>{step.num}</span>
+  return (
+    <div className="relative h-[calc(100vh-96px)] flex flex-col bg-background animate-page-enter">
+      {/* Background Effects */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 blur-[120px] rounded-full mix-blend-screen"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/5 blur-[120px] rounded-full mix-blend-screen"></div>
+      </div>
+
+      {/* Header */}
+      <header className="z-10 px-margin-mobile md:px-margin-desktop py-4 border-b border-white/5 bg-surface/50 backdrop-blur-md flex items-center justify-between shrink-0">
+        <div className="flex items-center justify-between w-full max-w-container-max mx-auto">
+          <div>
+            <h1 className="font-display-sm text-display-sm text-on-surface">Legal Assistant</h1>
+            <p className="font-label-sm text-label-sm text-on-surface-variant">Confidential AI Intake</p>
+          </div>
+          <button 
+            onClick={() => navigate('/dashboard')}
+            className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+          >
+            <span className="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Chat Messages */}
+      <div className="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop py-8 z-10 custom-scrollbar">
+        <div className="max-w-4xl mx-auto space-y-6">
+          {chatHistory.map((msg, idx) => (
+            <div 
+              key={idx} 
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} ${msg.isFirstNewMessage ? 'animate-fade-in-up' : 'animate-fade-in'}`}
+            >
+              <div className="flex gap-4 max-w-[85%]">
+                {msg.role === 'ai' && (
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-primary/30 text-primary">
+                    <span className="material-symbols-outlined text-sm">robot_2</span>
+                  </div>
+                )}
+                
+                <div className="flex flex-col gap-2">
+                  <div className={`p-4 rounded-2xl whitespace-pre-wrap font-body-md text-body-md ${
+                    msg.role === 'user' 
+                      ? 'bg-primary text-on-primary-fixed rounded-tr-none' 
+                      : msg.isSystem 
+                        ? 'bg-tertiary/20 text-tertiary border border-tertiary/30 rounded-tl-none font-medium'
+                        : 'bg-surface-container-high text-on-surface rounded-tl-none'
+                  }`}>
+                    {msg.content}
+                  </div>
+
+                  {/* Render Sources if AI provided them */}
+                  {msg.sources && msg.sources.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {msg.sources.map((src, i) => (
+                        <div key={i} className="px-3 py-1.5 bg-surface-container border border-white/10 rounded-lg flex items-center gap-2 max-w-[300px]">
+                          <span className="material-symbols-outlined text-tertiary text-sm">menu_book</span>
+                          <span className="font-label-sm text-[11px] text-on-surface-variant truncate">{src.title || src.section || 'Legal Reference'}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Render Generate Report button if this is the system prompt */}
+                  {msg.isSystem && pendingAnalysis && (
+                    <div className="mt-2">
+                      <button
+                        onClick={handleGenerateReport}
+                        className="px-6 py-3 rounded-lg bg-tertiary text-on-primary-fixed font-bold font-label-sm uppercase tracking-wide hover:bg-tertiary/90 transition-colors shadow-[0_4px_14px_rgba(255,180,161,0.2)]"
+                      >
+                        Generate Final Report
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {msg.role === 'user' && (
+                  <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0 border border-white/10">
+                    <span className="material-symbols-outlined text-on-surface text-sm">person</span>
+                  </div>
                 )}
               </div>
-              <span className={`font-label-sm text-label-sm uppercase tracking-wider absolute top-10 whitespace-nowrap transition-opacity ${
-                i === currentStep ? 'text-primary' : 'text-on-surface-variant opacity-50'
-              }`}>{step.label}</span>
             </div>
           ))}
+          
+          {isSubmitting && (
+            <div className="flex justify-start animate-fade-in delay-300">
+              <div className="flex gap-4 max-w-[85%]">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-primary/30 text-primary">
+                  <span className="material-symbols-outlined text-sm">robot_2</span>
+                </div>
+                <div className="p-4 rounded-2xl rounded-tl-none bg-surface-container-high text-on-surface-variant font-body-sm flex items-center gap-3">
+                  <span className="material-symbols-outlined text-primary animate-spin" style={{ fontSize: '18px' }}>progress_activity</span>
+                  <span className="animate-pulse">{loadingText}</span>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div ref={chatEndRef} />
         </div>
       </div>
 
-      {/* Form Area */}
-      <div className="max-w-3xl mx-auto w-full flex-1 flex flex-col justify-center relative z-20">
-        <div className="mb-10 text-center md:text-left">
-          <h2 className="font-display-md text-display-md font-bold text-on-surface mb-4">{stepPrompts[currentStep].title}</h2>
-          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">{stepPrompts[currentStep].desc}</p>
-        </div>
-
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-transparent rounded-xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
-          <div className="glass-panel rounded-xl p-1 relative shadow-[0_0_20px_rgba(255,180,161,0.15)]">
-            <textarea
-              className={`w-full ${currentStep === 3 ? 'h-40 md:h-48' : 'h-64 md:h-80'} bg-surface/60 border border-white/10 rounded-lg p-6 font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/40 resize-none focus:ring-0 focus:border-primary focus:outline-none transition-all`}
-              placeholder={`Start typing here...`}
-              value={formData[fieldKeys[currentStep]]}
-              onChange={(e) => setFormData({ ...formData, [fieldKeys[currentStep]]: e.target.value })}
-            />
-            
-            <div className="absolute bottom-6 right-6 flex items-center gap-3">
-              {isListening && (
-                <div className="flex items-center gap-2 text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                  </span>
-                  <span className="font-label-sm text-[10px] uppercase tracking-wider">Recording Locked</span>
+      {/* Input Area */}
+      <div className="z-10 bg-surface-container p-margin-mobile md:p-6 border-t border-white/5 shrink-0">
+        <div className="max-w-4xl mx-auto">
+          {evidenceFiles.length > 0 && (
+            <div className="flex gap-2 flex-wrap mb-3">
+              {evidenceFiles.map((file, idx) => (
+                <div key={idx} className="bg-surface-container-highest border border-white/10 rounded-lg pl-3 pr-2 py-1.5 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary text-sm">description</span>
+                  <span className="font-label-sm text-xs text-on-surface truncate max-w-[150px]">{file.name}</span>
+                  <button onClick={() => removeFile(idx)} className="text-on-surface-variant hover:text-error ml-1 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[14px]">close</span>
+                  </button>
                 </div>
-              )}
+              ))}
+            </div>
+          )}
+          
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-tertiary/30 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+            <div className="relative flex items-end gap-3 bg-surface-container-lowest rounded-2xl p-2 border border-white/10 focus-within:border-primary/50 transition-colors">
+              
               <button 
-                onClick={toggleListening}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full font-label-sm text-label-sm transition-all duration-300 ${
-                  isListening 
-                    ? 'bg-primary text-on-primary-fixed shadow-[0_4px_20px_rgba(255,180,161,0.4)] hover:bg-primary-fixed' 
-                    : 'bg-surface-container-high text-on-surface hover:text-primary hover:bg-surface-container-highest border border-white/10 hover:border-primary/30 shadow-lg'
-                }`}
-                title={isListening ? "Stop Dictating" : "Start Dictating"}
+                onClick={() => fileInputRef.current?.click()}
+                className="w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors"
+                title="Attach Document"
               >
-                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: isListening ? "'FILL' 1" : "'FILL' 0" }}>
-                  {isListening ? 'mic_off' : 'mic'}
-                </span> 
-                {isListening ? 'Stop' : 'Dictate'}
+                <span className="material-symbols-outlined text-[22px]">attach_file</span>
               </button>
-            </div>
-          </div>
-        </div>
-
-        {currentStep === 3 && (
-          <div className="mt-6 relative z-30">
-            <div className="border-2 border-dashed border-white/20 rounded-xl p-8 text-center hover:bg-white/5 transition-colors cursor-pointer relative overflow-hidden group">
-              <input
-                type="file"
+              <input 
+                type="file" 
+                ref={fileInputRef}
+                className="hidden" 
                 multiple
-                onChange={(e) => setEvidenceFiles(Array.from(e.target.files))}
-                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                onChange={handleFileChange} 
+                accept="image/*,.pdf"
               />
-              <div className="flex flex-col items-center gap-3">
-                <span className="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary transition-colors">upload_file</span>
-                {evidenceFiles.length > 0 ? (
-                  <div className="text-primary font-body-md font-semibold text-center">
-                    {evidenceFiles.map((f, i) => (
-                      <div key={i}>{f.name}</div>
-                    ))}
-                    <div className="text-xs text-on-surface-variant mt-2">(Ready to upload)</div>
-                  </div>
-                ) : (
-                  <>
-                    <span className="font-body-md text-body-md text-on-surface">Click to browse or drag and drop</span>
-                    <span className="font-label-sm text-label-sm text-on-surface-variant">Supports PDF, JPG, PNG (Max 5 files)</span>
-                  </>
-                )}
+
+              <textarea
+                ref={textareaRef}
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={isListening ? "Listening..." : "Type your message or press Enter to send..."}
+                className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-on-surface font-body-lg placeholder-on-surface-variant/50 resize-none py-2.5 max-h-[200px] custom-scrollbar"
+                rows="1"
+              />
+              
+              <div className="flex items-center gap-2 shrink-0 pr-1 pb-1">
+                <button 
+                  onClick={toggleListening}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+                    isListening ? 'bg-error/20 text-error animate-pulse' : 'text-on-surface-variant hover:text-primary hover:bg-primary/10'
+                  }`}
+                  title="Voice Input"
+                >
+                  <span className="material-symbols-outlined text-[20px]">mic</span>
+                </button>
+                <button 
+                  onClick={handleChatSubmit}
+                  disabled={!chatInput.trim() && evidenceFiles.length === 0}
+                  className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary-fixed transition-colors disabled:opacity-50 disabled:hover:bg-primary/20 disabled:hover:text-primary"
+                  title="Send Message"
+                >
+                  <span className="material-symbols-outlined text-[20px]">send</span>
+                </button>
               </div>
             </div>
           </div>
-        )}
-
-        {/* AI Suggestions */}
-        {currentStep === 0 && (
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {suggestions.map((s) => (
-              <div key={s.label} className="glass-panel rounded-lg p-4 hover:border-primary/30 transition-colors cursor-pointer group">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`material-symbols-outlined ${s.color} text-sm group-hover:scale-110 transition-transform`}>{s.icon}</span>
-                  <span className={`font-label-sm text-label-sm uppercase ${s.labelColor} tracking-wider`}>{s.label}</span>
-                </div>
-                <p className="font-body-md text-body-md text-on-surface-variant text-sm">{s.text}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Action Bar */}
-        <div className="mt-12 flex justify-between items-center pt-8 border-t border-white/5">
-          <button onClick={handleBack} className="text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm uppercase tracking-widest transition-colors flex items-center gap-2">
-            <span className="material-symbols-outlined text-lg">arrow_back</span>
-            {currentStep === 0 ? 'Cancel' : 'Back'}
-          </button>
-          <button
-            onClick={handleContinue}
-            disabled={isSubmitting}
-            className={`bg-primary text-on-primary-fixed hover:bg-primary-fixed-dim px-8 py-4 rounded font-label-sm text-label-sm uppercase tracking-widest transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,180,161,0.4)] flex items-center gap-3 group ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-          >
-            {isSubmitting ? (
-              <>
-                <div className="w-5 h-5 border-2 border-on-primary-fixed border-t-transparent rounded-full animate-spin"></div>
-                Analyzing Case...
-              </>
-            ) : currentStep < steps.length - 1 ? (
-              <>
-                Continue
-                <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
-              </>
-            ) : (
-              <>
-                Submit Case
-                <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
-              </>
-            )}
-          </button>
         </div>
       </div>
     </div>

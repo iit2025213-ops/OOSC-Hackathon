@@ -1,24 +1,61 @@
-import React from 'react';
-
-const actionSteps = [
-  { num: '01', title: 'Collect Agreement', desc: 'Locate and scan the original employment agreement or contract outlining the terms of your engagement.', status: 'completed' },
-  { num: '02', title: 'Gather Payment Proof', desc: 'Compile all related invoices, bank statements, or receipts that establish a history of transactions.', status: 'completed' },
-  {
-    num: '03', title: 'Send Demand Letter', status: 'active',
-    desc: 'A formal demand letter is a legally recognized notice requesting compliance or payment. It serves as crucial evidence that you attempted to resolve the dispute amicably before escalating to litigation.',
-    details: [
-      { done: true, text: "Recipient's full legal name and address" },
-      { done: true, text: 'Exact outstanding amount and due date' },
-      { done: false, text: 'Brief description of the breach (Drafting required)' },
-    ],
-  },
-  { num: '04', title: 'Wait for Response', desc: 'Allow the legally mandated 15-day period for the recipient to acknowledge or fulfill the demand.', status: 'locked' },
-  { num: '05', title: 'File Official Complaint', desc: 'If no resolution is reached, proceed to file a formal complaint with the appropriate jurisdictional authority.', status: 'locked' },
-];
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function ActionPlanPage() {
+  const { caseId } = useParams();
+  const navigate = useNavigate();
+  const { authFetch } = useAuth();
+  
+  const [caseData, setCaseData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCaseDetails = async () => {
+      if (caseId === 'demo') {
+        setLoading(false);
+        return;
+      }
+      try {
+        const res = await authFetch(`/cases/${caseId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setCaseData(data);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchCaseDetails();
+  }, [caseId, authFetch]);
+
+  // Dynamically generate action steps from the Python API's next_steps array
+  const rawSteps = caseData?.analysis?.next_steps || caseData?.next_steps || [
+    "Consult a legal professional for exact instructions.",
+    "Draft a formal complaint based on the legal position."
+  ];
+
+  const actionSteps = rawSteps.map((stepText, idx) => ({
+    num: String(idx + 1).padStart(2, '0'),
+    title: idx === 0 ? 'Initial Action' : `Follow-up Step ${idx}`,
+    desc: stepText,
+    status: idx === 0 ? 'active' : 'locked',
+    details: idx === 0 ? [
+      { done: true, text: 'Review AI Legal Position' },
+      { done: false, text: 'Gather required documents' },
+      { done: false, text: 'Execute this step' },
+    ] : []
+  }));
+
   const completedCount = actionSteps.filter(s => s.status === 'completed').length;
-  const progress = Math.round((completedCount / actionSteps.length) * 100);
+  const progress = Math.round((completedCount / actionSteps.length) * 100) || 0;
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-on-surface">Loading Action Plan...</div>;
+  }
 
   return (
     <div className="px-margin-mobile md:px-margin-desktop pb-24 pt-4 md:pt-8 min-h-[calc(100vh-96px)]">
@@ -34,10 +71,10 @@ export default function ActionPlanPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-white/5 mb-4">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant">Active Case #4029</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant">Case #{caseData?.request_id || caseId || '4029'}</span>
             </div>
             <h2 className="font-display-md text-display-md text-on-surface">Your Action Plan</h2>
-            <p className="font-body-lg text-body-lg text-on-surface-variant mt-2">Here is what you can do next.</p>
+            <p className="font-body-lg text-body-lg text-on-surface-variant mt-2">Here is the exact strategy recommended by the AI.</p>
           </div>
           <div className="glass-panel px-6 py-4 rounded-xl flex items-center gap-6 min-w-[280px]">
             <div className="flex-1">

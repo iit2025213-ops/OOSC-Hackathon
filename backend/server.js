@@ -6,6 +6,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { supabase } from './config/supabase.js';
 import authRoutes from './routes/authRoutes.js';
 import { requireAuth } from './middleware/requireAuth.js';
+import fetch from 'node-fetch';
 
 dotenv.config();
 
@@ -73,15 +74,25 @@ app.get('/health', (req, res) => {
 // 2. The main API Gateway Route (The Link) - Protected by JWT Authentication
 app.post('/api/legal/analyze', requireAuth, upload.array('evidence', 5), async (req, res) => {
   try {
-    const { query, location } = req.body;
+    const { query, location, history } = req.body;
     const files = req.files; // Array of uploaded files
 
-    console.log(`[BACKEND] Received query: "${query}"`);
+    let parsedHistory = [];
+    if (history) {
+      try {
+        parsedHistory = JSON.parse(history);
+      } catch (e) {
+        console.error("[BACKEND] Error parsing history", e);
+      }
+    }
+
+    console.log(`[BACKEND] Received query: "${query}" with ${parsedHistory.length} history items`);
     
     let evidenceUrls = [];
+    let extractedText = "";
 
     if (files && files.length > 0) {
-      console.log(`[BACKEND] Uploading ${files.length} evidence file(s) to Cloudinary...`);
+      console.log(`[BACKEND] Processing ${files.length} evidence file(s)...`);
       
       const uploadPromises = files.map(file => {
         return new Promise((resolve, reject) => {
@@ -96,61 +107,106 @@ app.post('/api/legal/analyze', requireAuth, upload.array('evidence', 5), async (
         });
       });
 
+      // Extract text via Python API
+      for (const file of files) {
+        try {
+          console.log(`[BACKEND] Sending file to Python Upload API...`);
+          
+          const formData = new FormData();
+          const fileBlob = new Blob([file.buffer], { type: file.mimetype });
+          formData.append('file', fileBlob, file.originalname);
+          
+          const uploadRes = await fetch("https://lunacy-undoing-moistness.ngrok-free.dev/api/v1/legal/upload", {
+            method: "POST",
+            body: formData
+          });
+
+          if (!uploadRes.ok) {
+            throw new Error(`Upload API returned status: ${uploadRes.status}`);
+          }
+
+          const uploadData = await uploadRes.json();
+          if (uploadData.status === "success" && uploadData.extracted_text) {
+            extractedText += uploadData.extracted_text + "\n\n";
+          }
+        } catch(e) { 
+          console.error("[BACKEND] Python File Upload Error:", e); 
+        }
+      }
+
       evidenceUrls = await Promise.all(uploadPromises);
       console.log(`[BACKEND] Upload successful! URLs:`, evidenceUrls);
     }
 
-    // TODO: When your friend finishes the Legal Brain, uncomment this to send the query + evidenceUrls
-    /*
-      const brainResponse = await fetch("http://localhost:8000/api/v1/legal/analyze", {
+    // Call the Python FastAPI Legal Brain
+    console.log("[BACKEND] Calling Python API at https://lunacy-undoing-moistness.ngrok-free.dev/api/v1/legal/chat");
+    try {
+      const brainResponse = await fetch("https://lunacy-undoing-moistness.ngrok-free.dev/api/v1/legal/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: query, evidence_urls: evidenceUrls })
+        body: JSON.stringify({
+          query: query || "",
+          history: parsedHistory,
+          document_text: extractedText.trim() || null
+        })
       });
-      const data = await brainResponse.json();
-      return res.json(data);
-    */
-
-    // FOR NOW: We just simulate waiting, then return the mock data
-    setTimeout(async () => {
-      // Add the fake evidence urls to the mock response just to prove it works
-      const responseWithEvidence = { ...mockLegalBrainResponse, evidence_provided: evidenceUrls };
       
-      try {
-        console.log(`[BACKEND] Saving case and message to Supabase for user: ${req.user.id}`);
-        // 1. Create a new case
-        const { data: caseData, error: caseError } = await supabase
-          .from('cases')
-          .insert([{ 
-            user_id: req.user.id,
-            title: query.substring(0, 50) || 'New Case', 
-            status: 'analyzed' 
-          }])
-          .select()
-          .single();
-          
-        if (caseError) throw caseError;
-
-        // 2. Save the AI response as a message
-        const { error: msgError } = await supabase
-          .from('messages')
-          .insert([{ 
-            case_id: caseData.id, 
-            role: 'assistant', 
-            content: responseWithEvidence 
-          }]);
-          
-        if (msgError) throw msgError;
-        console.log(`[BACKEND] Successfully saved to Supabase! Case ID: ${caseData.id}`);
-        
-        // Attach the real case ID so the frontend can navigate to it
-        responseWithEvidence.id = caseData.id;
-      } catch (dbError) {
-        console.error(`[BACKEND] Database error:`, dbError.message);
+      if (!brainResponse.ok) {
+        throw new Error(`Python API responded with status: ${brainResponse.status}`);
       }
 
-      res.json(responseWithEvidence);
-    }, 2000);
+      const aiData = await brainResponse.json();
+      
+      if (aiData.response_type === 'question') {
+        // Just forward the question to the frontend
+        return res.json(aiData);
+      } else if (aiData.response_type === 'analysis') {
+        // Save to DB and append case ID
+        const responseWithEvidence = { ...aiData, evidence_provided: evidenceUrls };
+        
+        try {
+          console.log(`[BACKEND] Saving case to Supabase for user: ${req.user.id}`);
+          const { data: caseData, error: caseError } = await supabase
+            .from('cases')
+            .insert([{ 
+              user_id: req.user.id,
+              title: (query || "Uploaded Document").substring(0, 50),
+              status: 'analyzed' 
+            }])
+            .select()
+            .single();
+            
+          if (caseError) throw caseError;
+
+          const { error: msgError } = await supabase
+            .from('messages')
+            .insert([{ 
+              case_id: caseData.id, 
+              role: 'assistant', 
+              content: responseWithEvidence 
+            }]);
+            
+          if (msgError) throw msgError;
+          
+          responseWithEvidence.id = caseData.id;
+        } catch (dbError) {
+          console.error(`[BACKEND] Database error:`, dbError.message);
+        }
+
+        return res.json(responseWithEvidence);
+      } else {
+        return res.json({ error: "Unknown response_type from AI" });
+      }
+
+    } catch (fetchError) {
+      console.error("[BACKEND] Python API is unreachable:", fetchError.message || fetchError);
+      // Fallback for testing frontend since python server is on friend's laptop
+      return res.json({
+         request_id: "req_demo_002",
+         response_type: "question",
+         ai_message: "It seems your friend's Python Legal Brain server is currently offline or unreachable. Can you tell me more about your issue anyway so we can test the chat interface?"
+      });
+    }
 
   } catch (error) {
     console.error('[BACKEND] Error:', error);
