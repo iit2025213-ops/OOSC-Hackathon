@@ -8,6 +8,9 @@ import authRoutes from './routes/authRoutes.js';
 import { requireAuth } from './middleware/requireAuth.js';
 import fetch, { FormData, Blob } from 'node-fetch';
 import { mdToPdf } from 'md-to-pdf';
+import puppeteer from 'puppeteer';
+import fs from 'fs';
+import schemeRoutes from './routes/schemeRoutes.js';
 
 dotenv.config();
 
@@ -27,17 +30,89 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/schemes', schemeRoutes);
 
 // Set up Multer for file uploads
 const upload = multer({ storage: multer.memoryStorage() });
 
-const PYTHON_API_BASE = "https://lunacy-undoing-moistness.ngrok-free.dev";
+const PYTHON_API_BASE = process.env.PYTHON_API_URL || "https://lunacy-undoing-moistness.ngrok-free.dev";
+
+const getResolvedBrowserPath = () => {
+  if (process.env.PDF_BROWSER_PATH && fs.existsSync(process.env.PDF_BROWSER_PATH)) {
+    return process.env.PDF_BROWSER_PATH;
+  }
+  let pPath = null;
+  try {
+    pPath = puppeteer.executablePath();
+    if (typeof pPath !== 'string' || !fs.existsSync(pPath)) {
+      pPath = null;
+    }
+  } catch (e) {
+    pPath = null;
+  }
+  if (pPath) return pPath;
+
+  const commonPaths = [
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+  ];
+  for (const cp of commonPaths) {
+    if (fs.existsSync(cp)) return cp;
+  }
+  return null;
+};
+
+const fetchWithRetry = async (url, options = {}, maxRetries = 3) => {
+  let attempt = 0;
+  const backoff = [1000, 2000, 4000];
+
+  while (attempt <= maxRetries) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+    try {
+      const res = await fetch(url, { ...options, signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (res.ok) return res;
+      if (res.status >= 500 && attempt < maxRetries) {
+        throw new Error(`Server returned ${res.status}`);
+      }
+      return res; // let caller handle 4xx
+    } catch (err) {
+      clearTimeout(timeoutId);
+      const isTransient = err.name === 'AbortError' || err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT' || err.message.includes('socket hang up') || err.message.includes('Server returned');
+      if (isTransient && attempt < maxRetries) {
+        const delayMs = backoff[attempt] || 4000;
+        console.warn(`[Python API] Transient error: ${err.message}. Retrying in ${delayMs}ms (Attempt ${attempt + 1}/${maxRetries})...`);
+        await new Promise(r => setTimeout(r, delayMs));
+        attempt++;
+        continue;
+      }
+      throw err;
+    }
+  }
+};
 
 // --- ROUTES ---
 
 // 1. Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Node.js Application Backend is running' });
+});
+
+// 1a. Python API Health check
+app.get('/api/health/python', async (req, res) => {
+  try {
+    const pyRes = await fetchWithRetry(`${PYTHON_API_BASE}/health`, { method: "GET" }, 1);
+    if (pyRes.ok) {
+      const data = await pyRes.json().catch(() => ({}));
+      return res.json({ status: 'ok', message: 'Python API is reachable', data });
+    }
+    res.status(pyRes.status).json({ status: 'error', message: 'Python API returned an error' });
+  } catch (error) {
+    res.status(503).json({ status: 'error', message: 'Python API is unreachable', details: error.message });
+  }
 });
 
 // 2. Create a new case
@@ -129,10 +204,10 @@ app.post('/api/cases/:caseId/message', requireAuth, upload.array('evidence', 5),
           const fileBlob = new Blob([file.buffer], { type: file.mimetype });
           formData.append('file', fileBlob, file.originalname);
 
-          const uploadRes = await fetch(`${PYTHON_API_BASE}/api/v1/legal/upload`, {
+          const uploadRes = await fetchWithRetry(`${PYTHON_API_BASE}/api/v1/legal/upload`, {
             method: "POST",
             body: formData
-          });
+          }, 2);
 
           if (uploadRes.ok) {
             const uploadData = await uploadRes.json();
@@ -151,7 +226,7 @@ app.post('/api/cases/:caseId/message', requireAuth, upload.array('evidence', 5),
     // Call the Python FastAPI Legal Brain
     console.log(`[BACKEND] Calling Python API chat endpoint...`);
     try {
-      const brainResponse = await fetch(`${PYTHON_API_BASE}/api/v1/legal/chat`, {
+      const brainResponse = await fetchWithRetry(`${PYTHON_API_BASE}/api/v1/legal/chat`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -276,10 +351,10 @@ app.post('/api/cases/:caseId/message/stream', requireAuth, upload.array('evidenc
           const fileBlob = new Blob([file.buffer], { type: file.mimetype });
           formData.append('file', fileBlob, file.originalname);
 
-          const uploadRes = await fetch(`${PYTHON_API_BASE}/api/v1/legal/upload`, {
+          const uploadRes = await fetchWithRetry(`${PYTHON_API_BASE}/api/v1/legal/upload`, {
             method: "POST",
             body: formData
-          });
+          }, 2);
 
           if (uploadRes.ok) {
             const uploadData = await uploadRes.json();
@@ -304,7 +379,7 @@ app.post('/api/cases/:caseId/message/stream', requireAuth, upload.array('evidenc
     res.setHeader('Connection', 'keep-alive');
 
     try {
-      const brainResponse = await fetch(`${PYTHON_API_BASE}/api/v1/legal/chat/stream`, {
+      const brainResponse = await fetchWithRetry(`${PYTHON_API_BASE}/api/v1/legal/chat/stream`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -362,6 +437,12 @@ app.post('/api/cases/:caseId/message/stream', requireAuth, upload.array('evidenc
       });
 
       brainResponse.body.on('error', (err) => {
+        if (err.code === 'ERR_STREAM_PREMATURE_CLOSE') {
+          // This is a known issue with node-fetch handling chunked streams.
+          // Since the stream actually finished, we can just close the connection cleanly.
+          res.end();
+          return;
+        }
         console.error("[BACKEND] Stream error:", err);
         res.write(`data: {"status": "Error: Connection lost"}\n\n`);
         res.end();
@@ -436,7 +517,7 @@ app.post('/api/cases/:caseId/draft_document', requireAuth, async (req, res) => {
 
     console.log(`[BACKEND] Case ${caseId}: Drafting document: "${instruction}"`);
 
-    const brainResponse = await fetch(`${PYTHON_API_BASE}/api/v1/legal/draft_document`, {
+    const brainResponse = await fetchWithRetry(`${PYTHON_API_BASE}/api/v1/legal/draft_document`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
@@ -457,12 +538,23 @@ app.post('/api/cases/:caseId/draft_document', requireAuth, async (req, res) => {
 
     let pdf_url = null;
     try {
+      console.log(`[BACKEND] Case ${caseId}: Resolving browser executable for PDF generation...`);
+      const browserPath = getResolvedBrowserPath();
+      if (!browserPath) {
+        throw new Error('Browser executable could not be resolved. PDF generation is unavailable.');
+      }
+      console.log(`[BACKEND] Case ${caseId}: Browser path: ${browserPath}`);
+      console.log(`[BACKEND] Case ${caseId}: Browser exists: ${fs.existsSync(browserPath)}`);
+      
       console.log(`[BACKEND] Case ${caseId}: Converting Markdown to PDF...`);
       // Use CSS to style the PDF to look like a professional document
       const pdf = await mdToPdf(
         { content: draftData.markdown_content },
         { 
-          launch_options: { args: ['--no-sandbox', '--disable-setuid-sandbox'] },
+          launch_options: { 
+            executablePath: browserPath,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'] 
+          },
           pdf_options: { format: 'A4', margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' } },
           css: `
             body { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.5; color: #000; }
@@ -503,7 +595,11 @@ app.post('/api/cases/:caseId/draft_document', requireAuth, async (req, res) => {
 
   } catch (err) {
     console.error('[BACKEND] Draft Document Error:', err.message);
-    res.status(500).json({ error: 'Failed to draft document' });
+    const isTransient = err.message.includes('socket hang up') || err.message.includes('ECONNRESET') || err.message.includes('ETIMEDOUT') || err.message.includes('Server returned');
+    if (isTransient || err.message.includes('fetch')) {
+      return res.status(503).json({ success: false, error: 'Document drafting service is temporarily unavailable. Your case analysis is still saved.', code: 'SERVICE_UNAVAILABLE' });
+    }
+    res.status(500).json({ success: false, error: 'Failed to draft document' });
   }
 });
 
@@ -619,4 +715,25 @@ app.delete('/api/cases/:id', requireAuth, async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+  
+  // Validate Environment on Startup
+  if (process.env.GEMINI_API_KEY) {
+    console.log(`[Gemini] API key: configured`);
+    console.log(`[Gemini] Model: ${process.env.GEMINI_MODEL || 'gemini-1.5-flash (default)'}`);
+  } else {
+    console.warn(`[Gemini] WARNING: API key is missing!`);
+  }
+  
+  try {
+    const pPath = getResolvedBrowserPath();
+    if (pPath) {
+      console.log(`[PDF] Resolving browser executable...`);
+      console.log(`[PDF] Browser path: ${pPath}`);
+      console.log(`[PDF] Browser exists: ${fs.existsSync(pPath)}`);
+    } else {
+      console.warn(`[PDF] WARNING: Browser executable could not be resolved! PDF generation will fail.`);
+    }
+  } catch (err) {
+    console.warn(`[PDF] WARNING: Error resolving browser path. Error: ${err.message}`);
+  }
 });

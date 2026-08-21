@@ -5,6 +5,7 @@ import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
 import CasePage from './pages/CasePage';
 import ActionPlanPage from './pages/ActionPlanPage';
+import SchemeNavigatorPage from './pages/SchemeNavigatorPage';
 import MyCasesPage from './pages/MyCasesPage';
 import DocumentsPage from './pages/DocumentsPage';
 import PlansListPage from './pages/PlansListPage';
@@ -65,6 +66,16 @@ export default function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <PlansListPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/schemes"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <SchemeNavigatorPage />
             </DashboardLayout>
           </ProtectedRoute>
         }

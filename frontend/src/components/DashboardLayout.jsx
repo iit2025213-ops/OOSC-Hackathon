@@ -7,6 +7,7 @@ const navItems = [
   { to: '/dashboard/cases', icon: 'gavel', label: 'My Cases' },
   { to: '/dashboard/documents', icon: 'description', label: 'Documents' },
   { to: '/dashboard/plans', icon: 'assignment', label: 'Action Plans' },
+  { to: '/dashboard/schemes', icon: 'explore', label: 'Scheme Navigator' },
 ];
 
 export default function DashboardLayout({ children }) {

@@ -37,6 +37,51 @@ export default function CaseOverviewPage() {
 
   const analysis = caseData?.analysis || {};
 
+  // If this is a Scheme Application case (from Scheme Navigator), don't show the Legal RAG UI
+  if (caseData?.title?.startsWith('Application:')) {
+    const draftMessage = caseData.messages?.find(m => m.content?.response_type === 'document_draft');
+    const pdfUrl = draftMessage?.content?.pdf_url;
+
+    return (
+      <div className="min-h-[calc(100vh-100px)] flex flex-col items-center justify-center p-6 animate-fade-in">
+        <div className="glass-card max-w-lg w-full p-10 rounded-3xl text-center flex flex-col items-center">
+          <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mb-6">
+            <span className="material-symbols-outlined text-primary text-4xl">description</span>
+          </div>
+          <h1 className="font-display text-2xl text-on-surface mb-3">{caseData.title}</h1>
+          <p className="text-on-surface-variant font-body mb-8">
+            This is your drafted government scheme application. 
+            {pdfUrl ? ' You can download the generated PDF document below.' : ' The PDF conversion is currently unavailable, but your application data is saved.'}
+          </p>
+          
+          {pdfUrl ? (
+            <a 
+              href={pdfUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="w-full py-4 bg-primary text-on-primary rounded-xl font-medium hover:bg-primary/90 transition flex justify-center items-center gap-2 mb-4"
+            >
+              <span className="material-symbols-outlined">download</span>
+              Download PDF Application
+            </a>
+          ) : (
+            <div className="w-full py-4 bg-surface-container text-on-surface-variant rounded-xl font-medium mb-4 flex justify-center items-center gap-2 opacity-70">
+              <span className="material-symbols-outlined">error</span>
+              PDF Unavailable
+            </div>
+          )}
+
+          <button 
+            onClick={() => navigate('/dashboard/cases')}
+            className="w-full py-3 border border-white/10 text-on-surface rounded-xl font-medium hover:bg-white/5 transition"
+          >
+            Back to My Cases
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="px-margin-mobile md:px-margin-desktop pb-32 pt-4 md:pt-8">
       {/* Background Effects */}
