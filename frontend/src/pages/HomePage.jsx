@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const quickProblems = [
   { icon: 'home_repair_service', title: 'Security Deposit', desc: 'Landlord refusing to return deposit after move out.' },
@@ -12,171 +13,265 @@ export default function HomePage() {
   const [query, setQuery] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [recentCases, setRecentCases] = useState([]);
   const textareaRef = useRef(null);
+  const recognitionRef = useRef(null);
   const navigate = useNavigate();
+  const { authFetch } = useAuth();
+
+  // Fetch recent cases
+  useEffect(() => {
+    const fetchRecent = async () => {
+      try {
+        const res = await authFetch('/cases');
+        if (res.ok) {
+          const data = await res.json();
+          setRecentCases(data.slice(0, 3));
+        }
+      } catch (e) { /* silent */ }
+    };
+    fetchRecent();
+  }, [authFetch]);
+
+  const createCaseAndNavigate = async (problemText) => {
+    if (isCreating) return;
+    setIsCreating(true);
+    try {
+      const token = localStorage.getItem('adhikaar_token');
+      const res = await fetch('http://localhost:3000/api/cases/new', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
+        body: JSON.stringify({ initial_query: problemText })
+      });
+
+      if (!res.ok) throw new Error('Failed to create case');
+      const newCase = await res.json();
+
+      navigate(`/dashboard/case/${newCase.id}`, {
+        state: {
+          isNewCase: true,
+          autoSubmit: true,
+          initialQuery: problemText,
+          initialFile: selectedFile
+        }
+      });
+    } catch (err) {
+      console.error('Failed to create case:', err);
+      alert('Failed to start a new case. Please try again.');
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const toggleListening = () => {
+    if (isListening) {
+      if (recognitionRef.current) {
+        recognitionRef.current.manualStop = true;
+        recognitionRef.current.stop();
+      }
+      setIsListening(false);
+      return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Your browser does not support Voice to Text.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.manualStop = false;
+    recognitionRef.current = recognition;
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-IN';
+    recognition.onstart = () => setIsListening(true);
+    let currentSessionTranscript = '';
+    const startText = query;
+    recognition.onresult = (event) => {
+      let interim = '', final = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) final += event.results[i][0].transcript;
+        else interim += event.results[i][0].transcript;
+      }
+      currentSessionTranscript += final;
+      const newQuery = startText + (startText ? ' ' : '') + currentSessionTranscript + interim;
+      setQuery(newQuery);
+      if (textareaRef.current) {
+         textareaRef.current.style.height = 'auto';
+         textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+      }
+    };
+    recognition.onerror = () => setIsListening(false);
+    recognition.onend = () => {
+      if (recognitionRef.current && !recognitionRef.current.manualStop) {
+        try { recognitionRef.current.start(); } catch(e) { setIsListening(false); }
+      } else { setIsListening(false); }
+    };
+    recognition.start();
+  };
 
   const handleAnalyze = () => {
     if (query.trim() || selectedFile) {
-      navigate('/dashboard/intake', { 
-        state: { 
-          initialQuery: query.trim() || "I want to analyze this document.", 
-          initialFile: selectedFile,
-          isNewConversation: true,
-          autoSubmit: true
-        } 
-      });
+      createCaseAndNavigate(query.trim() || "I want to analyze this document.");
     }
   };
 
   const handleQuickProblem = (title) => {
-    navigate('/dashboard/intake', { state: { initialQuery: title, isNewConversation: true, autoSubmit: true } });
+    createCaseAndNavigate(title);
   };
 
-  return (
-    <div className="flex-1 flex flex-col justify-center px-margin-mobile md:px-margin-desktop max-w-[1000px] w-full mx-auto py-12 md:py-0">
-      <div className="space-y-6 mb-12">
-        <h2 className="font-display-md md:font-display-lg text-display-md md:text-display-lg text-on-surface tracking-tight leading-tight">
-          What can we help you with?
-        </h2>
-        <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
-          Describe your legal or civic issue naturally. We'll guide you to the right forms, next steps, and action plans tailored to your situation.
-        </p>
-      </div>
+  function timeAgo(dateStr) {
+    const now = new Date();
+    const d = new Date(dateStr);
+    const diff = (now - d) / 1000;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 172800) return 'Yesterday';
+    return d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+  }
 
-      {/* Premium AI Consultation Interface */}
-      <div className="bg-surface-container-low rounded-2xl p-1 relative mb-16 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/5 ring-1 ring-white/10">
-        {/* Soft Inner Highlight */}
-        <div className="absolute inset-0 rounded-2xl border-t border-white/10 pointer-events-none z-10"></div>
-        
-        <div className="bg-surface-container rounded-xl p-5 md:p-6 flex flex-col gap-5 relative z-20">
-          
-          {/* Primary Input Section */}
-          <div>
-            <label className="font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant/70 mb-2 block ml-1">
-              Tell us what happened
-            </label>
-            <div className="relative bg-surface-container-lowest border border-white/5 rounded-xl transition-colors focus-within:border-primary/30 focus-within:bg-surface-container-low">
-              <textarea
-                ref={textareaRef}
-                className="w-full bg-transparent border-none p-4 pb-14 font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/40 focus:ring-0 focus:outline-none resize-none custom-scrollbar"
-                placeholder="Describe your problem in your own words..."
-                rows="2"
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  e.target.style.height = 'auto';
-                  e.target.style.height = `${Math.min(e.target.scrollHeight, 150)}px`;
-                }}
-                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAnalyze(); } }}
-              />
-              
-              {/* Bottom bar of textarea */}
-              <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-                <span className="text-[10px] text-on-surface-variant/40 font-mono pl-2">
+  return (
+    <div className="flex flex-col px-6 md:px-8 max-w-[720px] w-full mx-auto min-h-screen md:min-h-[100vh] py-4 md:py-8">
+      
+      {/* Top Spacer for Optical Centering */}
+      <div className="flex-1 min-h-[40px]"></div>
+      
+      {/* Main Content */}
+      <div className="flex flex-col items-center w-full">
+        <div className="flex flex-col items-center text-center space-y-3 mb-10 w-full">
+          <h2 className="font-display-md text-[32px] text-on-surface tracking-tight font-semibold">
+            What can we help you with?
+          </h2>
+          <p className="font-body-md text-[14px] text-on-surface-variant max-w-[480px]">
+            Describe your legal or civic issue naturally. We'll guide you to the right forms, next steps, and action plans.
+          </p>
+        </div>
+
+        {/* Premium AI Consultation Interface */}
+        <div className="w-full bg-surface-container-low rounded-[20px] p-5 relative mb-6 shadow-[0_4px_24px_rgba(0,0,0,0.3)] border border-white/5 ring-1 ring-white/10 flex flex-col gap-3">
+          <div className="relative flex flex-col gap-3 z-20">
+            <textarea
+              ref={textareaRef}
+              className="w-full bg-transparent border-none px-2 py-1 font-body-md text-[15px] text-on-surface placeholder:text-on-surface-variant/40 focus:ring-0 focus:outline-none resize-none custom-scrollbar min-h-[60px]"
+              placeholder="Describe your problem in your own words..."
+              rows="1"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                e.target.style.height = 'auto';
+                e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+              }}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAnalyze(); } }}
+              disabled={isCreating}
+            />
+
+            {/* Uploaded File Preview */}
+            {selectedFile && (
+              <div className="flex items-center justify-between bg-surface-container-highest border border-white/10 rounded-lg p-2 px-3 w-max">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary text-[16px]">description</span>
+                  <span className="font-body-md text-[13px] text-on-surface truncate max-w-[200px]">{selectedFile.name}</span>
+                  <span className="font-label-sm text-[10px] text-on-surface-variant/60 ml-2">{(selectedFile.size / 1024 / 1024).toFixed(1)} MB</span>
+                </div>
+                <button onClick={() => setSelectedFile(null)} className="ml-4 text-on-surface-variant hover:text-error">
+                  <span className="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+            )}
+
+            {/* Bottom Action Bar */}
+            <div className="flex items-center justify-between mt-1">
+              <div className="flex items-center gap-2">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <input type="file" className="hidden" onChange={(e) => { if (e.target.files[0]) setSelectedFile(e.target.files[0]); }} accept="image/*,.pdf" />
+                  <div className="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:bg-white/10 group-hover:text-on-surface transition-colors">
+                    <span className="material-symbols-outlined text-[18px]">add</span>
+                  </div>
+                  <span className="font-label-sm text-[11px] text-on-surface-variant/50 hidden sm:block tracking-wider">PDF, JPG or PNG &middot; Max 10 MB</span>
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-on-surface-variant/40 font-mono pr-2">
                   {query.length > 0 ? `${query.length} chars` : ''}
                 </span>
-                
-                <div className="flex items-center gap-2">
-                  <button className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant/60 hover:text-primary hover:bg-primary/10 transition-colors" title="Voice Input">
-                    <span className="material-symbols-outlined text-[20px]">mic</span>
-                  </button>
-                  <button
-                    onClick={handleAnalyze}
-                    disabled={!query.trim() && !selectedFile}
-                    className="bg-primary/90 text-on-primary-fixed px-5 py-2 rounded-lg font-label-sm text-sm font-semibold flex items-center gap-2 hover:bg-primary hover:-translate-y-0.5 transition-all shadow-[0_0_15px_rgba(255,180,161,0.15)] hover:shadow-[0_0_20px_rgba(255,180,161,0.3)] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
-                  >
-                    Analyze
-                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                  </button>
-                </div>
+                <button 
+                  onClick={toggleListening}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                    isListening ? 'bg-error/20 text-error animate-pulse' : 'text-on-surface-variant hover:text-primary hover:bg-primary/10'
+                  }`}
+                  title="Voice Input"
+                >
+                  <span className="material-symbols-outlined text-[18px]">mic</span>
+                </button>
+                <button
+                  onClick={handleAnalyze}
+                  disabled={(!query.trim() && !selectedFile) || isCreating}
+                  className="bg-primary/90 text-on-primary-fixed px-4 py-1.5 rounded-full font-label-sm text-[13px] font-semibold flex items-center gap-1.5 hover:bg-primary transition-all disabled:opacity-50"
+                >
+                  {isCreating ? (
+                    <><span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span></>
+                  ) : (
+                    <>Analyze <span className="material-symbols-outlined text-[16px]">arrow_upward</span></>
+                  )}
+                </button>
               </div>
             </div>
           </div>
-
-          {/* Elegant Divider */}
-          <div className="flex items-center gap-3 opacity-60">
-            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-            <span className="font-label-sm text-[10px] uppercase tracking-widest text-on-surface-variant">or</span>
-            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-          </div>
-
-          {/* Secondary Upload Zone */}
-          {!selectedFile ? (
-            <label 
-              className={`w-full py-4 px-6 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer transition-all duration-300 ${isDragging ? 'bg-primary/5 border-primary/40' : 'bg-surface-container-low border-dashed border-white/10 hover:bg-surface-container-highest hover:border-white/20'}`}
-              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={(e) => {
-                e.preventDefault();
-                setIsDragging(false);
-                if (e.dataTransfer.files[0]) setSelectedFile(e.dataTransfer.files[0]);
-              }}
-            >
-              <input 
-                type="file" 
-                className="hidden" 
-                onChange={(e) => {
-                  if (e.target.files[0]) setSelectedFile(e.target.files[0]);
-                }}
-                accept="image/*,.pdf"
-              />
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 shrink-0 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
-                  <span className="material-symbols-outlined text-[20px]">upload_file</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-body-md text-sm text-on-surface font-medium">Upload a document</span>
-                  <span className="font-label-sm text-xs text-on-surface-variant/60">PDF, JPG or PNG &middot; Max 10 MB</span>
-                </div>
-              </div>
-              <div className="px-3 py-1.5 rounded-md bg-surface-container border border-white/5 font-label-sm text-xs text-on-surface-variant hover:text-on-surface transition-colors w-full sm:w-auto text-center">
-                Browse files
-              </div>
-            </label>
-          ) : (
-            <div className="w-full p-3 pl-4 rounded-xl bg-surface-container-highest border border-white/10 flex items-center justify-between">
-              <div className="flex items-center gap-3 overflow-hidden">
-                <span className="material-symbols-outlined text-primary text-[22px]">description</span>
-                <div className="flex flex-col overflow-hidden">
-                  <span className="font-body-md text-sm text-on-surface truncate max-w-[200px] md:max-w-[400px]">{selectedFile.name}</span>
-                  <span className="font-label-sm text-[10px] text-on-surface-variant/60">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
-                </div>
-              </div>
-              <button 
-                onClick={(e) => { e.preventDefault(); setSelectedFile(null); }}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors"
-                title="Remove File"
-              >
-                <span className="material-symbols-outlined text-[18px]">close</span>
-              </button>
-            </div>
-          )}
-
         </div>
-      </div>
 
-      {/* Quick Start Grid */}
-      <div>
-        <h3 className="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-6 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary">bolt</span>
-          Common Problems
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Quick Start Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-3 w-full">
           {quickProblems.map((p) => (
             <button
               key={p.title}
               onClick={() => handleQuickProblem(p.title)}
-              className="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform group relative overflow-hidden border border-white/5 hover:border-primary/30 text-left"
+              disabled={isCreating}
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-surface-container-low hover:bg-surface-container hover:border-primary/30 transition-all text-on-surface-variant hover:text-on-surface disabled:opacity-50"
             >
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <span className="material-symbols-outlined text-4xl">{p.icon}</span>
-              </div>
-              <h4 className="font-body-lg text-body-lg font-semibold text-on-surface mb-2 group-hover:text-primary transition-colors">{p.title}</h4>
-              <p className="font-label-sm text-label-sm text-on-surface-variant">{p.desc}</p>
+              <span className="material-symbols-outlined text-[16px] text-primary/80">{p.icon}</span>
+              <span className="font-body-sm text-[13px]">{p.title}</span>
             </button>
           ))}
         </div>
       </div>
+
+      {/* Bottom Spacer */}
+      <div className="flex-[1.5] min-h-[40px]"></div>
+
+      {/* Recent Cases (Pushed to bottom) */}
+      {recentCases.length > 0 && (
+        <div className="w-full shrink-0 mb-8 border-t border-white/5 pt-8 mt-8">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-body-lg text-[14px] font-semibold text-on-surface flex items-center gap-2">
+              <span className="material-symbols-outlined text-secondary text-[16px]">history</span>
+              Recent Cases
+            </h3>
+            <button onClick={() => navigate('/dashboard/cases')} className="font-label-sm text-xs text-primary hover:underline flex items-center gap-1">
+              View all cases <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </button>
+          </div>
+          <div className="space-y-2">
+            {recentCases.map(c => (
+              <button
+                key={c.id}
+                onClick={() => navigate(`/dashboard/case/${c.id}`)}
+                className="w-full glass-card rounded-lg p-4 flex items-center justify-between hover:border-primary/20 transition-all group text-left"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="material-symbols-outlined text-primary text-[18px] shrink-0">description</span>
+                  <span className="font-body-md text-sm text-on-surface truncate group-hover:text-primary transition-colors">{c.title || 'Untitled Case'}</span>
+                </div>
+                <span className="font-label-sm text-[10px] text-on-surface-variant shrink-0">{timeAgo(c.created_at)}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

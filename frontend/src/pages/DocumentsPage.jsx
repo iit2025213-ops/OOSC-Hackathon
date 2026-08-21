@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function DocumentsPage() {
   return (
-    <div className="flex-1 px-margin-mobile md:px-margin-desktop max-w-container-max w-full mx-auto py-8 md:py-12">
+    <div className="flex-1 px-margin-mobile md:px-margin-desktop max-w-container-max w-full mx-auto py-8">
       <div className="mb-10">
         <h2 className="font-display-md text-display-md text-on-surface">Documents</h2>
         <p className="font-body-lg text-body-lg text-on-surface-variant mt-2">All generated documents and uploaded evidence in one place.</p>

@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleNewCase = () => navigate('/dashboard/intake');
+  const handleNewCase = () => navigate('/dashboard');
 
   return (
     <div className="min-h-screen overflow-x-hidden font-body-md text-body-md flex bg-surface text-on-surface selection:bg-primary selection:text-on-primary">
@@ -28,14 +28,14 @@ export default function DashboardLayout({ children }) {
           <h1 className="font-headline-lg text-headline-lg font-extrabold tracking-tight text-on-surface">Civic Portal</h1>
           <p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mt-1">Legal Empowerment</p>
         </div>
-        <div className="flex-1 px-4 space-y-2">
+        <div className="flex-1 px-4 space-y-1">
           {navItems.map(item => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.to === '/dashboard'}
               className={({ isActive }) =>
-                `flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 font-label-sm text-label-sm group ${
+                `flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 font-label-sm text-sm group ${
                   isActive
                     ? 'bg-primary-container/20 text-primary border-r-4 border-primary rounded-l-lg'
                     : 'text-on-surface-variant hover:bg-white/5 hover:text-primary'
@@ -59,17 +59,31 @@ export default function DashboardLayout({ children }) {
             <span className="material-symbols-outlined">add</span>
             New Case
           </button>
-          <div className="mt-6 flex items-center gap-3 pt-6 border-t border-white/5">
-            <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 shrink-0 bg-surface-container-high flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary">person</span>
+          <div className="mt-6 flex flex-col gap-4 pt-6 border-t border-white/5">
+            {/* Utilities */}
+            <div className="flex items-center justify-between px-2">
+              <div className="flex items-center gap-2 text-on-surface-variant font-label-sm text-[10px] bg-surface-container/50 px-2 py-1 rounded-md border border-white/5">
+                <span className="material-symbols-outlined text-[14px]">language</span>
+                <span>EN</span>
+              </div>
+              <button className="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
+                <span className="material-symbols-outlined text-[18px]">notifications</span>
+              </button>
             </div>
-            <div className="overflow-hidden flex-1">
-              <p className="font-label-sm text-label-sm text-on-surface truncate">{user?.name || 'User'}</p>
-              <p className="font-label-sm text-label-sm text-on-surface-variant truncate opacity-60">{user?.email || ''}</p>
+            
+            {/* User Profile */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 shrink-0 bg-surface-container-high flex items-center justify-center">
+                <span className="material-symbols-outlined text-primary">person</span>
+              </div>
+              <div className="overflow-hidden flex-1">
+                <p className="font-label-sm text-label-sm text-on-surface truncate">{user?.name || 'User'}</p>
+                <p className="font-label-sm text-label-sm text-on-surface-variant truncate opacity-60">{user?.email || ''}</p>
+              </div>
+              <button onClick={logout} className="text-on-surface-variant hover:text-error transition-colors" title="Logout">
+                <span className="material-symbols-outlined text-lg">logout</span>
+              </button>
             </div>
-            <button onClick={logout} className="text-on-surface-variant hover:text-error transition-colors" title="Logout">
-              <span className="material-symbols-outlined text-lg">logout</span>
-            </button>
           </div>
         </div>
       </nav>
@@ -84,18 +98,6 @@ export default function DashboardLayout({ children }) {
 
       {/* Main Content */}
       <main className="flex-1 md:ml-64 pt-20 md:pt-0 min-h-screen relative flex flex-col">
-        {/* Header Utility Bar */}
-        <header className="hidden md:flex justify-end items-center px-margin-desktop py-6 h-24 shrink-0">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm bg-surface-container/50 px-3 py-1.5 rounded-full border border-white/5">
-              <span className="material-symbols-outlined text-sm">language</span>
-              <span>EN</span>
-            </div>
-            <button className="text-on-surface-variant hover:text-primary transition-colors">
-              <span className="material-symbols-outlined">notifications</span>
-            </button>
-          </div>
-        </header>
         {children}
       </main>
 

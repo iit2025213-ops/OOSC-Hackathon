@@ -3,8 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
-import IntakePage from './pages/IntakePage';
-import CaseOverviewPage from './pages/CaseOverviewPage';
+import CasePage from './pages/CasePage';
 import ActionPlanPage from './pages/ActionPlanPage';
 import MyCasesPage from './pages/MyCasesPage';
 import DocumentsPage from './pages/DocumentsPage';
@@ -71,21 +70,11 @@ export default function App() {
         }
       />
       <Route
-        path="/dashboard/intake"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <IntakePage />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="/dashboard/case/:caseId"
         element={
           <ProtectedRoute>
             <DashboardLayout>
-              <CaseOverviewPage />
+              <CasePage />
             </DashboardLayout>
           </ProtectedRoute>
         }
