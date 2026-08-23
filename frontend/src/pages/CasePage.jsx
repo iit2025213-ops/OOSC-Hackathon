@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import Markdown from 'react-markdown';
 
 const LOADING_TEXTS = [
@@ -16,6 +17,7 @@ export default function CasePage() {
   const { caseId } = useParams();
   const location = useLocation();
   const { authFetch } = useAuth();
+  const { t, i18n } = useTranslation();
 
   const isNewCase = location.state?.isNewCase || false;
   const initialQuery = location.state?.initialQuery || '';
@@ -41,6 +43,11 @@ export default function CasePage() {
   const [feedbackState, setFeedbackState] = useState({});
   const [draftedDocuments, setDraftedDocuments] = useState([]);
   const [isDrafting, setIsDrafting] = useState(false);
+
+  // Header Actions State
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const hasAutoSubmitted = useRef(false);
   const chatEndRef = useRef(null);
@@ -153,6 +160,7 @@ export default function CasePage() {
     try {
       const submitData = new FormData();
       submitData.append('query', userMessage);
+      submitData.append('language', i18n.language);
 
       // Build history from current messages (exclude welcome & current)
       const historyForBackend = messages
@@ -170,7 +178,7 @@ export default function CasePage() {
       files.forEach(file => submitData.append('evidence', file));
 
       const token = localStorage.getItem('adhikaar_token');
-      const response = await fetch(`http://localhost:3000/api/cases/${caseId}/message/stream`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'}/cases/${caseId}/message/stream`, {
         method: 'POST',
         headers: { 'Authorization': token ? `Bearer ${token}` : '' },
         body: submitData
@@ -180,49 +188,59 @@ export default function CasePage() {
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
+      let buffer = '';
       
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
         
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n\n').filter(line => line.trim().startsWith('data: '));
+        buffer += decoder.decode(value, { stream: true });
         
-        for (const line of lines) {
-          try {
-            const dataStr = line.replace('data: ', '').trim();
-            if (!dataStr) continue;
-            const data = JSON.parse(dataStr);
-            
-            if (data.status) {
-              setStreamStatus(data.status);
-            } else if (data.final_response) {
-              const aiData = data.final_response;
-              if (aiData.response_type === 'question' || aiData.response_type === 'followup') {
-                setMessages(prev => [...prev, {
-                  role: 'ai',
-                  content: aiData,
-                  id: aiData.request_id || Date.now()
-                }]);
-              } else if (aiData.response_type === 'analysis') {
-                setAnalysisData(aiData.analysis || aiData);
-                setMessages(prev => [...prev, {
-                  role: 'ai',
-                  content: aiData,
-                  id: aiData.request_id || Date.now(),
-                  isAnalysis: true
-                }]);
-              } else {
-                setMessages(prev => [...prev, {
-                  role: 'ai',
-                  content: aiData,
-                  id: aiData.request_id || Date.now()
-                }]);
+        // Process complete events separated by \n\n
+        let boundary = buffer.indexOf('\n\n');
+        while (boundary !== -1) {
+          const chunkStr = buffer.slice(0, boundary).trim();
+          buffer = buffer.slice(boundary + 2);
+          
+          if (chunkStr.startsWith('data: ')) {
+            const line = chunkStr;
+            try {
+              const dataStr = line.replace('data: ', '').trim();
+              if (dataStr) {
+                const data = JSON.parse(dataStr);
+                
+                if (data.status) {
+                  setStreamStatus(data.status);
+                } else if (data.final_response) {
+                  const aiData = data.final_response;
+                  if (aiData.response_type === 'question' || aiData.response_type === 'followup') {
+                    setMessages(prev => [...prev, {
+                      role: 'ai',
+                      content: aiData,
+                      id: aiData.request_id || Date.now()
+                    }]);
+                  } else if (aiData.response_type === 'analysis') {
+                    setAnalysisData(aiData.analysis || aiData);
+                    setMessages(prev => [...prev, {
+                      role: 'ai',
+                      content: aiData,
+                      id: aiData.request_id || Date.now(),
+                      isAnalysis: true
+                    }]);
+                  } else {
+                    setMessages(prev => [...prev, {
+                      role: 'ai',
+                      content: aiData,
+                      id: aiData.request_id || Date.now()
+                    }]);
+                  }
+                }
               }
+            } catch(e) {
+              console.error("Error parsing stream chunk:", e, line);
             }
-          } catch(e) {
-            console.error("Error parsing stream chunk:", e, line);
           }
+          boundary = buffer.indexOf('\n\n');
         }
       }
     } catch (err) {
@@ -258,7 +276,7 @@ export default function CasePage() {
     setFeedbackState(prev => ({ ...prev, [msgId]: rating }));
     try {
       const token = localStorage.getItem('adhikaar_token');
-      await fetch(`http://localhost:3000/api/cases/${caseId}/feedback`, {
+      await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'}/cases/${caseId}/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -282,7 +300,7 @@ export default function CasePage() {
         }));
 
       const token = localStorage.getItem('adhikaar_token');
-      const res = await fetch(`http://localhost:3000/api/cases/${caseId}/draft_document`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'}/cases/${caseId}/draft_document`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -291,7 +309,8 @@ export default function CasePage() {
         body: JSON.stringify({
           instruction,
           history: historyForBackend,
-          previous_analysis: analysisData || null
+          previous_analysis: analysisData || null,
+          language: i18n.language
         })
       });
 
@@ -328,12 +347,16 @@ export default function CasePage() {
       alert("Your browser does not support Voice to Text.");
       return;
     }
+
     const recognition = new SpeechRecognition();
     recognition.manualStop = false;
     recognitionRef.current = recognition;
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = 'en-IN';
+    
+    // Sync voice recognition language with the i18n selected language
+    recognition.lang = i18n.language === 'en' ? 'en-IN' : 'hi-IN';
+    
     recognition.onstart = () => setIsListening(true);
     let currentSessionTranscript = '';
     const startText = chatInput;
@@ -377,11 +400,43 @@ export default function CasePage() {
     const c = msg.content;
     if (!c) return null;
 
+    // Handle case where content is a raw string (sometimes happens if JSON formatting fails)
+    if (typeof c === 'string') {
+      try {
+        const parsed = JSON.parse(c);
+        return renderAIContent({ ...msg, content: parsed });
+      } catch (e) {
+        // Not JSON, just render as markdown
+        const cleanText = c.replace(/```json|```/g, '').trim();
+        return <Markdown className="prose prose-invert max-w-none text-[15px] leading-relaxed">{cleanText}</Markdown>;
+      }
+    }
+
+    // Document Draft
+    if (c.response_type === 'document_draft') {
+      return (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 text-primary font-medium">
+            <span className="material-symbols-outlined">task</span>
+            Document Drafted Successfully
+          </div>
+          <p className="text-sm text-on-surface">
+            I've drafted a <strong>{c.document_type || 'document'}</strong> for you. 
+            You can find it and download it in the Documents section.
+          </p>
+          <button onClick={() => setActiveTab('documents')} className="mt-2 self-start px-4 py-2 rounded-lg bg-surface-container hover:bg-surface-container-highest border border-white/10 hover:border-primary/50 text-xs transition-colors flex items-center gap-2">
+            <span className="material-symbols-outlined text-[14px]">folder_open</span> Open Documents Tab
+          </button>
+        </div>
+      );
+    }
+
     // Simple text response (question type, followup or welcome)
     const text = c.text || c.ai_message || c.followup_answer;
     if (text && !c.analysis) {
+      const cleanText = typeof text === 'string' ? text.replace(/```json|```/g, '').trim() : text;
       return (
-        <div className="whitespace-pre-wrap">{text}</div>
+        <Markdown className="prose prose-invert max-w-none text-[15px] leading-relaxed">{cleanText}</Markdown>
       );
     }
 
@@ -495,8 +550,72 @@ export default function CasePage() {
     }
 
     // Fallback
-    return <div className="whitespace-pre-wrap">{JSON.stringify(c)}</div>;
+    try {
+      const jsonString = JSON.stringify(c, null, 2);
+      return <div className="whitespace-pre-wrap font-mono text-[10px] opacity-50 overflow-x-auto p-2 bg-black/20 rounded">{jsonString}</div>;
+    } catch(e) {
+      return <div>Unsupported message format</div>;
+    }
   };
+
+  // --- HEADER HANDLERS ---
+  const handleRename = async () => {
+    setMenuOpen(false);
+    const newTitle = window.prompt("Enter new case name:", caseData?.title);
+    if (!newTitle || newTitle.trim() === '' || newTitle === caseData?.title) return;
+    try {
+      const res = await authFetch(`/cases/${caseId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ title: newTitle.trim() })
+      });
+      if (res.ok) {
+        setCaseData(prev => ({ ...prev, title: newTitle.trim() }));
+      }
+    } catch (err) {
+      console.error("Failed to rename case", err);
+    }
+  };
+
+  const handleArchive = async () => {
+    setMenuOpen(false);
+    const isArchived = caseData?.status === 'archived';
+    const newStatus = isArchived ? 'active' : 'archived';
+    try {
+      const res = await authFetch(`/cases/${caseId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        setCaseData(prev => ({ ...prev, status: newStatus }));
+      }
+    } catch (err) {
+      console.error("Failed to archive case", err);
+    }
+  };
+
+  const handleDelete = async () => {
+    setMenuOpen(false);
+    if (!window.confirm("Are you sure you want to delete this case? This action cannot be undone.")) return;
+    if (caseId === 'new') {
+      navigate('/dashboard/cases');
+      return;
+    }
+    try {
+      const res = await authFetch(`/cases/${caseId}`, { method: 'DELETE' });
+      if (res.ok) {
+        navigate('/dashboard/cases');
+      }
+    } catch (err) {
+      console.error("Failed to delete case", err);
+    }
+  };
+
+  const filteredMessages = messages.filter(m => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return m.content?.text?.toLowerCase().includes(q) || 
+           m.content?.analysis?.summary?.toLowerCase().includes(q);
+  });
 
   // --- ERROR STATE ---
   if (error) {
@@ -543,24 +662,63 @@ export default function CasePage() {
             <button onClick={() => navigate('/dashboard/cases')} className="text-on-surface-variant hover:text-on-surface transition-colors shrink-0">
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
-            <div className="min-w-0">
-              <h1 className="font-body-lg text-on-surface font-semibold truncate">{caseData?.title || 'Case'}</h1>
-              <p className="font-label-sm text-[10px] text-on-surface-variant">
-                Case #{caseId?.substring(0, 8)} · {caseData?.status === 'active' ? (
-                  <span className="text-green-400">Active</span>
-                ) : (
-                  <span className="text-primary capitalize">{caseData?.status}</span>
-                )}
-              </p>
-            </div>
+            {!showSearch ? (
+              <div className="min-w-0">
+                <h1 className="font-body-lg text-on-surface font-semibold truncate">{caseData?.title || 'Case'}</h1>
+                <p className="font-label-sm text-[10px] text-on-surface-variant">
+                  Case #{caseId?.substring(0, 8)} · {caseData?.status === 'active' ? (
+                    <span className="text-green-400">Active</span>
+                  ) : (
+                    <span className="text-primary capitalize">{caseData?.status}</span>
+                  )}
+                </p>
+              </div>
+            ) : (
+              <div className="flex-1 min-w-0 flex items-center bg-surface-container-high rounded-full px-3 py-1">
+                <input
+                  type="text"
+                  placeholder="Search in chat..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="bg-transparent border-none outline-none text-sm text-on-surface w-full"
+                  autoFocus
+                />
+                <button onClick={() => { setShowSearch(false); setSearchQuery(''); }} className="text-on-surface-variant hover:text-on-surface ml-2">
+                  <span className="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-2">
-            <button className="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors">
+          <div className="flex items-center gap-2 relative">
+            <button onClick={() => setShowSearch(!showSearch)} className="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors">
               <span className="material-symbols-outlined text-[20px]">search</span>
             </button>
-            <button className="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors">
-              <span className="material-symbols-outlined text-[20px]">more_vert</span>
-            </button>
+            <div className="relative">
+              <button onClick={() => setMenuOpen(!menuOpen)} className="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors">
+                <span className="material-symbols-outlined text-[20px]">more_vert</span>
+              </button>
+              {menuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)}></div>
+                  <div className="absolute right-0 top-10 w-48 bg-surface-container-high border border-white/10 rounded-lg shadow-xl z-50 py-1 animate-fade-in">
+                    <button onClick={handleRename} className="w-full px-4 py-2 text-left font-label-sm text-xs text-on-surface hover:bg-white/5 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px]">edit</span> Rename Case
+                    </button>
+                    <button onClick={handleArchive} className="w-full px-4 py-2 text-left font-label-sm text-xs text-on-surface hover:bg-white/5 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px]">{caseData?.status === 'archived' ? 'unarchive' : 'archive'}</span> 
+                      {caseData?.status === 'archived' ? 'Unarchive Case' : 'Archive Case'}
+                    </button>
+                    <button onClick={() => { setMenuOpen(false); navigate('/dashboard'); }} className="w-full px-4 py-2 text-left font-label-sm text-xs text-on-surface hover:bg-white/5 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px]">add_circle</span> New Case
+                    </button>
+                    <div className="h-px bg-white/10 my-1"></div>
+                    <button onClick={handleDelete} className="w-full px-4 py-2 text-left font-label-sm text-xs text-error hover:bg-error/10 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px]">delete</span> Delete Case
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -588,9 +746,12 @@ export default function CasePage() {
           {/* Chat Messages */}
           <div className="flex-1 overflow-y-auto px-margin-mobile md:px-6 py-6 z-10 custom-scrollbar">
             <div className="max-w-4xl mx-auto space-y-5">
-              {messages.map((msg, idx) => (
+              {filteredMessages.length === 0 && searchQuery && (
+                <div className="text-center text-on-surface-variant/50 py-10">No messages match your search.</div>
+              )}
+              {filteredMessages.map((msg, index) => (
                 <div
-                  key={msg.id || idx}
+                  key={msg.id || index}
                   className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} ${msg.isFirstNewMessage ? 'animate-fade-in-up' : 'animate-fade-in'}`}
                 >
                   <div className="flex gap-3 max-w-[85%]">
@@ -634,8 +795,18 @@ export default function CasePage() {
                     </div>
 
                     {msg.role === 'user' && (
-                      <div className="w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0 border border-white/10">
-                        <span className="material-symbols-outlined text-on-surface text-[16px]">person</span>
+                      <div className="relative group/userbtn">
+                        <div className="w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0 border border-white/10 mt-1 cursor-pointer">
+                          <span className="material-symbols-outlined text-on-surface text-[16px]">person</span>
+                        </div>
+                        <div className="absolute top-10 right-0 opacity-0 group-hover/userbtn:opacity-100 transition-opacity flex flex-col gap-1 bg-surface-container border border-white/10 rounded-md p-1 shadow-lg z-20">
+                          <button onClick={() => { navigator.clipboard.writeText(msg.content?.text || (typeof msg.content === 'string' ? msg.content : '')); }} className="p-1.5 rounded hover:bg-white/10 text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center" title="Copy Prompt">
+                            <span className="material-symbols-outlined text-[14px]">content_copy</span>
+                          </button>
+                          <button onClick={() => { setChatInput(msg.content?.text || (typeof msg.content === 'string' ? msg.content : '')); textareaRef.current?.focus(); }} className="p-1.5 rounded hover:bg-white/10 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" title="Edit in Chatbox">
+                            <span className="material-symbols-outlined text-[14px]">edit</span>
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -766,8 +937,9 @@ export default function CasePage() {
                       <div className="flex gap-2">
                         {doc.pdf_url && (
                           <a
-                            href={doc.pdf_url}
-                            target="_blank"
+                            href={doc.pdf_base64 ? `data:application/pdf;base64,${doc.pdf_base64}` : doc.pdf_url}
+                            download={doc.document_type ? `${doc.document_type.replace(/[^a-zA-Z0-9]/g, '_')}.pdf` : 'Document.pdf'}
+                            target={doc.pdf_base64 ? undefined : "_blank"}
                             rel="noreferrer"
                             className="flex-1 text-center py-2 bg-primary/20 text-primary font-label-sm text-[11px] rounded-lg hover:bg-primary/30 transition-colors"
                           >

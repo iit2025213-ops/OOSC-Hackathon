@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Markdown from 'react-markdown';
+import { useTranslation } from 'react-i18next';
 
 const SchemeNavigatorPage = () => {
   const { authFetch } = useAuth();
+  const { t } = useTranslation();
   
   const [step, setStep] = useState(1);
   const [activeMode, setActiveMode] = useState('find'); // 'find' or 'check'
@@ -152,9 +154,12 @@ const SchemeNavigatorPage = () => {
     }
   };
 
-  const getFilteredSchemes = (type) => { // 'eligible' or 'almost'
+  const getFilteredSchemes = (type) => { // 'eligible', 'almost', 'needs_verification'
     if (!results) return [];
-    let list = type === 'eligible' ? results.eligible : results.almost_eligible;
+    let list = [];
+    if (type === 'eligible') list = results.eligible || [];
+    else if (type === 'almost') list = results.almost_eligible || [];
+    else if (type === 'needs_verification') list = results.needs_verification || [];
     
     if (resultTab === 'central') return list.filter(s => s.source_type === 'central');
     if (resultTab === 'state') return list.filter(s => s.source_type === 'state');
@@ -259,26 +264,23 @@ const SchemeNavigatorPage = () => {
         <div className="max-w-4xl mx-auto">
           
           <div className="mb-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
               <div>
-                <h1 className="text-3xl font-display font-semibold text-on-surface mb-2">Scheme Navigator</h1>
-                <p className="text-on-surface-variant font-body-lg">
-                  {activeMode === 'find' ? "Discover government welfare schemes you qualify for." : "Check if you are eligible for a specific scheme."}
-                </p>
+                <h2 className="font-display-md text-[28px] text-on-surface font-semibold tracking-tight">{t('schemes.title')}</h2>
+                <p className="font-body-md text-sm text-on-surface-variant mt-1">{t('schemes.subtitle')}</p>
               </div>
-              
-              <div className="flex bg-surface-container rounded-xl p-1 w-full md:w-auto">
-                <button
+              <div className="flex items-center gap-2 bg-surface-container-low p-1 rounded-lg border border-white/5">
+                <button 
                   onClick={() => setActiveMode('find')}
-                  className={`flex-1 md:flex-none px-6 py-2 rounded-lg font-label-md transition-colors ${activeMode === 'find' ? 'bg-primary text-on-primary' : 'text-on-surface hover:bg-surface-container-high'}`}
+                  className={`px-4 py-2 rounded-md font-label-sm text-xs transition-colors ${activeMode === 'find' ? 'bg-primary/20 text-primary border border-primary/30' : 'text-on-surface-variant hover:text-on-surface'}`}
                 >
-                  Find Schemes For Me
+                  {t('schemes.tab_find')}
                 </button>
-                <button
+                <button 
                   onClick={() => setActiveMode('check')}
-                  className={`flex-1 md:flex-none px-6 py-2 rounded-lg font-label-md transition-colors ${activeMode === 'check' ? 'bg-primary text-on-primary' : 'text-on-surface hover:bg-surface-container-high'}`}
+                  className={`px-4 py-2 rounded-md font-label-sm text-xs transition-colors ${activeMode === 'check' ? 'bg-primary/20 text-primary border border-primary/30' : 'text-on-surface-variant hover:text-on-surface'}`}
                 >
-                  Check A Scheme
+                  {t('schemes.tab_check')}
                 </button>
               </div>
             </div>
@@ -301,51 +303,37 @@ const SchemeNavigatorPage = () => {
                 
                 {/* Step 1: About You */}
                 <section>
-                  <h3 className="text-xl font-display font-medium text-on-surface mb-4 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">person</span>
-                    About You
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-on-surface-variant mb-1">Age</label>
-                      <input 
-                        type="number" name="age" required value={formData.age} onChange={handleInputChange}
-                        className="w-full bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition"
-                        placeholder="e.g. 25"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-on-surface-variant mb-1">Gender</label>
-                      <select 
-                        name="gender" required value={formData.gender} onChange={handleInputChange}
-                        className="w-full bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition [&>option]:bg-surface"
-                      >
-                        <option value="all">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="transgender">Transgender</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-on-surface-variant mb-1">Caste / Category</label>
-                      <select 
-                        name="caste" required value={formData.caste} onChange={handleInputChange}
-                        className="w-full bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition [&>option]:bg-surface"
-                      >
-                        <option value="">Select Category</option>
-                        <option value="GENERAL">General</option>
-                        <option value="OBC">OBC</option>
-                        <option value="SC">SC</option>
-                        <option value="ST">ST</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-on-surface-variant mb-1">Annual Family Income (₹)</label>
-                      <input 
-                        type="number" name="annual_income" required value={formData.annual_income} onChange={handleInputChange}
-                        className="w-full bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition"
-                        placeholder="e.g. 250000"
-                      />
+                  <div className="mb-6">
+                    <h3 className="font-body-lg text-[15px] font-semibold text-on-surface flex items-center gap-2 mb-4">
+                      <span className="material-symbols-outlined text-secondary text-[18px]">person</span> {t('schemes.about_you')}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">{t('schemes.age')}</label>
+                        <input type="number" name="age" required value={formData.age} onChange={handleInputChange} className="w-full bg-surface-container border border-white/10 rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary placeholder:text-on-surface-variant/40" placeholder="e.g. 25" />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">{t('schemes.gender')}</label>
+                        <select name="gender" value={formData.gender} onChange={handleInputChange} className="w-full bg-surface-container border border-white/10 rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary">
+                          <option value="all">Select Gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">{t('schemes.caste')}</label>
+                        <select name="caste" value={formData.caste} onChange={handleInputChange} className="w-full bg-surface-container border border-white/10 rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary">
+                          <option value="">Select Category</option>
+                          <option value="GENERAL">General</option>
+                          <option value="OBC">OBC</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">{t('schemes.income')}</label>
+                        <input type="number" name="annual_income" value={formData.annual_income} onChange={handleInputChange} placeholder="e.g. 250000" className="w-full bg-surface-container border border-white/10 rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary placeholder:text-on-surface-variant/40" />
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -354,38 +342,37 @@ const SchemeNavigatorPage = () => {
 
                 {/* Step 2: Location */}
                 <section>
-                  <h3 className="text-xl font-display font-medium text-on-surface mb-4 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">location_on</span>
-                    Location
-                  </h3>
-                  <div>
-                    <label className="block text-sm font-medium text-on-surface-variant mb-1">State / UT</label>
-                    <select 
-                      name="state" required value={formData.state} onChange={handleInputChange}
-                      className="w-full bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition [&>option]:bg-surface"
-                    >
-                      <option value="">Select State</option>
-                      <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-                      <option value="Andhra Pradesh">Andhra Pradesh</option>
-                      <option value="Assam">Assam</option>
-                      <option value="Bihar">Bihar</option>
-                      <option value="Chandigarh">Chandigarh</option>
-                      <option value="Delhi">Delhi</option>
-                      <option value="Gujarat">Gujarat</option>
-                      <option value="Haryana">Haryana</option>
-                      <option value="Karnataka">Karnataka</option>
-                      <option value="Kerala">Kerala</option>
-                      <option value="Madhya Pradesh">Madhya Pradesh</option>
-                      <option value="Maharashtra">Maharashtra</option>
-                      <option value="Odisha">Odisha</option>
-                      <option value="Punjab">Punjab</option>
-                      <option value="Rajasthan">Rajasthan</option>
-                      <option value="Tamil Nadu">Tamil Nadu</option>
-                      <option value="Telangana">Telangana</option>
-                      <option value="Uttar Pradesh">Uttar Pradesh</option>
-                      <option value="West Bengal">West Bengal</option>
-                      {/* ... other states ... */}
-                    </select>
+                  <div className="mb-6 pt-6 border-t border-white/5">
+                    <h3 className="font-body-lg text-[15px] font-semibold text-on-surface flex items-center gap-2 mb-4">
+                      <span className="material-symbols-outlined text-secondary text-[18px]">location_on</span> {t('schemes.location')}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">{t('schemes.state')}</label>
+                        <select name="state" required value={formData.state} onChange={handleInputChange} className="w-full bg-surface-container border border-white/10 rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary">
+                          <option value="">Select State</option>
+                          <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                          <option value="Andhra Pradesh">Andhra Pradesh</option>
+                          <option value="Assam">Assam</option>
+                          <option value="Bihar">Bihar</option>
+                          <option value="Chandigarh">Chandigarh</option>
+                          <option value="Delhi">Delhi</option>
+                          <option value="Gujarat">Gujarat</option>
+                          <option value="Haryana">Haryana</option>
+                          <option value="Karnataka">Karnataka</option>
+                          <option value="Kerala">Kerala</option>
+                          <option value="Madhya Pradesh">Madhya Pradesh</option>
+                          <option value="Maharashtra">Maharashtra</option>
+                          <option value="Odisha">Odisha</option>
+                          <option value="Punjab">Punjab</option>
+                          <option value="Rajasthan">Rajasthan</option>
+                          <option value="Tamil Nadu">Tamil Nadu</option>
+                          <option value="Telangana">Telangana</option>
+                          <option value="Uttar Pradesh">Uttar Pradesh</option>
+                          <option value="West Bengal">West Bengal</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </section>
 
@@ -393,36 +380,26 @@ const SchemeNavigatorPage = () => {
 
                 {/* Step 3: Specific Eligibility */}
                 <section>
-                  <h3 className="text-xl font-display font-medium text-on-surface mb-4 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">verified</span>
-                    Specific Eligibility
-                  </h3>
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                      <div className="relative flex items-center">
-                        <input 
-                          type="checkbox" name="bpl" checked={formData.bpl} onChange={handleInputChange}
-                          className="peer sr-only"
-                        />
-                        <div className="w-6 h-6 border-2 border-white/20 rounded-md peer-checked:bg-primary peer-checked:border-primary transition-all flex items-center justify-center">
-                          <span className="material-symbols-outlined text-white text-[16px] opacity-0 peer-checked:opacity-100">check</span>
+                  <div className="mb-6 pt-6 border-t border-white/5">
+                    <h3 className="font-body-lg text-[15px] font-semibold text-on-surface flex items-center gap-2 mb-4">
+                      <span className="material-symbols-outlined text-secondary text-[18px]">verified</span> {t('schemes.eligibility')}
+                    </h3>
+                    <div className="flex flex-wrap gap-6">
+                      <label className="flex items-center gap-2 cursor-pointer group">
+                        <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${formData.bpl ? 'bg-primary border-primary text-on-primary' : 'border-white/20 group-hover:border-white/40'}`}>
+                          {formData.bpl && <span className="material-symbols-outlined text-[12px] font-bold">check</span>}
                         </div>
-                      </div>
-                      <span className="text-on-surface group-hover:text-primary transition-colors">BPL Card Holder</span>
-                    </label>
-
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                      <div className="relative flex items-center">
-                        <input 
-                          type="checkbox" name="disability" checked={formData.disability} onChange={handleInputChange}
-                          className="peer sr-only"
-                        />
-                        <div className="w-6 h-6 border-2 border-white/20 rounded-md peer-checked:bg-primary peer-checked:border-primary transition-all flex items-center justify-center">
-                          <span className="material-symbols-outlined text-white text-[16px] opacity-0 peer-checked:opacity-100">check</span>
+                        <input type="checkbox" name="bpl" checked={formData.bpl} onChange={handleInputChange} className="hidden" />
+                        <span className="font-body-md text-sm text-on-surface-variant group-hover:text-on-surface">{t('schemes.bpl')}</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer group">
+                        <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${formData.disability ? 'bg-primary border-primary text-on-primary' : 'border-white/20 group-hover:border-white/40'}`}>
+                          {formData.disability && <span className="material-symbols-outlined text-[12px] font-bold">check</span>}
                         </div>
-                      </div>
-                      <span className="text-on-surface group-hover:text-primary transition-colors">Person with Disability</span>
-                    </label>
+                        <input type="checkbox" name="disability" checked={formData.disability} onChange={handleInputChange} className="hidden" />
+                        <span className="font-body-md text-sm text-on-surface-variant group-hover:text-on-surface">{t('schemes.disability')}</span>
+                      </label>
+                    </div>
                   </div>
                 </section>
 
@@ -430,22 +407,21 @@ const SchemeNavigatorPage = () => {
 
                 {/* Step 4: AI Smart Search */}
                 <section>
-                  <h3 className="text-xl font-display font-medium text-on-surface mb-2 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">auto_awesome</span>
-                    What do you need help with?
-                  </h3>
-                  <p className="text-sm text-on-surface-variant mb-4">
-                    Describe your situation (e.g. "I want to start a dairy farm" or "Need funds for daughter's education"). Our AI will filter the schemes for you.
-                  </p>
-                  <div>
-                    <textarea 
-                      name="search_query" 
-                      value={formData.search_query} 
-                      onChange={handleInputChange}
-                      rows="3"
-                      className="w-full bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition resize-none"
-                      placeholder="Type your needs here..."
-                    ></textarea>
+                  <div className="mb-6 pt-6 border-t border-white/5">
+                    <h3 className="font-body-lg text-[15px] font-semibold text-on-surface flex items-center gap-2 mb-2">
+                      <span className="material-symbols-outlined text-secondary text-[18px]">auto_awesome</span> {t('schemes.help_with')}
+                    </h3>
+                    <p className="text-xs text-on-surface-variant mb-3">{t('schemes.help_placeholder')}</p>
+                    <div>
+                      <textarea 
+                        name="search_query" 
+                        value={formData.search_query} 
+                        onChange={handleInputChange}
+                        rows="3"
+                        className="w-full bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition resize-none"
+                        placeholder="Type your needs here..."
+                      ></textarea>
+                    </div>
                   </div>
                 </section>
 
@@ -477,16 +453,16 @@ const SchemeNavigatorPage = () => {
 
                 {error && <div className="p-4 bg-error/10 text-error rounded-xl text-sm">{error}</div>}
 
-                <div className="pt-4 flex justify-end">
+                <div className="pt-6">
                   <button 
                     type="submit" 
                     disabled={loading}
-                    className="btn-primary flex items-center gap-2 disabled:opacity-50"
+                    className="w-full bg-primary text-on-primary-fixed py-3 rounded-md font-label-sm text-sm font-semibold hover:bg-primary-fixed transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {loading ? (
-                      <><span className="material-symbols-outlined animate-spin">progress_activity</span> Matching...</>
+                      <><span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span> {t('schemes.matching_btn')}</>
                     ) : (
-                      <><span className="material-symbols-outlined">search</span> Find Schemes</>
+                      <>{t('schemes.match_btn')} <span className="material-symbols-outlined text-[18px]">arrow_forward</span></>
                     )}
                   </button>
                 </div>
@@ -516,6 +492,17 @@ const SchemeNavigatorPage = () => {
                     <div className="text-on-surface-variant text-sm uppercase tracking-wider font-medium">Almost Eligible</div>
                   </div>
                 </div>
+                {results.summary.needs_verification_count > 0 && (
+                  <div className="flex-1 glass-card p-6 rounded-2xl flex items-center gap-4 border border-warning/20">
+                    <div className="w-12 h-12 rounded-full bg-warning/20 flex items-center justify-center">
+                      <span className="material-symbols-outlined text-warning text-2xl">help_center</span>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-display font-semibold text-on-surface">{results.summary.needs_verification_count}</div>
+                      <div className="text-on-surface-variant text-sm uppercase tracking-wider font-medium">Needs Verification</div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Tabs */}
@@ -592,7 +579,38 @@ const SchemeNavigatorPage = () => {
                 </section>
               )}
 
-              {getFilteredSchemes('eligible').length === 0 && getFilteredSchemes('almost').length === 0 && (
+              {/* Needs Verification List */}
+              {getFilteredSchemes('needs_verification').length > 0 && (
+                <section>
+                  <h3 className="text-xl font-display font-medium text-on-surface mb-4 flex items-center gap-2 mt-8">
+                    <span className="material-symbols-outlined text-warning text-[20px]">help_center</span>
+                    Needs Manual Verification
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {getFilteredSchemes('needs_verification').map(scheme => (
+                      <div key={scheme.id} className="glass-card rounded-xl p-5 flex flex-col hover:border-warning/30 transition-colors cursor-pointer group" onClick={() => openSchemeDetails(scheme, true)}>
+                        <div className="flex justify-between items-start mb-2">
+                          <span className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded font-bold ${scheme.source_type === 'central' ? 'bg-primary/20 text-primary' : 'bg-tertiary/20 text-tertiary'}`}>
+                            {scheme.source_type} {scheme.source_type === 'state' && scheme.state ? `• ${scheme.state}` : ''}
+                          </span>
+                        </div>
+                        <h4 className="font-display text-lg text-on-surface font-semibold line-clamp-2 mb-2 group-hover:text-warning transition-colors">{scheme.scheme_name}</h4>
+                        
+                        <div className="bg-warning/10 border border-warning/20 rounded-lg p-3 mb-4 mt-auto">
+                          <p className="text-[11px] text-warning/80 uppercase tracking-wider font-bold mb-1">Government Data Missing</p>
+                          <p className="text-xs text-on-surface-variant mt-1">Please open details and read the full description to manually verify if you are eligible for this scheme.</p>
+                        </div>
+                        
+                        <div className="pt-2 flex items-center justify-end text-sm">
+                          <span className="text-warning flex items-center gap-1 font-medium whitespace-nowrap">View Details <span className="material-symbols-outlined text-[16px]">arrow_forward</span></span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {getFilteredSchemes('eligible').length === 0 && getFilteredSchemes('almost').length === 0 && getFilteredSchemes('needs_verification').length === 0 && (
                 <div className="flex flex-col items-center justify-center py-20 text-center glass-card rounded-2xl">
                   <span className="material-symbols-outlined text-on-surface-variant/20 text-6xl mb-4">search_off</span>
                   <h3 className="font-display text-xl text-on-surface mb-2">No Schemes Found</h3>

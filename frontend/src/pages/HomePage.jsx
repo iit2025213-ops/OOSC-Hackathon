@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const quickProblems = [
-  { icon: 'home_repair_service', title: 'Security Deposit', desc: 'Landlord refusing to return deposit after move out.' },
-  { icon: 'shopping_cart', title: 'Consumer Complaint', desc: 'Defective product or unfair service practices.' },
-  { icon: 'policy', title: 'RTI Application', desc: 'Draft a Right to Information request for public data.' },
-  { icon: 'family_restroom', title: 'Domestic Dispute', desc: 'Information on legal rights and protective measures.' },
+  { icon: 'home_repair_service', titleKey: 'home.quick_deposit' },
+  { icon: 'shopping_cart', titleKey: 'home.quick_consumer' },
+  { icon: 'policy', titleKey: 'home.quick_rti' },
+  { icon: 'family_restroom', titleKey: 'home.quick_domestic' },
 ];
 
 export default function HomePage() {
@@ -20,6 +21,7 @@ export default function HomePage() {
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
   const { authFetch } = useAuth();
+  const { t, i18n } = useTranslation();
 
   // Fetch recent cases
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function HomePage() {
     setIsCreating(true);
     try {
       const token = localStorage.getItem('adhikaar_token');
-      const res = await fetch('http://localhost:3000/api/cases/new', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'}/cases/new`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +89,10 @@ export default function HomePage() {
     recognitionRef.current = recognition;
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = 'en-IN';
+    
+    // Sync voice recognition language with the i18n selected language
+    recognition.lang = i18n.language === 'en' ? 'en-IN' : 'hi-IN';
+    
     recognition.onstart = () => setIsListening(true);
     let currentSessionTranscript = '';
     const startText = query;
@@ -144,10 +149,10 @@ export default function HomePage() {
       <div className="flex flex-col items-center w-full">
         <div className="flex flex-col items-center text-center space-y-3 mb-10 w-full">
           <h2 className="font-display-md text-[32px] text-on-surface tracking-tight font-semibold">
-            What can we help you with?
+            {t('home.welcome_title')}
           </h2>
-          <p className="font-body-md text-[14px] text-on-surface-variant max-w-[480px]">
-            Describe your legal or civic issue naturally. We'll guide you to the right forms, next steps, and action plans.
+          <p className="font-body-md text-[14px] text-on-surface-variant max-w-xl mx-auto leading-relaxed notranslate">
+            {t('home.welcome_subtitle')}
           </p>
         </div>
 
@@ -157,7 +162,7 @@ export default function HomePage() {
             <textarea
               ref={textareaRef}
               className="w-full bg-transparent border-none px-2 py-1 font-body-md text-[15px] text-on-surface placeholder:text-on-surface-variant/40 focus:ring-0 focus:outline-none resize-none custom-scrollbar min-h-[60px]"
-              placeholder="Describe your problem in your own words..."
+              placeholder={t('home.input_placeholder')}
               rows="1"
               value={query}
               onChange={(e) => {
@@ -191,7 +196,7 @@ export default function HomePage() {
                   <div className="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:bg-white/10 group-hover:text-on-surface transition-colors">
                     <span className="material-symbols-outlined text-[18px]">add</span>
                   </div>
-                  <span className="font-label-sm text-[11px] text-on-surface-variant/50 hidden sm:block tracking-wider">PDF, JPG or PNG &middot; Max 10 MB</span>
+                  <span className="font-label-sm text-[11px] text-on-surface-variant/50 hidden sm:block tracking-wider">{t('home.upload_hint')}</span>
                 </label>
               </div>
 
@@ -216,7 +221,7 @@ export default function HomePage() {
                   {isCreating ? (
                     <><span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span></>
                   ) : (
-                    <>Analyze <span className="material-symbols-outlined text-[16px]">arrow_upward</span></>
+                    <>{t('home.analyze_btn')} <span className="material-symbols-outlined text-[16px]">arrow_upward</span></>
                   )}
                 </button>
               </div>
@@ -228,13 +233,13 @@ export default function HomePage() {
         <div className="flex flex-wrap items-center justify-center gap-3 w-full">
           {quickProblems.map((p) => (
             <button
-              key={p.title}
-              onClick={() => handleQuickProblem(p.title)}
+              key={p.titleKey}
+              onClick={() => handleQuickProblem(t(p.titleKey))}
               disabled={isCreating}
-              className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-surface-container-low hover:bg-surface-container hover:border-primary/30 transition-all text-on-surface-variant hover:text-on-surface disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 rounded-[20px] border border-white/10 bg-surface-container-low hover:bg-surface-container hover:border-primary/30 transition-all text-on-surface-variant hover:text-on-surface disabled:opacity-50 max-w-[200px]"
             >
-              <span className="material-symbols-outlined text-[16px] text-primary/80">{p.icon}</span>
-              <span className="font-body-sm text-[13px]">{p.title}</span>
+              <span className="material-symbols-outlined text-[16px] text-primary/80 shrink-0">{p.icon}</span>
+              <span className="font-body-sm text-[13px] leading-tight break-words text-left">{t(p.titleKey)}</span>
             </button>
           ))}
         </div>
@@ -249,10 +254,10 @@ export default function HomePage() {
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-body-lg text-[14px] font-semibold text-on-surface flex items-center gap-2">
               <span className="material-symbols-outlined text-secondary text-[16px]">history</span>
-              Recent Cases
+              {t('home.recent_cases')}
             </h3>
             <button onClick={() => navigate('/dashboard/cases')} className="font-label-sm text-xs text-primary hover:underline flex items-center gap-1">
-              View all cases <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+              {t('home.view_all')} <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
             </button>
           </div>
           <div className="space-y-2">
@@ -264,7 +269,7 @@ export default function HomePage() {
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="material-symbols-outlined text-primary text-[18px] shrink-0">description</span>
-                  <span className="font-body-md text-sm text-on-surface truncate group-hover:text-primary transition-colors">{c.title || 'Untitled Case'}</span>
+                  <span className="font-body-md text-sm text-on-surface truncate group-hover:text-primary transition-colors">{c.title || t('home.untitled_case')}</span>
                 </div>
                 <span className="font-label-sm text-[10px] text-on-surface-variant shrink-0">{timeAgo(c.created_at)}</span>
               </button>

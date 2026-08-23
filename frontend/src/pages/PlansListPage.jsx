@@ -15,7 +15,8 @@ export default function PlansListPage() {
         const res = await authFetch('/cases');
         if (!res.ok) throw new Error('Failed to fetch action plans');
         const data = await res.json();
-        setPlans(data);
+        const validPlans = data.filter(c => c.analysis?.next_steps?.length > 0 || c.next_steps?.length > 0);
+        setPlans(validPlans);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -42,34 +43,42 @@ export default function PlansListPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {plans.map((plan) => (
-            <button
-              key={plan.id}
-              onClick={() => navigate(`/dashboard/case/${plan.id}/plan`)}
-              className="w-full glass-panel rounded-xl p-6 hover:border-primary/30 transition-all duration-300 group text-left"
-            >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex-1">
-                  <h3 className="font-body-lg text-body-lg font-semibold text-on-surface group-hover:text-primary transition-colors mb-2">{plan.title || 'Untitled Plan'}</h3>
-                  <div className="flex items-center gap-3">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-[10px] text-primary bg-primary/10 border border-primary/20">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse mr-1.5"></span>
-                      Analysis Complete
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 min-w-[200px]">
+          {plans.map((plan) => {
+            const rawSteps = plan.analysis?.next_steps || plan.next_steps || [];
+            const state = plan.action_plan_state || {};
+            const totalSteps = rawSteps.length;
+            const completedCount = Object.keys(state).filter(k => state[k]).length;
+            const progress = totalSteps > 0 ? Math.round((completedCount / totalSteps) * 100) : 0;
+            
+            return (
+              <button
+                key={plan.id}
+                onClick={() => navigate(`/dashboard/case/${plan.id}/plan`)}
+                className="w-full glass-panel rounded-xl p-6 hover:border-primary/30 transition-all duration-300 group text-left"
+              >
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex-1">
-                    <div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
-                      <div className="h-full bg-primary rounded-full" style={{ width: `0%` }}></div>
+                    <h3 className="font-body-lg text-body-lg font-semibold text-on-surface group-hover:text-primary transition-colors mb-2">{plan.title || 'Untitled Plan'}</h3>
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-[10px] text-primary bg-primary/10 border border-primary/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse mr-1.5"></span>
+                        {totalSteps} Steps Total
+                      </span>
                     </div>
                   </div>
-                  <span className="font-label-sm text-label-sm text-primary">0%</span>
-                  <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary group-hover:translate-x-1 transition-all">arrow_forward</span>
+                  <div className="flex items-center gap-4 min-w-[200px]">
+                    <div className="flex-1">
+                      <div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                        <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
+                      </div>
+                    </div>
+                    <span className="font-label-sm text-label-sm text-primary">{progress}%</span>
+                    <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary group-hover:translate-x-1 transition-all">arrow_forward</span>
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

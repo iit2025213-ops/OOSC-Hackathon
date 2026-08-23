@@ -99,7 +99,7 @@ export default function LandingPage() {
             <button onClick={handleGetStarted} className="shimmer-btn bg-brand-accent text-white font-body-md text-body-md px-8 py-4 rounded-full font-semibold hover:scale-105 hover:shadow-[0_0_25px_rgba(224,122,95,0.5)] transition-all duration-500">
               Understand My Problem
             </button>
-            <button className="glass-panel text-on-surface font-body-md text-body-md px-8 py-4 rounded-full font-medium hover:bg-white/10 hover:text-brand-accent transition-colors duration-500">
+            <button onClick={() => navigate('/workflow')} className="glass-panel text-on-surface font-body-md text-body-md px-8 py-4 rounded-full font-medium hover:bg-white/10 hover:text-brand-accent transition-colors duration-500">
               See How It Works
             </button>
           </div>

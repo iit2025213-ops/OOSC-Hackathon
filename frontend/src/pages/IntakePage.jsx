@@ -58,7 +58,7 @@ export default function IntakePage() {
       });
 
       const token = localStorage.getItem('adhikaar_token');
-      const response = await fetch('http://localhost:3000/api/legal/analyze', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'}/legal/analyze`, {
         method: 'POST',
         headers: { 'Authorization': token ? `Bearer ${token}` : '' },
         body: submitData

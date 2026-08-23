@@ -62,7 +62,7 @@ export default function MyCasesPage() {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('adhikaar_token');
-      await fetch(`http://localhost:3000/api/cases/${id}`, {
+      await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'}/cases/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -78,7 +78,7 @@ export default function MyCasesPage() {
     if (!newTitle) return;
     try {
       const token = localStorage.getItem('adhikaar_token');
-      await fetch(`http://localhost:3000/api/cases/${id}`, {
+      await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'}/cases/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ title: newTitle })
@@ -93,7 +93,7 @@ export default function MyCasesPage() {
   const handleArchive = async (id) => {
     try {
       const token = localStorage.getItem('adhikaar_token');
-      await fetch(`http://localhost:3000/api/cases/${id}`, {
+      await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'}/cases/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ status: 'archived' })
@@ -133,7 +133,7 @@ export default function MyCasesPage() {
           {items.map(c => (
             <div
               key={c.id}
-              className="relative glass-card rounded-xl p-5 flex items-center justify-between gap-4 hover:border-primary/20 transition-all duration-200 group cursor-pointer"
+              className={`relative glass-card rounded-xl p-5 flex items-center justify-between gap-4 hover:border-primary/20 transition-all duration-200 group cursor-pointer ${menuOpen === c.id ? 'z-50' : 'z-10'}`}
               onClick={() => navigate(`/dashboard/case/${c.id}`)}
             >
               <div className="flex-1 min-w-0">

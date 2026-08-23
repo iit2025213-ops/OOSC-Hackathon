@@ -11,6 +11,7 @@ import { mdToPdf } from 'md-to-pdf';
 import puppeteer from 'puppeteer';
 import fs from 'fs';
 import schemeRoutes from './routes/schemeRoutes.js';
+import formRoutes from './routes/formRoutes.js';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/schemes', schemeRoutes);
+app.use('/api/forms', formRoutes);
 
 // Set up Multer for file uploads
 const upload = multer({ storage: multer.memoryStorage() });
@@ -118,11 +120,13 @@ app.get('/api/health/python', async (req, res) => {
 // 2. Create a new case
 app.post('/api/cases/new', requireAuth, async (req, res) => {
   try {
-    const { title, initial_query } = req.body;
+    const { title, initial_query, language } = req.body;
     
     // Generate a smart title from the query (truncate to 60 chars max)
-    const caseTitle = title || (initial_query ? initial_query.substring(0, 60) : 'New Case');
+    let caseTitle = title || (initial_query ? initial_query.substring(0, 60) : 'New Case');
     
+    // If language is Hindi, prepend a hint or just use the query as is, 
+    // but the instruction logic is generally handled in the message flow.
     const { data: caseData, error } = await supabase
       .from('cases')
       .insert([{
@@ -147,7 +151,7 @@ app.post('/api/cases/new', requireAuth, async (req, res) => {
 app.post('/api/cases/:caseId/message', requireAuth, upload.array('evidence', 5), async (req, res) => {
   try {
     const { caseId } = req.params;
-    const { query, history } = req.body;
+    const { query, history, language } = req.body;
     const files = req.files;
 
     // Verify case belongs to user
@@ -233,7 +237,7 @@ app.post('/api/cases/:caseId/message', requireAuth, upload.array('evidence', 5),
           "ngrok-skip-browser-warning": "true" 
         },
         body: JSON.stringify({
-          query: query || "",
+          query: (language === 'hi' ? "[CRITICAL INSTRUCTION: RESPOND IN HINDI] " : "") + (query || ""),
           history: parsedHistory,
           document_text: extractedText.trim() || null
         })
@@ -291,7 +295,7 @@ app.post('/api/cases/:caseId/message', requireAuth, upload.array('evidence', 5),
 app.post('/api/cases/:caseId/message/stream', requireAuth, upload.array('evidence', 5), async (req, res) => {
   try {
     const { caseId } = req.params;
-    const { query, history, previous_analysis } = req.body;
+    const { query, history, previous_analysis, language } = req.body;
     const files = req.files;
 
     // Verify case belongs to user
@@ -386,7 +390,7 @@ app.post('/api/cases/:caseId/message/stream', requireAuth, upload.array('evidenc
           "ngrok-skip-browser-warning": "true"
         },
         body: JSON.stringify({
-          query: query || "",
+          query: (language === 'hi' ? "[CRITICAL INSTRUCTION: RESPOND IN HINDI] " : "") + (query || ""),
           history: parsedHistory,
           document_text: extractedText.trim() || null,
           previous_analysis: parsedPreviousAnalysis
@@ -578,6 +582,7 @@ app.post('/api/cases/:caseId/draft_document', requireAuth, async (req, res) => {
       });
       pdf_url = uploadResult.secure_url;
       draftData.pdf_url = pdf_url;
+      draftData.pdf_base64 = pdf.content.toString('base64');
     } catch (pdfErr) {
       console.error('[BACKEND] PDF Generation/Upload Error:', pdfErr.message || pdfErr);
       if (pdfErr.stack) console.error(pdfErr.stack);
@@ -608,27 +613,35 @@ app.get('/api/cases', requireAuth, async (req, res) => {
   try {
     const { data: cases, error } = await supabase
       .from('cases')
-      .select('id, title, status, created_at')
+      .select('id, title, status, created_at, action_plan_state')
       .eq('user_id', req.user.id)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
 
-    // Get message counts for each case
+    // Get message counts and analyses for each case
     const caseIds = cases.map(c => c.id);
     if (caseIds.length > 0) {
-      const { data: msgCounts } = await supabase
+      const { data: caseMessages } = await supabase
         .from('messages')
-        .select('case_id')
+        .select('case_id, content')
         .in('case_id', caseIds);
 
       const countMap = {};
-      (msgCounts || []).forEach(m => {
+      const analysisMap = {};
+
+      (caseMessages || []).forEach(m => {
         countMap[m.case_id] = (countMap[m.case_id] || 0) + 1;
+        if (m.content?.response_type === 'analysis' || m.content?.analysis) {
+          analysisMap[m.case_id] = m.content?.analysis || m.content;
+        }
       });
 
       cases.forEach(c => {
         c.message_count = countMap[c.id] || 0;
+        if (analysisMap[c.id]) {
+          c.analysis = analysisMap[c.id];
+        }
       });
     }
 
@@ -672,10 +685,11 @@ app.get('/api/cases/:id', requireAuth, async (req, res) => {
 // 6. Update a case (rename, archive, change status)
 app.patch('/api/cases/:id', requireAuth, async (req, res) => {
   try {
-    const { title, status } = req.body;
+    const { title, status, action_plan_state } = req.body;
     const updates = {};
     if (title !== undefined) updates.title = title;
     if (status !== undefined) updates.status = status;
+    if (action_plan_state !== undefined) updates.action_plan_state = action_plan_state;
 
     const { data, error } = await supabase
       .from('cases')
@@ -710,6 +724,57 @@ app.delete('/api/cases/:id', requireAuth, async (req, res) => {
   } catch (error) {
     console.error('[BACKEND] Error deleting case:', error);
     res.status(500).json({ error: 'Failed to delete case' });
+  }
+});
+
+// 8. Fetch all documents for a user
+app.get('/api/documents', requireAuth, async (req, res) => {
+  try {
+    const { data: cases, error: casesError } = await supabase
+      .from('cases')
+      .select('id, title')
+      .eq('user_id', req.user.id);
+      
+    if (casesError) throw casesError;
+    if (!cases || cases.length === 0) return res.json([]);
+    
+    const caseIds = cases.map(c => c.id);
+    const { data: messages, error: msgError } = await supabase
+      .from('messages')
+      .select('id, case_id, role, content, created_at')
+      .in('case_id', caseIds)
+      .eq('role', 'assistant')
+      .order('created_at', { ascending: false });
+
+    if (msgError) {
+      console.error('Supabase msgError:', msgError);
+      throw msgError;
+    }
+
+    let documents = [];
+    (messages || []).forEach(m => {
+      let content = m.content;
+      if (typeof content === 'string') {
+        try { content = JSON.parse(content); } catch (e) { content = {}; }
+      }
+      if (content && content.response_type === 'document_draft' && content.pdf_url) {
+        const caseTitle = cases.find(c => c.id === m.case_id)?.title || 'Unknown Case';
+        documents.push({
+          id: m.id,
+          case_id: m.case_id,
+          case_title: caseTitle,
+          document_type: content.document_type || 'Document Draft',
+          pdf_url: content.pdf_url,
+          pdf_base64: content.pdf_base64 || null,
+          created_at: m.created_at
+        });
+      }
+    });
+
+    res.json(documents);
+  } catch (error) {
+    console.error('[BACKEND] Error fetching documents:', error);
+    res.status(500).json({ error: 'Failed to fetch documents' });
   }
 });
 

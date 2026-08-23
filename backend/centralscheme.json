@@ -32,8 +32,8 @@
     "apply_url": "https://labour.gov.in/schemes/aam-admi-beema-yojana",
     "official_url": "https://www.myscheme.gov.in/schemes/aaby",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 59.0,
+      "age_min": 18,
+      "age_max": 59,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -148,8 +148,8 @@
     "apply_url": "https://www.mod.gov.in/sites/default/files/pr_1.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/ay",
     "eligibility_criteria": {
-      "age_min": 17.0,
-      "age_max": 23.0,
+      "age_min": 17,
+      "age_max": 23,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -169,8 +169,8 @@
     "apply_url": "https://www.nabard.org/auth/writereaddata/File/ACABC%20-%20Revised%20guidelines.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/acandabc",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 60.0,
+      "age_min": 18,
+      "age_max": 60,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -190,8 +190,8 @@
     "apply_url": "https://www.iari.res.in/en/introduction.php?div_id=4",
     "official_url": "https://www.myscheme.gov.in/schemes/ae",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 60.0,
+      "age_min": 18,
+      "age_max": 60,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -382,7 +382,7 @@
     "apply_url": "https://www.aicte-india.org/sites/default/files/stdc/Mitacs%20Scheme%20Guidelines.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/am-gris",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -403,7 +403,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/sak-deg",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": true,
       "bpl_required": false
     }
@@ -423,7 +423,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/sak-dip",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": true,
       "bpl_required": false
     }
@@ -499,8 +499,8 @@
     "apply_url": "https://www.aicte-india.org/sites/default/files/Application%20Form.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/dvps",
     "eligibility_criteria": {
-      "age_min": 40.0,
-      "age_max": 75.0,
+      "age_min": 40,
+      "age_max": 75,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -635,7 +635,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/aicte-ssss",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -750,7 +750,7 @@
     "apply_url": "https://aistic.gov.in/ASEAN/HomePage",
     "official_url": "https://www.myscheme.gov.in/schemes/ai-rtf",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -810,7 +810,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "OBC",
-      "income_max": 100000.0,
+      "income_max": 100000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -886,8 +886,8 @@
     "apply_url": "https://jansuraksha.gov.in/Files/APY/ENGLISH/APY.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/apy",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 40.0,
+      "age_min": 18,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -907,7 +907,7 @@
     "apply_url": "https://socialjustice.gov.in/schemes/43",
     "official_url": "https://www.myscheme.gov.in/schemes/avyay-napsc-hssc",
     "eligibility_criteria": {
-      "age_min": 60.0,
+      "age_min": 60,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -927,8 +927,8 @@
     "apply_url": "https://culture.gov.in/files/downloads_document/Application_Form_for_SYA_Scheme_2025-26_10112025.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/asyadcf",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 25.0,
+      "age_min": 18,
+      "age_max": 25,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -948,8 +948,8 @@
     "apply_url": "https://ilearn.gov.in/static/static/pics/Guidelines.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/atestas",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 35.0,
+      "age_min": 18,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -1181,7 +1181,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/bhmnsp",
     "eligibility_criteria": {
       "gender": "female",
-      "income_max": 200000.0,
+      "income_max": 200000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -1219,9 +1219,9 @@
     "apply_url": "https://www.handicrafts.nic.in/pdf/Scheme.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/bydbta",
     "eligibility_criteria": {
-      "age_min": 60.0,
+      "age_min": 60,
       "gender": "all",
-      "income_max": 100000.0,
+      "income_max": 100000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -1240,7 +1240,7 @@
     "apply_url": "https://www.indiascienceandtechnology.gov.in/programme-schemes/women-schemes/biotechnology-career-advancement-re-orientation-programme-biocare",
     "official_url": "https://www.myscheme.gov.in/schemes/biocare",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -1317,7 +1317,7 @@
     "apply_url": "https://www.prl.res.in/prl-eng/opportunities/aabprl/butifoundationaward",
     "official_url": "https://www.myscheme.gov.in/schemes/bfa",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -1337,7 +1337,7 @@
     "apply_url": "https://ihmahmedabad.com/the-institute/admission-procedure",
     "official_url": "https://www.myscheme.gov.in/schemes/cbsp-ep",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -1357,7 +1357,7 @@
     "apply_url": "https://tourism.gov.in/sites/default/files/2021-07/CBSP%20as%20on%201507.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/cbsp-stc",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -1378,7 +1378,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/msssgc",
     "eligibility_criteria": {
       "gender": "female",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -1496,7 +1496,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "OBC",
-      "income_max": 150000.0,
+      "income_max": 150000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -1517,7 +1517,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "OBC",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -1771,7 +1771,7 @@
     "apply_url": "http://coirboard.gov.in/wp-content/uploads/2015/06/OperationalGuidelines_CUY.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/cuy",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -1925,8 +1925,8 @@
     "apply_url": "https://dgt.gov.in/en/CTS",
     "official_url": "https://www.myscheme.gov.in/schemes/cts-msde",
     "eligibility_criteria": {
-      "age_min": 14.0,
-      "age_max": 40.0,
+      "age_min": 14,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -2006,7 +2006,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/clssmig",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 1800000.0,
+      "income_max": 1800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -2082,8 +2082,8 @@
     "apply_url": "https://rural.nic.in/sites/default/files/DDUGKY_Guidelines_English_1.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/ddugku",
     "eligibility_criteria": {
-      "age_min": 15.0,
-      "age_max": 35.0,
+      "age_min": 15,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -2255,8 +2255,8 @@
     "apply_url": "https://nationaltrust.nic.in/disha-scheme/",
     "official_url": "https://www.myscheme.gov.in/schemes/deisrs",
     "eligibility_criteria": {
-      "age_min": 0.0,
-      "age_max": 10.0,
+      "age_min": 0,
+      "age_max": 10,
       "gender": "all",
       "disability_required": true,
       "bpl_required": false
@@ -2335,7 +2335,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "OBC",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -2356,7 +2356,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "General",
-      "income_max": 100000.0,
+      "income_max": 100000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -2375,7 +2375,7 @@
     "apply_url": "https://www.ugc.ac.in/pdfnews/1181594_revised-DSKPDF.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/ddskpdfs",
     "eligibility_criteria": {
-      "age_max": 35.0,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -2414,7 +2414,7 @@
     "apply_url": "https://frg.ugc.ac.in/download/Final_User_Manual_DSKPDF.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/dsrupdf",
     "eligibility_criteria": {
-      "age_max": 35.0,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -2512,7 +2512,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC",
-      "income_max": 300000.0,
+      "income_max": 300000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -2533,7 +2533,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC",
-      "income_max": 300000.0,
+      "income_max": 300000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -2553,7 +2553,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/els-nmdfc",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -2954,7 +2954,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/fssdu",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -2974,7 +2974,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/necms",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -3033,7 +3033,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC,OBC",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -3053,7 +3053,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/fcfswd",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 600000.0,
+      "income_max": 600000,
       "disability_required": true,
       "bpl_required": false
     }
@@ -3073,7 +3073,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/freecoach",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -3187,8 +3187,8 @@
     "apply_url": "https://transgender.dosje.gov.in/docs/GarimaGrehGuidleines.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/smile",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 60.0,
+      "age_min": 18,
+      "age_max": 60,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3227,7 +3227,7 @@
     "apply_url": "https://nationaltrust.nic.in/gharaunda-scheme/",
     "official_url": "https://www.myscheme.gov.in/schemes/gghas",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": true,
       "bpl_required": false
@@ -3285,8 +3285,8 @@
     "apply_url": "https://www.txcindia.gov.in/html/Format1.PDF",
     "official_url": "https://www.myscheme.gov.in/schemes/gispw",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 59.0,
+      "age_min": 18,
+      "age_max": 59,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3344,7 +3344,7 @@
     "apply_url": "https://www.prl.res.in/prl-eng/opportunities/aabprl/hoapvikramsarabhairesearchaward",
     "official_url": "https://www.myscheme.gov.in/schemes/hoapdvsra",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3384,7 +3384,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/hmdg",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 100000.0,
+      "income_max": 100000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -3461,7 +3461,7 @@
     "apply_url": "https://icar.org.in/sites/default/files/Circulars/Guidelines%20for%20ICAR-Emeritus%20Professor%20scheme_0.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/icar-ep",
     "eligibility_criteria": {
-      "age_max": 65.0,
+      "age_max": 65,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3481,7 +3481,7 @@
     "apply_url": "https://icar.org.in/sites/default/files/Circulars/Guidelines%20for%20ICAR-Emeritus%20Scientist%20scheme.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/icar-es",
     "eligibility_criteria": {
-      "age_max": 65.0,
+      "age_max": 65,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3501,7 +3501,7 @@
     "apply_url": "https://icar.org.in/sites/default/files/inline-files/Revised%28ebruary2016%29forICARJRFandSRF%28PGS%29-2016.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/icar-jrf-pgs",
     "eligibility_criteria": {
-      "age_min": 19.0,
+      "age_min": 19,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3521,7 +3521,7 @@
     "apply_url": "https://icar.org.in/sites/default/files/inline-files/Revised%28ebruary2016%29forICARJRFandSRF%28PGS%29-2016.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/icar-srf-pgs",
     "eligibility_criteria": {
-      "age_max": 30.0,
+      "age_max": 30,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3541,7 +3541,7 @@
     "apply_url": "https://www.icmr.gov.in/post-doctoral-research",
     "official_url": "https://www.myscheme.gov.in/schemes/icmr-pdf",
     "eligibility_criteria": {
-      "age_max": 32.0,
+      "age_max": 32,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3561,7 +3561,7 @@
     "apply_url": "https://www.icmr.gov.in/icmrobject/custom_data/pdf/junior-research-fellowships/Guidelines_Rules_ICMR_JRF_14_10_2020.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/icmr-jrf",
     "eligibility_criteria": {
-      "age_max": 28.0,
+      "age_max": 28,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3581,8 +3581,8 @@
     "apply_url": "https://amritinternship.iplfoundation.org.in/PDFs/Amrit_English.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/icroaip",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 45.0,
+      "age_min": 18,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3602,7 +3602,7 @@
     "apply_url": "https://icssr.org/doctoral-fellowship",
     "official_url": "https://www.myscheme.gov.in/schemes/doctoral-fellowship",
     "eligibility_criteria": {
-      "age_max": 40.0,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3641,7 +3641,7 @@
     "apply_url": "https://icssr.org/post-doctoral-fellowship",
     "official_url": "https://www.myscheme.gov.in/schemes/post-doctoral-fellowship",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3661,8 +3661,8 @@
     "apply_url": "https://icssr.org/senior-fellowship",
     "official_url": "https://www.myscheme.gov.in/schemes/senior-fellowship",
     "eligibility_criteria": {
-      "age_min": 45.0,
-      "age_max": 70.0,
+      "age_min": 45,
+      "age_max": 70,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3682,7 +3682,7 @@
     "apply_url": "https://www.igstc.org/home/industrial_fellowships",
     "official_url": "https://www.myscheme.gov.in/schemes/igstcifphdief",
     "eligibility_criteria": {
-      "age_max": 30.0,
+      "age_max": 30,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3702,7 +3702,7 @@
     "apply_url": "https://indo-germansciencetechnologycentre.my.salesforce-sites.com/ApplicantDashboard?campaign=Landing_Page_Industrial_Fellowship",
     "official_url": "https://www.myscheme.gov.in/schemes/igstcif-pdif",
     "eligibility_criteria": {
-      "age_max": 35.0,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3798,7 +3798,7 @@
     "apply_url": "https://pgsiari.icar.gov.in/gbookpdf/part1_Ch-15.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/iaris",
     "eligibility_criteria": {
-      "age_min": 21.0,
+      "age_min": 21,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -3837,7 +3837,7 @@
     "apply_url": "https://nsap.dord.gov.in/Guidelines/dps.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/igndps",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": true,
       "bpl_required": true
@@ -3857,8 +3857,8 @@
     "apply_url": "https://nsap.dord.gov.in/Guidelines/wps.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/ignwps",
     "eligibility_criteria": {
-      "age_min": 40.0,
-      "age_max": 79.0,
+      "age_min": 40,
+      "age_max": 79,
       "gender": "female",
       "disability_required": false,
       "bpl_required": true
@@ -4049,7 +4049,7 @@
     "apply_url": "https://online-inspire.gov.in/Account/OpenDocument?documentId=9ryqi2f8nTXWOAP%2BtQrybw%3D%3D",
     "official_url": "https://www.myscheme.gov.in/schemes/inspire-ff",
     "eligibility_criteria": {
-      "age_max": 32.0,
+      "age_max": 32,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -4488,7 +4488,7 @@
     "apply_url": "https://www.iccr.gov.in/sites/default/files/2023-02/ICCR%27s%20Internship%20Policy%20%2815.02.2022%29_0.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/ipiccr",
     "eligibility_criteria": {
-      "age_max": 25.0,
+      "age_max": 25,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -4546,7 +4546,7 @@
     "apply_url": "https://internship.mea.gov.in/view_pdf_home",
     "official_url": "https://www.myscheme.gov.in/schemes/ip-mea",
     "eligibility_criteria": {
-      "age_max": 25.0,
+      "age_max": 25,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -4566,8 +4566,8 @@
     "apply_url": "https://wcd.intern.nic.in/aboutproject",
     "official_url": "https://www.myscheme.gov.in/schemes/ipmwcd",
     "eligibility_criteria": {
-      "age_min": 21.0,
-      "age_max": 40.0,
+      "age_min": 21,
+      "age_max": 40,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -4606,7 +4606,7 @@
     "apply_url": "https://www.rmlh.nic.in/WriteReadData/RTF/22afece0bf8-e39c-4111-bc48-97b676f48668.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/ipwccb",
     "eligibility_criteria": {
-      "age_max": 30.0,
+      "age_max": 30,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -4740,7 +4740,7 @@
     "apply_url": "http://serbonline.com/",
     "official_url": "https://www.myscheme.gov.in/schemes/jcbs",
     "eligibility_criteria": {
-      "age_max": 68.0,
+      "age_max": 68,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -4817,8 +4817,8 @@
     "apply_url": "https://my.msme.gov.in/MyMsmeMob/MsmeScheme/Pages/1_3_1.html",
     "official_url": "https://www.myscheme.gov.in/schemes/kkjby",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 59.0,
+      "age_min": 18,
+      "age_max": 59,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -4857,7 +4857,7 @@
     "apply_url": "https://www.biotech.co.in/uploads/DBTJRFGENERALGUIDELINES.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/jrfbio",
     "eligibility_criteria": {
-      "age_max": 28.0,
+      "age_max": 28,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -4877,7 +4877,7 @@
     "apply_url": "https://www.ugc.ac.in/oldpdf/xiplanpdf/JRFSAforeignnational.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/jrfrafn",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -4897,7 +4897,7 @@
     "apply_url": "https://www.ugc.ac.in/oldpdf/xiplanpdf/JRFE-T.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/jrfst",
     "eligibility_criteria": {
-      "age_max": 40.0,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -5031,8 +5031,8 @@
     "apply_url": "https://coconutboard.gov.in/docs/Appl-Kerasuraksha.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/ksis",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 65.0,
+      "age_min": 18,
+      "age_max": 65,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -5052,8 +5052,8 @@
     "apply_url": "https://www.dcmsme.gov.in/ebook/MSMESchemebooklet2025-26.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/gvyoj",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 55.0,
+      "age_min": 18,
+      "age_max": 55,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -5073,8 +5073,8 @@
     "apply_url": "https://www.dcmsme.gov.in/ebook/MSMESchemebooklet2025-26.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/kvyoj",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 55.0,
+      "age_min": 18,
+      "age_max": 55,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -5284,7 +5284,7 @@
     "apply_url": "https://nskfdc.nic.in/en/content/home/pay-use-toilets",
     "official_url": "https://www.myscheme.gov.in/schemes/lbssk-spuct",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -5399,7 +5399,7 @@
     "apply_url": "https://www.dhr.gov.in/offerings/schemes-and-services/details/human-resource-development-for-health-research-hrd-kzM0ATMtQWa",
     "official_url": "https://www.myscheme.gov.in/schemes/ltfhrdphr",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -5419,7 +5419,7 @@
     "apply_url": "https://nrega.nic.in/Circular_Archive/archive/Operational_guidelines_4thEdition_eng_2013.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/mgnrega",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -5458,10 +5458,10 @@
     "apply_url": "https://nsfdc.nic.in/en/mahila-samriddhi-yojana",
     "official_url": "https://www.myscheme.gov.in/schemes/cbssc-msy",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 55.0,
+      "age_min": 18,
+      "age_max": 55,
       "gender": "female",
-      "income_max": 300000.0,
+      "income_max": 300000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -5614,7 +5614,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/mcms-ugsvb-aass",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 100000.0,
+      "income_max": 100000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -5635,7 +5635,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC",
-      "income_max": 300000.0,
+      "income_max": 300000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -5655,7 +5655,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/mfs-nmdfc",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -5732,7 +5732,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/mvcppsacws",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -5751,7 +5751,7 @@
     "apply_url": "https://dst.gov.in/sites/default/files/ADVERTISEMENT-Mobility.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/msdst",
     "eligibility_criteria": {
-      "age_max": 50.0,
+      "age_max": 50,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -5885,7 +5885,7 @@
     "apply_url": "https://dsel.education.gov.in/sites/default/files/update/Nari%20Shakti%20Puruskar%20Guidelines.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/cnspnaw",
     "eligibility_criteria": {
-      "age_min": 25.0,
+      "age_min": 25,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -5905,7 +5905,7 @@
     "apply_url": "https://socialjustice.gov.in/schemes/37",
     "official_url": "https://www.myscheme.gov.in/schemes/namaste-ersufaf",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -5925,8 +5925,8 @@
     "apply_url": "https://disabilityaffairs.gov.in/upload/uploadfiles/files/NAP%20SDP%20Guidelines.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/nap-sdp",
     "eligibility_criteria": {
-      "age_min": 15.0,
-      "age_max": 59.0,
+      "age_min": 15,
+      "age_max": 59,
       "gender": "all",
       "disability_required": true,
       "bpl_required": false
@@ -6003,8 +6003,8 @@
     "apply_url": "https://naps-cdn.s3.ap-south-1.amazonaws.com/NAPS+2.0_Guidelines_25-08-2023.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/naps",
     "eligibility_criteria": {
-      "age_min": 14.0,
-      "age_max": 35.0,
+      "age_min": 14,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -6043,7 +6043,7 @@
     "apply_url": "https://awards.gov.in/Home/AwardLibrary",
     "official_url": "https://www.myscheme.gov.in/schemes/nattfeivtaed",
     "eligibility_criteria": {
-      "age_max": 55.0,
+      "age_max": 55,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -6177,7 +6177,7 @@
     "apply_url": "https://awards.gov.in/Home/AwardLibrary",
     "official_url": "https://www.myscheme.gov.in/schemes/natthe",
     "eligibility_criteria": {
-      "age_max": 55.0,
+      "age_max": 55,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -6218,7 +6218,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC,ST",
-      "income_max": 300000.0,
+      "income_max": 300000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -6256,7 +6256,7 @@
     "apply_url": "https://nccs.gov.in/public/latest_updates/RA%20Notification%20Signed%20(1).pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/nccsra",
     "eligibility_criteria": {
-      "age_max": 35.0,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -6314,7 +6314,7 @@
     "apply_url": "https://awards.gov.in/Home/AwardLibrary",
     "official_url": "https://www.myscheme.gov.in/schemes/ndaa",
     "eligibility_criteria": {
-      "age_min": 40.0,
+      "age_min": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -6353,8 +6353,8 @@
     "apply_url": "https://nsap.nic.in/Guidelines/nsap_guidelines_oct2014.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/nfbs",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 60.0,
+      "age_min": 18,
+      "age_max": 60,
       "gender": "all",
       "disability_required": false,
       "bpl_required": true
@@ -6470,9 +6470,9 @@
     "apply_url": "https://www.handicrafts.nic.in/pdf/FORM_OF_APPLICATION_FOR_GRANT_OFFINANCIAL.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/nhdp-dba-saic",
     "eligibility_criteria": {
-      "age_min": 60.0,
+      "age_min": 60,
       "gender": "all",
-      "income_max": 100000.0,
+      "income_max": 100000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -6682,7 +6682,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/nmmss",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 350000.0,
+      "income_max": 350000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -6760,7 +6760,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -6779,10 +6779,10 @@
     "apply_url": "https://tribal.nic.in/downloads/faqs/Instruction-manual-NOS-2022-23.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/css-nos-st",
     "eligibility_criteria": {
-      "age_max": 38.0,
+      "age_max": 38,
       "gender": "all",
       "caste": "ST",
-      "income_max": 600000.0,
+      "income_max": 600000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -6801,9 +6801,9 @@
     "apply_url": "http://disabilityaffairs.gov.in/upload/uploadfiles/files/scholarship2(1).pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/nos-swd",
     "eligibility_criteria": {
-      "age_max": 35.0,
+      "age_max": 35,
       "gender": "all",
-      "income_max": 600000.0,
+      "income_max": 600000,
       "disability_required": true,
       "bpl_required": false
     }
@@ -6822,8 +6822,8 @@
     "apply_url": "https://maandhan.in/show_content.php?lang=1&level=1&ls_id=29&lid=29&page=6",
     "official_url": "https://www.myscheme.gov.in/schemes/nps-tsep",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 40.0,
+      "age_min": 18,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -6843,7 +6843,7 @@
     "apply_url": "https://serb.gov.in/page/awards_fellowship#National%20Post%20Doctoral%20Fellowship%20(N-PDF)",
     "official_url": "https://www.myscheme.gov.in/schemes/n-pdf",
     "eligibility_criteria": {
-      "age_max": 35.0,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7035,7 +7035,7 @@
     "apply_url": "https://scholarships.gov.in/public/schemeGuidelines/Guidelines_NATIONAL_SCHOLARSHIP_FOR_POSTGRADUATE_STUDIES_UGC_2324.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/nsfpgs",
     "eligibility_criteria": {
-      "age_max": 30.0,
+      "age_max": 30,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7207,8 +7207,8 @@
     "apply_url": "https://awards.gov.in/Home/AwardLibrary",
     "official_url": "https://www.myscheme.gov.in/schemes/nya",
     "eligibility_criteria": {
-      "age_min": 15.0,
-      "age_max": 29.0,
+      "age_min": 15,
+      "age_max": 29,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7228,8 +7228,8 @@
     "apply_url": "https://nyks.nic.in/NewInitiatives/NYVSelection202021/Letters/NYVSelectionGuideline202122.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/nyc",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 29.0,
+      "age_min": 18,
+      "age_max": 29,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7251,7 +7251,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "OBC",
-      "income_max": 300000.0,
+      "income_max": 300000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -7289,7 +7289,7 @@
     "apply_url": "https://icar.org.in/en/notification-netaji-subhas-icar-international-fellowship",
     "official_url": "https://www.myscheme.gov.in/schemes/ns-icarif",
     "eligibility_criteria": {
-      "age_max": 40.0,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7309,10 +7309,10 @@
     "apply_url": "https://socialjustice.gov.in/schemes/13",
     "official_url": "https://www.myscheme.gov.in/schemes/nssw",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 55.0,
+      "age_min": 18,
+      "age_max": 55,
       "gender": "female",
-      "income_max": 300000.0,
+      "income_max": 300000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -7445,7 +7445,7 @@
     "apply_url": "https://www.pfrda.org.in/",
     "official_url": "https://www.myscheme.gov.in/schemes/npsvs",
     "eligibility_criteria": {
-      "age_max": 18.0,
+      "age_max": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7465,7 +7465,7 @@
     "apply_url": "https://nsap.dord.gov.in/Guidelines/social_audit_guidelines.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/nsap-ignoaps",
     "eligibility_criteria": {
-      "age_min": 60.0,
+      "age_min": 60,
       "gender": "all",
       "disability_required": false,
       "bpl_required": true
@@ -7562,7 +7562,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/ppma",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 600000.0,
+      "income_max": 600000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -7600,7 +7600,7 @@
     "apply_url": "https://indo-germansciencetechnologycentre.my.salesforce-sites.com/ApplicantDashboard?campaign=Landing_Page_Pecfar",
     "official_url": "https://www.myscheme.gov.in/schemes/pecfar",
     "eligibility_criteria": {
-      "age_max": 35.0,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7658,8 +7658,8 @@
     "apply_url": "http://rubberboard.org.in/rbfilereader?fileid=419",
     "official_url": "https://www.myscheme.gov.in/schemes/pstsrp",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 55.0,
+      "age_min": 18,
+      "age_max": 55,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7679,7 +7679,7 @@
     "apply_url": "https://my.msme.gov.in/MyMsmeMob/MsmeScheme/Pages/1_3_5_3.html",
     "official_url": "https://www.myscheme.gov.in/schemes/gpaiscw",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7756,7 +7756,7 @@
     "apply_url": "https://www.prl.res.in/prl-eng/opportunities/aabprl/prlaward",
     "official_url": "https://www.myscheme.gov.in/schemes/prla",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7872,7 +7872,7 @@
     "apply_url": "https://pmvishwakarma.gov.in/Home/EbookPdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pmv",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7911,7 +7911,7 @@
     "apply_url": "https://socialjustice.gov.in/writereaddata/UploadFile/71551728966351.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pmstgc",
     "eligibility_criteria": {
-      "age_max": 40.0,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -7933,7 +7933,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "OBC",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -7954,7 +7954,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "OBC",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -7975,7 +7975,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "OBC",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -7996,7 +7996,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "OBC",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -8034,7 +8034,7 @@
     "apply_url": "https://www.prl.res.in/prl-eng/pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pdf",
     "eligibility_criteria": {
-      "age_max": 35.0,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8054,7 +8054,7 @@
     "apply_url": "https://www.ugc.gov.in/pdfnews/1962361_PDF-SC-ST-revised.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pdfscstc",
     "eligibility_criteria": {
-      "age_max": 55.0,
+      "age_max": 55,
       "gender": "all",
       "caste": "SC,ST",
       "disability_required": false,
@@ -8075,7 +8075,7 @@
     "apply_url": "https://www.ugc.gov.in/pdfnews/7347918_pdfw.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pdfwc",
     "eligibility_criteria": {
-      "age_max": 55.0,
+      "age_max": 55,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -8095,7 +8095,7 @@
     "apply_url": "https://scholarships.gov.in/public/schemeGuidelines/Guidelines_SGC1819.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pg-igssgc",
     "eligibility_criteria": {
-      "age_max": 30.0,
+      "age_max": 30,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -8134,7 +8134,7 @@
     "apply_url": "https://scholarships.gov.in/public/schemeGuidelines/GuidelinesUGCUniversityRankHolder1819.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pgmssurhula",
     "eligibility_criteria": {
-      "age_max": 30.0,
+      "age_max": 30,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8175,7 +8175,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "ST",
-      "income_max": 200000.0,
+      "income_max": 200000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -8195,7 +8195,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/post-dis",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": true,
       "bpl_required": false
     }
@@ -8255,7 +8255,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -8354,7 +8354,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/pmay-u",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 1800000.0,
+      "income_max": 1800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -8392,8 +8392,8 @@
     "apply_url": "https://socialjustice.gov.in/schemes/100",
     "official_url": "https://www.myscheme.gov.in/schemes/pm-daksh",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 45.0,
+      "age_min": 18,
+      "age_max": 45,
       "gender": "all",
       "caste": "SC,OBC",
       "disability_required": false,
@@ -8433,7 +8433,7 @@
     "apply_url": "blob:https://pmfme.mofpi.gov.in/e1c2cec9-dd34-489f-93a1-9f20ec1056df",
     "official_url": "https://www.myscheme.gov.in/schemes/pmfmpe",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8568,8 +8568,8 @@
     "apply_url": "https://jansuraksha.gov.in/Files/PMJJBY/English/Rules.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pmjjby",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 50.0,
+      "age_min": 18,
+      "age_max": 50,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8589,8 +8589,8 @@
     "apply_url": "https://www.msde.gov.in/offerings/schemes-and-services/details/pradhan-mantri-kaushal-vikas-yojana-4-0-pmkvy-4-0-2021-ITO3ATMtQWa",
     "official_url": "https://www.myscheme.gov.in/schemes/pmkvy-rpl",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 59.0,
+      "age_min": 18,
+      "age_max": 59,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8610,8 +8610,8 @@
     "apply_url": "https://xn--o1bna6ezc1cxc.xn--11b7cb3a6a.xn--h2brj9c/offerings/schemes-and-services/details/pradhan-mantri-kaushal-vikas-yojana-4-0-pmkvy-4-0-2021-ITO3ATMtQWa",
     "official_url": "https://www.myscheme.gov.in/schemes/pmkvy-stt",
     "eligibility_criteria": {
-      "age_min": 15.0,
-      "age_max": 45.0,
+      "age_min": 15,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8631,8 +8631,8 @@
     "apply_url": "https://www.msde.gov.in/offerings/schemes-and-services/details/pradhan-mantri-kaushal-vikas-yojana-4-0-pmkvy-4-0-2021-ITO3ATMtQWa",
     "official_url": "https://www.myscheme.gov.in/schemes/pmkvy-sp",
     "eligibility_criteria": {
-      "age_min": 15.0,
-      "age_max": 45.0,
+      "age_min": 15,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8652,8 +8652,8 @@
     "apply_url": "https://pmkmy.gov.in/scheme/pmkmy",
     "official_url": "https://www.myscheme.gov.in/schemes/pmkmdy",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 40.0,
+      "age_min": 18,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8711,7 +8711,7 @@
     "apply_url": "https://wcd.delhi.gov.in/wcd/pradhan-mantri-matru-vandana-yojana-pmmvy",
     "official_url": "https://www.myscheme.gov.in/schemes/pmmvy",
     "eligibility_criteria": {
-      "age_min": 19.0,
+      "age_min": 19,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -8788,8 +8788,8 @@
     "apply_url": "https://awards.gov.in/Home/AwardLibrary",
     "official_url": "https://www.myscheme.gov.in/schemes/pmrbp",
     "eligibility_criteria": {
-      "age_min": 5.0,
-      "age_max": 18.0,
+      "age_min": 5,
+      "age_max": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8809,8 +8809,8 @@
     "apply_url": "https://maandhan.in/showfile.php?lang=1&level=1&ls_id=171&lid=260&page=101",
     "official_url": "https://www.myscheme.gov.in/schemes/pm-sym",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 40.0,
+      "age_min": 18,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8849,8 +8849,8 @@
     "apply_url": "https://jansuraksha.gov.in/Files/PMSBY/English/Rules.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pmsby",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 70.0,
+      "age_min": 18,
+      "age_max": 70,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -8890,7 +8890,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/csss-cus",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 450000.0,
+      "income_max": 450000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -8910,7 +8910,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/pm-usp-sssjkl",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -8930,7 +8930,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/pm-uspycsiss",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 450000.0,
+      "income_max": 450000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -8968,7 +8968,7 @@
     "apply_url": "https://www.pmuy.gov.in/index.aspx",
     "official_url": "https://www.myscheme.gov.in/schemes/pmuy2",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "female",
       "caste": "SC,ST",
       "disability_required": false,
@@ -8991,7 +8991,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "ST",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -9011,7 +9011,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/pmvs",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -9049,8 +9049,8 @@
     "apply_url": "https://pmvikas.minorityaffairs.gov.in/uploads/documents/Guidelines-PM-VIKAS.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pm-vikas",
     "eligibility_criteria": {
-      "age_min": 14.0,
-      "age_max": 45.0,
+      "age_min": 14,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -9071,7 +9071,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/psgs-deg",
     "eligibility_criteria": {
       "gender": "female",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -9091,7 +9091,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/psgs-dip",
     "eligibility_criteria": {
       "gender": "female",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -9111,7 +9111,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/pahal-dbtl",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 1000000.0,
+      "income_max": 1000000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -9130,8 +9130,8 @@
     "apply_url": "https://www.mea.gov.in/pbby.htm",
     "official_url": "https://www.myscheme.gov.in/schemes/pbby",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 65.0,
+      "age_min": 18,
+      "age_max": 65,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -9153,7 +9153,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "ST",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -9173,7 +9173,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/pre-dis",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": true,
       "bpl_required": false
     }
@@ -9194,7 +9194,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -9271,7 +9271,7 @@
     "apply_url": "https://www.anrfonline.in/ANRF/ecrg_anrf",
     "official_url": "https://www.myscheme.gov.in/schemes/pmecrg",
     "eligibility_criteria": {
-      "age_max": 42.0,
+      "age_max": 42,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -9329,7 +9329,7 @@
     "apply_url": "https://yoga.ayush.gov.in/api/uploads/assets/IDY/PM-Awards-2025.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pmafy",
     "eligibility_criteria": {
-      "age_min": 30.0,
+      "age_min": 30,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -9349,7 +9349,7 @@
     "apply_url": "https://www.kviconline.gov.in/pmegpeportal/dashboard/notification/Circular%20-%20issued.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pmegp",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -9445,10 +9445,10 @@
     "apply_url": "https://pminternship.mca.gov.in/mca-api/files/get-file-by-path?path=dmk6u3VpUsp6ikurW5RiDHvOeK%2FORrkviDSlob80fjUnkLIps2yEsK3t8HQ3X%2BCi5L3oDjNS71worg8RL%2B8I7SvOoHWDoY8Uxi9nbjdgdEiroaNA20hjxNmbfud6ms8nxsHquSlFMwPPQw%3D%3D",
     "official_url": "https://www.myscheme.gov.in/schemes/pmis",
     "eligibility_criteria": {
-      "age_min": 21.0,
-      "age_max": 24.0,
+      "age_min": 21,
+      "age_max": 24,
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -9467,8 +9467,8 @@
     "apply_url": "https://cdn.s3waas.gov.in/s330ef30b64204a3088a26bc2e6ecf7602/uploads/2018/11/2018111655-1.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/pmrdfs",
     "eligibility_criteria": {
-      "age_min": 22.0,
-      "age_max": 27.0,
+      "age_min": 22,
+      "age_max": 27,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -9564,7 +9564,7 @@
     "apply_url": "https://www.prl.res.in/prl-eng/phd",
     "official_url": "https://www.myscheme.gov.in/schemes/prljrf",
     "eligibility_criteria": {
-      "age_max": 28.0,
+      "age_max": 28,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -9584,7 +9584,7 @@
     "apply_url": "https://www.prl.res.in/~pdf/VISHWAS_form.html",
     "official_url": "https://www.myscheme.gov.in/schemes/prlvishwas",
     "eligibility_criteria": {
-      "age_max": 35.0,
+      "age_max": 35,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10080,7 +10080,7 @@
     "apply_url": "https://fellowships.gov.in/rrf-registration-2024-25/generate",
     "official_url": "https://www.myscheme.gov.in/schemes/rrf",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10100,7 +10100,7 @@
     "apply_url": "https://www.cefipra.org/Docs/RCF-GLine-2025.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/r-cf",
     "eligibility_criteria": {
-      "age_max": 30.0,
+      "age_max": 30,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10120,7 +10120,7 @@
     "apply_url": "https://serb.gov.in/page/awards_fellowship#Ramanujan%20Fellowship",
     "official_url": "https://www.myscheme.gov.in/schemes/rf",
     "eligibility_criteria": {
-      "age_max": 40.0,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10198,7 +10198,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/rpsy",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 56460.0,
+      "income_max": 56460,
       "disability_required": false,
       "bpl_required": false
     }
@@ -10332,7 +10332,7 @@
     "apply_url": "https://fellowships.gov.in/",
     "official_url": "https://www.myscheme.gov.in/schemes/ra",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10352,7 +10352,7 @@
     "apply_url": "https://frg.ugc.ac.in/download/Guidelines-In%20service%20faculty.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/rgisfm",
     "eligibility_criteria": {
-      "age_max": 50.0,
+      "age_max": 50,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10391,8 +10391,8 @@
     "apply_url": "https://rti.dopt.gov.in/",
     "official_url": "https://www.myscheme.gov.in/schemes/rtif",
     "eligibility_criteria": {
-      "age_min": 25.0,
-      "age_max": 40.0,
+      "age_min": 25,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10431,8 +10431,8 @@
     "apply_url": "https://agriwelfare.gov.in/sites/default/files/guide_soil.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/rkvyshfvlstl",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 27.0,
+      "age_min": 18,
+      "age_max": 27,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10452,7 +10452,7 @@
     "apply_url": "https://ksb.gov.in/orphan-children-of-esm.htm",
     "official_url": "https://www.myscheme.gov.in/schemes/rmewf-faocesm",
     "eligibility_criteria": {
-      "age_max": 21.0,
+      "age_max": 21,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10491,7 +10491,7 @@
     "apply_url": "https://ksb.gov.in/ex-servicemen-penury.htm",
     "official_url": "https://www.myscheme.gov.in/schemes/rmewf-penury",
     "eligibility_criteria": {
-      "age_min": 65.0,
+      "age_min": 65,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10721,7 +10721,7 @@
     "apply_url": "https://www.ugc.gov.in/Fellowship/stu_Fellowship3",
     "official_url": "https://www.myscheme.gov.in/schemes/sjpfsgc",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -10760,8 +10760,8 @@
     "apply_url": "https://wcdhry.gov.in/schemes-for-women/scheme-for-adolescent-girls/",
     "official_url": "https://www.myscheme.gov.in/schemes/sag",
     "eligibility_criteria": {
-      "age_min": 14.0,
-      "age_max": 18.0,
+      "age_min": 14,
+      "age_max": 18,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -10800,7 +10800,7 @@
     "apply_url": "https://culture.gov.in/application-form-seniorjunior-fellowship-scheme",
     "official_url": "https://www.myscheme.gov.in/schemes/sasjfopfc",
     "eligibility_criteria": {
-      "age_min": 25.0,
+      "age_min": 25,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -10878,7 +10878,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/seed-ee",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -10897,9 +10897,9 @@
     "apply_url": "https://indiaculture.gov.in/sites/default/files/Schemes/Application_for_Scheme_for_Financial_Assistance_for_Veteran_Artists_09112022.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/sfava",
     "eligibility_criteria": {
-      "age_min": 60.0,
+      "age_min": 60,
       "gender": "all",
-      "income_max": 48000.0,
+      "income_max": 48000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -11034,7 +11034,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC",
-      "income_max": 250000.0,
+      "income_max": 250000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -11111,7 +11111,7 @@
     "apply_url": "http://esomsa.hp.gov.in/sites/default/files/scan0001-74363681.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/sfsmttpotc",
     "eligibility_criteria": {
-      "age_max": 18.0,
+      "age_max": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11131,7 +11131,7 @@
     "apply_url": "https://www.meity.gov.in/static/uploads/2024/03/ESDM_SkillDev_Guidelines_Scheme2_v2.0_05Nov2018.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/sdesdm",
     "eligibility_criteria": {
-      "age_min": 17.0,
+      "age_min": 17,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11171,7 +11171,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/sadppfaa",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 360000.0,
+      "income_max": 360000,
       "disability_required": true,
       "bpl_required": false
     }
@@ -11479,7 +11479,7 @@
     "apply_url": "https://www.sebi.gov.in/sebi_data/careerfiles/dec-2019/1576758408220.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/sebiitdip",
     "eligibility_criteria": {
-      "age_max": 30.0,
+      "age_max": 30,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11537,7 +11537,7 @@
     "apply_url": "https://rbidocs.rbi.org.in/rdocs/content/pdfs/SCSSGOL17042020.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/scss",
     "eligibility_criteria": {
-      "age_min": 60.0,
+      "age_min": 60,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11557,8 +11557,8 @@
     "apply_url": "https://serb.gov.in/page/awards_fellowship",
     "official_url": "https://www.myscheme.gov.in/schemes/serbpowerf",
     "eligibility_criteria": {
-      "age_min": 35.0,
-      "age_max": 55.0,
+      "age_min": 35,
+      "age_max": 55,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -11597,7 +11597,7 @@
     "apply_url": "https://serb.gov.in/page/research_networking#SERB%20International%20Research%20Experience%20(SIRE)",
     "official_url": "https://www.myscheme.gov.in/schemes/sire",
     "eligibility_criteria": {
-      "age_max": 40.0,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11617,7 +11617,7 @@
     "apply_url": "https://dst.gov.in/sites/default/files/SRS-Scheme_0.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/serbrss",
     "eligibility_criteria": {
-      "age_max": 40.0,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11675,7 +11675,7 @@
     "apply_url": "https://www.handicrafts.gov.in/Pdf/dc_hc_shilpguru_award_guidelines_2015.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/sga",
     "eligibility_criteria": {
-      "age_min": 55.0,
+      "age_min": 55,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11695,7 +11695,7 @@
     "apply_url": "https://dummy-url.icmr.org.in/hrd",
     "official_url": "https://www.myscheme.gov.in/schemes/stfhrdphr",
     "eligibility_criteria": {
-      "age_max": 55.0,
+      "age_max": 55,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11753,7 +11753,7 @@
     "apply_url": "https://nttm.texmin.gov.in/pdf/WhatsNew/General%20Guidelines%20for%20Skill%20Development%20&%20Training%20of%20Candidates%20in%20Technical%20Textiles.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/sdatocitt",
     "eligibility_criteria": {
-      "age_min": 17.0,
+      "age_min": 17,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11811,8 +11811,8 @@
     "apply_url": "https://transgender.dosje.gov.in/Applicant/Registration/DisplayForm3",
     "official_url": "https://www.myscheme.gov.in/schemes/smile-skill-and-training",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 45.0,
+      "age_min": 18,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11890,7 +11890,7 @@
     "apply_url": "https://www.udyami.org.in/storage/schemes/file/t4CQkv4D2TsdhI3MK8KqFSnYPw6RTBBsmh7p449D.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/sui",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -11967,7 +11967,7 @@
     "apply_url": "https://cag.gov.in/uploads/student_internship_programme/student-internship-programme-065ddbcd9173a62-33560969.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/sipocagi",
     "eligibility_criteria": {
-      "age_max": 25.0,
+      "age_max": 25,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -12082,7 +12082,7 @@
     "apply_url": "https://icar.org.in/sites/default/files/Circulars/Advertisement%20for%20Sukhatme%20National%20Award%20in%20Statistics%20-%202026.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/snas",
     "eligibility_criteria": {
-      "age_min": 45.0,
+      "age_min": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -12273,7 +12273,7 @@
     "apply_url": "https://www.ugc.gov.in/pdfnews/1555717_guidelines-SWAMI-Vivekananda.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/svsgcfrss",
     "eligibility_criteria": {
-      "age_max": 40.0,
+      "age_max": 40,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -12293,8 +12293,8 @@
     "apply_url": "https://dst.gov.in/scientific-programmes/scientific-engineering-research/human-resource-development-and-nurturing-young-talent-swarnajayanti-fellowships-scheme",
     "official_url": "https://www.myscheme.gov.in/schemes/sjfs",
     "eligibility_criteria": {
-      "age_min": 30.0,
-      "age_max": 40.0,
+      "age_min": 30,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -12390,7 +12390,7 @@
     "apply_url": "https://www.serbonline.in/SERB/Tare",
     "official_url": "https://www.myscheme.gov.in/schemes/tare",
     "eligibility_criteria": {
-      "age_max": 45.0,
+      "age_max": 45,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -12524,9 +12524,9 @@
     "apply_url": "https://www.nmdfc.org/lendingpolicy",
     "official_url": "https://www.myscheme.gov.in/schemes/tls-nmdfc",
     "eligibility_criteria": {
-      "age_min": 18.0,
+      "age_min": 18,
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -12662,7 +12662,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -12682,7 +12682,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/tce-swd",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 600000.0,
+      "income_max": 600000,
       "disability_required": true,
       "bpl_required": false
     }
@@ -12836,7 +12836,7 @@
     "eligibility_criteria": {
       "gender": "all",
       "caste": "SC,OBC",
-      "income_max": 300000.0,
+      "income_max": 300000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -12913,7 +12913,7 @@
     "apply_url": "https://nationaltrust.nic.in/vikaas-scheme/",
     "official_url": "https://www.myscheme.gov.in/schemes/vdcspds",
     "eligibility_criteria": {
-      "age_min": 10.0,
+      "age_min": 10,
       "gender": "all",
       "disability_required": true,
       "bpl_required": false
@@ -12934,7 +12934,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/vls-nmdfc",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 800000.0,
+      "income_max": 800000,
       "disability_required": false,
       "bpl_required": false
     }
@@ -13029,7 +13029,7 @@
     "apply_url": "https://www.meity.gov.in/offerings/schemes-and-services/details/visvesvaraya-phd-scheme-for-electronics-it-QM1MDOtQWa",
     "official_url": "https://www.myscheme.gov.in/schemes/vphdseitpdf",
     "eligibility_criteria": {
-      "age_max": 40.0,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -13049,7 +13049,7 @@
     "apply_url": "https://www.meity.gov.in/offerings/schemes-and-services/details/visvesvaraya-phd-scheme-for-electronics-it-QM1MDOtQWa",
     "official_url": "https://www.myscheme.gov.in/schemes/yfrf",
     "eligibility_criteria": {
-      "age_max": 40.0,
+      "age_max": 40,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -13069,8 +13069,8 @@
     "apply_url": "https://nskfdc.nic.in/en/content/vocational-education-and-training-loan-scheme",
     "official_url": "https://www.myscheme.gov.in/schemes/vetls",
     "eligibility_criteria": {
-      "age_min": 18.0,
-      "age_max": 50.0,
+      "age_min": 18,
+      "age_max": 50,
       "gender": "all",
       "disability_required": false,
       "bpl_required": false
@@ -13129,8 +13129,8 @@
     "apply_url": "https://dst.gov.in/wise-fellowship-phd-wise-phd",
     "official_url": "https://www.myscheme.gov.in/schemes/wise-phd",
     "eligibility_criteria": {
-      "age_min": 27.0,
-      "age_max": 45.0,
+      "age_min": 27,
+      "age_max": 45,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -13150,8 +13150,8 @@
     "apply_url": "https://dst.gov.in/wise-post-doctoral-fellowship-wise-pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/wise-pdf",
     "eligibility_criteria": {
-      "age_min": 27.0,
-      "age_max": 60.0,
+      "age_min": 27,
+      "age_max": 60,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -13190,8 +13190,8 @@
     "apply_url": "https://dst.gov.in/callforproposals/call-proposals-under-wise-scope-fellowship",
     "official_url": "https://www.myscheme.gov.in/schemes/wise-scope-fellowship",
     "eligibility_criteria": {
-      "age_min": 27.0,
-      "age_max": 60.0,
+      "age_min": 27,
+      "age_max": 60,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -13230,8 +13230,8 @@
     "apply_url": "https://www.indiascienceandtechnology.gov.in/programme-schemes/women-schemes/women-scientist-scheme-wos",
     "official_url": "https://www.myscheme.gov.in/schemes/wos-a",
     "eligibility_criteria": {
-      "age_min": 27.0,
-      "age_max": 57.0,
+      "age_min": 27,
+      "age_max": 57,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -13251,8 +13251,8 @@
     "apply_url": "https://www.indiascienceandtechnology.gov.in/programme-schemes/women-schemes/women-scientist-scheme-b-wos-b",
     "official_url": "https://www.myscheme.gov.in/schemes/wos-b",
     "eligibility_criteria": {
-      "age_min": 27.0,
-      "age_max": 57.0,
+      "age_min": 27,
+      "age_max": 57,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -13272,8 +13272,8 @@
     "apply_url": "https://www.indiascienceandtechnology.gov.in/programme-schemes/women-schemes/women-scientist-scheme-c-wos-c",
     "official_url": "https://www.myscheme.gov.in/schemes/wos-c",
     "eligibility_criteria": {
-      "age_min": 27.0,
-      "age_max": 45.0,
+      "age_min": 27,
+      "age_max": 45,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -13293,8 +13293,8 @@
     "apply_url": "https://dst.gov.in/sites/default/files/Advertisement-WIDUSHI_0.pdf",
     "official_url": "https://www.myscheme.gov.in/schemes/widushi",
     "eligibility_criteria": {
-      "age_min": 45.0,
-      "age_max": 62.0,
+      "age_min": 45,
+      "age_max": 62,
       "gender": "female",
       "disability_required": false,
       "bpl_required": false
@@ -13334,7 +13334,7 @@
     "official_url": "https://www.myscheme.gov.in/schemes/iu-sss-ner",
     "eligibility_criteria": {
       "gender": "all",
-      "income_max": 450000.0,
+      "income_max": 450000,
       "disability_required": false,
       "bpl_required": false
     }

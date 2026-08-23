@@ -1,6 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {
+  cleanString,
+  normalizeState,
+  parseIncome,
+  normalizeGender,
+  parseAge,
+  normalizeCaste,
+  normalizeArray
+} from '../utils/normalizers.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,18 +42,18 @@ class SchemeService {
         id: `central_${index}`,
         source_type: 'central',
         state: null,
-        scheme_name: scheme.scheme_name || "Unknown Scheme",
-        description: scheme.description || "",
-        ministry: scheme.ministry || "N/A",
-        department: scheme.department || "N/A",
-        category: this.normalizeArray(scheme.category),
-        beneficiary_type: this.normalizeArray(scheme.beneficiary_type),
-        benefits: scheme.benefits || "",
-        eligibility: scheme.eligibility || "",
-        application_process: scheme.application_process || "",
-        documents_required: scheme.documents_required || "",
-        apply_url: scheme.apply_url || "",
-        official_url: scheme.official_url || "",
+        scheme_name: cleanString(scheme.scheme_name) || "Unknown Scheme",
+        description: cleanString(scheme.description),
+        ministry: cleanString(scheme.ministry),
+        department: cleanString(scheme.department),
+        category: normalizeArray(scheme.category),
+        beneficiary_type: normalizeArray(scheme.beneficiary_type),
+        benefits: cleanString(scheme.benefits),
+        eligibility: cleanString(scheme.eligibility),
+        application_process: cleanString(scheme.application_process),
+        documents_required: cleanString(scheme.documents_required),
+        apply_url: cleanString(scheme.apply_url),
+        official_url: cleanString(scheme.official_url),
         eligibility_criteria: this.normalizeCriteria(scheme.eligibility_criteria)
       }));
 
@@ -52,19 +61,19 @@ class SchemeService {
       const normalizedState = stateData.map((scheme, index) => ({
         id: `state_${index}`,
         source_type: 'state',
-        state: scheme.state || "Unknown State",
-        scheme_name: scheme.scheme_name || "Unknown Scheme",
-        description: scheme.description || "",
-        ministry: scheme.ministry || "N/A",
-        department: scheme.department || "N/A",
-        category: this.normalizeArray(scheme.category),
-        beneficiary_type: this.normalizeArray(scheme.beneficiary_type),
-        benefits: scheme.benefits || "",
-        eligibility: scheme.eligibility || "",
-        application_process: scheme.application_process || "",
-        documents_required: scheme.documents_required || "",
-        apply_url: scheme.apply_url || "",
-        official_url: scheme.official_url || "",
+        state: normalizeState(scheme.state),
+        scheme_name: cleanString(scheme.scheme_name) || "Unknown Scheme",
+        description: cleanString(scheme.description),
+        ministry: cleanString(scheme.ministry),
+        department: cleanString(scheme.department),
+        category: normalizeArray(scheme.category),
+        beneficiary_type: normalizeArray(scheme.beneficiary_type),
+        benefits: cleanString(scheme.benefits),
+        eligibility: cleanString(scheme.eligibility),
+        application_process: cleanString(scheme.application_process),
+        documents_required: cleanString(scheme.documents_required),
+        apply_url: cleanString(scheme.apply_url),
+        official_url: cleanString(scheme.official_url),
         eligibility_criteria: this.normalizeCriteria(scheme.eligibility_criteria)
       }));
 
@@ -74,12 +83,6 @@ class SchemeService {
     } catch (error) {
       console.error("[SchemeService] Failed to load schemes:", error);
     }
-  }
-
-  normalizeArray(value) {
-    if (!value || value === "N/A") return [];
-    if (Array.isArray(value)) return value;
-    return value.split(',').map(s => s.trim()).filter(s => s.length > 0);
   }
 
   normalizeCriteria(criteria) {
@@ -95,26 +98,26 @@ class SchemeService {
 
     if (!criteria) return norm;
 
-    if (criteria.gender) norm.gender = criteria.gender.toLowerCase();
-    
-    if (criteria.age_min !== undefined && criteria.age_min !== null && criteria.age_min !== "") {
-      norm.age_min = parseFloat(criteria.age_min);
-    }
-    
-    if (criteria.age_max !== undefined && criteria.age_max !== null && criteria.age_max !== "") {
-      norm.age_max = parseFloat(criteria.age_max);
-    }
+    norm.gender = normalizeGender(criteria.gender);
 
-    if (criteria.income_max !== undefined && criteria.income_max !== null && criteria.income_max !== "") {
-      // Some datasets might store it as a string "200000" or integer
-      const inc = parseInt(criteria.income_max);
-      if (!isNaN(inc)) norm.income_max = inc;
-    }
+    const parsedMinAge = parseAge(criteria.age_min);
+    if (parsedMinAge === 'UNPARSEABLE') norm.age_min = 'UNPARSEABLE';
+    else if (parsedMinAge && parsedMinAge.min !== null) norm.age_min = parsedMinAge.min;
+    
+    const parsedMaxAge = parseAge(criteria.age_max);
+    if (parsedMaxAge === 'UNPARSEABLE') norm.age_max = 'UNPARSEABLE';
+    else if (parsedMaxAge && parsedMaxAge.max !== null) norm.age_max = parsedMaxAge.max;
 
-    if (criteria.caste) {
-      if (Array.isArray(criteria.caste)) norm.caste = criteria.caste;
-      else norm.caste = criteria.caste.split(',').map(c => c.trim().toUpperCase());
-    }
+    if (parsedMinAge !== 'UNPARSEABLE' && parsedMinAge.max !== null && norm.age_max === null) norm.age_max = parsedMinAge.max;
+    if (parsedMaxAge !== 'UNPARSEABLE' && parsedMaxAge.min !== null && norm.age_min === null) norm.age_min = parsedMaxAge.min;
+
+    if (norm.age_min === 'UNPARSEABLE') console.warn(`[SchemeService] Unparseable age_min: ${criteria.age_min}`);
+    if (norm.age_max === 'UNPARSEABLE') console.warn(`[SchemeService] Unparseable age_max: ${criteria.age_max}`);
+
+    norm.income_max = parseIncome(criteria.income_max);
+    if (norm.income_max === 'UNPARSEABLE') console.warn(`[SchemeService] Unparseable income_max: ${criteria.income_max}`);
+
+    norm.caste = normalizeCaste(criteria.caste);
 
     if (criteria.bpl_required === true || criteria.bpl_required === "true") norm.bpl_required = true;
     if (criteria.disability_required === true || criteria.disability_required === "true") norm.disability_required = true;
@@ -161,12 +164,12 @@ class SchemeService {
     if (!scheme) return null;
 
     const uAge = userProfile.age ? parseInt(userProfile.age) : null;
-    const uGender = userProfile.gender ? userProfile.gender.toLowerCase() : null;
-    const uCaste = userProfile.caste ? userProfile.caste.toUpperCase() : null;
-    const uIncome = userProfile.annual_income ? parseInt(userProfile.annual_income) : null;
+    const uGender = normalizeGender(userProfile.gender);
+    const uCaste = normalizeCaste(userProfile.caste);
+    const uIncome = parseIncome(userProfile.annual_income);
     const uBpl = !!userProfile.bpl;
     const uDisability = !!userProfile.disability;
-    const uState = userProfile.state ? userProfile.state.toLowerCase() : null;
+    const uState = normalizeState(userProfile.state);
 
     const crit = scheme.eligibility_criteria;
     const passed = [];
@@ -175,10 +178,11 @@ class SchemeService {
 
     // State
     if (scheme.source_type === 'state') {
-      const sState = scheme.state.toLowerCase();
-      if (!uState) {
+      if (scheme.state === null) {
+        failed.push({ criterion: "State Requirement Unclear", details: "Scheme state is unknown/unparseable." });
+      } else if (!uState) {
         missing.push("State/UT");
-      } else if (!sState.includes(uState) && !uState.includes(sState)) {
+      } else if (scheme.state !== uState) {
         failed.push({ criterion: "State", details: `Required: ${scheme.state}, You: ${uState}` });
       } else {
         passed.push({ criterion: "State", details: `Matched: ${scheme.state}` });
@@ -191,13 +195,18 @@ class SchemeService {
         missing.push("Age");
       } else {
         let ageFailed = false;
-        if (crit.age_min !== null && uAge < crit.age_min) {
-          failed.push({ criterion: "Minimum Age", details: `Required: ${crit.age_min}, You: ${uAge}` });
+        if (crit.age_min === 'UNPARSEABLE' || crit.age_max === 'UNPARSEABLE') {
+          failed.push({ criterion: "Age Requirement Unclear", details: "The scheme data contains unparseable age rules." });
           ageFailed = true;
-        }
-        if (crit.age_max !== null && uAge > crit.age_max) {
-          failed.push({ criterion: "Maximum Age", details: `Required: ${crit.age_max}, You: ${uAge}` });
-          ageFailed = true;
+        } else {
+          if (crit.age_min !== null && uAge < crit.age_min) {
+            failed.push({ criterion: "Minimum Age", details: `Required: ${crit.age_min}, You: ${uAge}` });
+            ageFailed = true;
+          }
+          if (crit.age_max !== null && uAge > crit.age_max) {
+            failed.push({ criterion: "Maximum Age", details: `Required: ${crit.age_max}, You: ${uAge}` });
+            ageFailed = true;
+          }
         }
         if (!ageFailed) {
           let range = "";
@@ -211,7 +220,7 @@ class SchemeService {
 
     // Gender
     if (crit.gender !== 'all') {
-      if (!uGender) {
+      if (uGender === 'all') {
         missing.push("Gender");
       } else if (crit.gender !== uGender) {
         failed.push({ criterion: "Gender", details: `Required: ${crit.gender}, You: ${uGender}` });
@@ -222,12 +231,15 @@ class SchemeService {
 
     // Caste
     if (crit.caste && crit.caste.length > 0) {
-      if (!uCaste) {
+      if (!uCaste || uCaste.length === 0) {
         missing.push("Caste/Category");
-      } else if (!crit.caste.includes(uCaste)) {
-        failed.push({ criterion: "Caste", details: `Required: one of ${crit.caste.join(', ')}, You: ${uCaste}` });
       } else {
-        passed.push({ criterion: "Caste", details: `Matched: ${uCaste}` });
+        const hasMatch = crit.caste.some(c => uCaste.includes(c));
+        if (!hasMatch) {
+          failed.push({ criterion: "Caste", details: `Required: one of ${crit.caste.join(', ')}, You: ${uCaste.join(', ')}` });
+        } else {
+          passed.push({ criterion: "Caste", details: `Matched: ${uCaste.join(', ')}` });
+        }
       }
     }
 
@@ -235,6 +247,8 @@ class SchemeService {
     if (crit.income_max !== null) {
       if (uIncome === null) {
         missing.push("Annual Income");
+      } else if (crit.income_max === 'UNPARSEABLE') {
+        failed.push({ criterion: "Income Requirement Unclear", details: "The scheme data contains unparseable income rules." });
       } else if (uIncome > crit.income_max) {
         failed.push({ criterion: "Income", details: `Maximum allowed: ₹${crit.income_max}, You: ₹${uIncome}` });
       } else {
@@ -263,7 +277,15 @@ class SchemeService {
     let status = "UNKNOWN";
     
     // If absolutely no structured criteria were evaluated
-    if (passed.length === 0 && failed.length === 0 && missing.length === 0) {
+    const hasCriteria = (crit.age_min !== null || crit.age_max !== null) ||
+                        (crit.gender !== 'all') ||
+                        (crit.caste && crit.caste.length > 0) ||
+                        (crit.income_max !== null) ||
+                        (crit.bpl_required) ||
+                        (crit.disability_required) ||
+                        (scheme.source_type === 'state' && scheme.state !== null);
+
+    if (!hasCriteria) {
       status = "UNKNOWN";
       missing.push("Structured Criteria (Please read the scheme description manually)");
     } else {
@@ -283,40 +305,41 @@ class SchemeService {
   }
 
   matchSchemes(userProfile, extractedKeywords = []) {
-    if (!this.isLoaded) return { eligible: [], almost_eligible: [], summary: { eligible_count: 0, almost_eligible_count: 0 } };
+    if (!this.isLoaded) return { eligible: [], almost_eligible: [], needs_verification: [], summary: { eligible_count: 0, almost_eligible_count: 0 } };
 
     const eligible = [];
     const almost_eligible = [];
+    const needs_verification = [];
 
     // Normalize user profile for easier comparison
     const uAge = userProfile.age ? parseInt(userProfile.age) : null;
-    const uGender = userProfile.gender ? userProfile.gender.toLowerCase() : null;
-    const uCaste = userProfile.caste ? userProfile.caste.toUpperCase() : null;
-    const uIncome = userProfile.annual_income ? parseInt(userProfile.annual_income) : null;
+    const uGender = normalizeGender(userProfile.gender);
+    const uCaste = normalizeCaste(userProfile.caste);
+    const uIncome = parseIncome(userProfile.annual_income);
     const uBpl = !!userProfile.bpl;
     const uDisability = !!userProfile.disability;
-    const uState = userProfile.state ? userProfile.state.toLowerCase() : null;
-    const uCategories = Array.isArray(userProfile.categories) ? userProfile.categories.map(c => c.toLowerCase()) : [];
+    const uState = normalizeState(userProfile.state);
+    const uCategories = Array.isArray(userProfile.categories) ? userProfile.categories.map(c => cleanString(c)) : [];
 
     for (const scheme of this.schemes) {
       // 1. Check State Match (Fast fail)
       if (scheme.source_type === 'state') {
         if (!uState) continue; // If user hasn't provided a state, they can't match state schemes
-        // Normalize scheme state
-        const sState = scheme.state.toLowerCase();
-        // A very basic check. E.g. "uttar pradesh" includes "uttar pradesh"
-        if (!sState.includes(uState) && !uState.includes(sState)) {
+        if (scheme.state !== uState) {
           continue;
         }
       }
 
       const crit = scheme.eligibility_criteria;
       const failures = [];
+      const missing_info = [];
 
       // 2. Age
       if (crit.age_min !== null || crit.age_max !== null) {
         if (uAge === null) {
-          failures.push({ type: 'age_missing', expected: `Age information required`, actual: "Not provided" });
+          missing_info.push({ type: 'age_missing', expected: `Age information required`, actual: "Not provided" });
+        } else if (crit.age_min === 'UNPARSEABLE' || crit.age_max === 'UNPARSEABLE') {
+          failures.push({ type: 'age_unparseable', expected: `Valid numerical age limit`, actual: `Scheme data unparseable` });
         } else {
           if (crit.age_min !== null && uAge < crit.age_min) failures.push({ type: 'age_min', expected: `Minimum age ${crit.age_min}`, actual: `${uAge}` });
           if (crit.age_max !== null && uAge > crit.age_max) failures.push({ type: 'age_max', expected: `Maximum age ${crit.age_max}`, actual: `${uAge}` });
@@ -325,8 +348,8 @@ class SchemeService {
 
       // 3. Gender
       if (crit.gender !== 'all') {
-        if (uGender === null) {
-          failures.push({ type: 'gender_missing', expected: `Gender (${crit.gender}) required`, actual: "Not provided" });
+        if (uGender === 'all') {
+          missing_info.push({ type: 'gender_missing', expected: `Gender (${crit.gender}) required`, actual: "Not provided" });
         } else if (crit.gender !== uGender) {
           failures.push({ type: 'gender', expected: crit.gender, actual: uGender });
         }
@@ -334,17 +357,22 @@ class SchemeService {
 
       // 4. Caste
       if (crit.caste && crit.caste.length > 0) {
-        if (uCaste === null) {
-          failures.push({ type: 'caste_missing', expected: `Caste information required`, actual: "Not provided" });
-        } else if (!crit.caste.includes(uCaste)) {
-          failures.push({ type: 'caste', expected: `One of ${crit.caste.join(', ')}`, actual: uCaste });
+        if (!uCaste || uCaste.length === 0) {
+          missing_info.push({ type: 'caste_missing', expected: `Caste information required`, actual: "Not provided" });
+        } else {
+          const hasMatch = crit.caste.some(c => uCaste.includes(c));
+          if (!hasMatch) {
+            failures.push({ type: 'caste', expected: `One of ${crit.caste.join(', ')}`, actual: uCaste.join(', ') });
+          }
         }
       }
 
       // 5. Income
       if (crit.income_max !== null) {
         if (uIncome === null) {
-          failures.push({ type: 'income_missing', expected: `Income information required`, actual: "Not provided" });
+          missing_info.push({ type: 'income_missing', expected: `Income information required`, actual: "Not provided" });
+        } else if (crit.income_max === 'UNPARSEABLE') {
+          failures.push({ type: 'income_unparseable', expected: `Valid numerical income limit`, actual: `Scheme data unparseable` });
         } else if (uIncome > crit.income_max) {
           failures.push({ 
             type: 'income_max', 
@@ -365,18 +393,36 @@ class SchemeService {
         failures.push({ type: 'disability', expected: "Disability Status Required", actual: "No Disability" });
       }
 
-      // 8. Category Interest Ranking (Optional, but if user provided interests, we can boost/filter)
-      let categoryMatch = false;
-      if (uCategories.length > 0) {
-        for (const cat of scheme.category) {
-          if (uCategories.includes(cat.toLowerCase())) {
-            categoryMatch = true;
-            break;
+      // 8. Category Interest Ranking & Filtering
+      if (scheme.category && scheme.category.length > 0) {
+        // Only strictly filter by category if the user actually provided categories
+        if (uCategories.length > 0) {
+          let categoryMatch = false;
+          for (const cat of scheme.category) {
+            if (uCategories.includes(cleanString(cat))) {
+              categoryMatch = true;
+              break;
+            }
+          }
+          if (!categoryMatch) {
+            failures.push({ type: 'category', expected: `One of ${scheme.category.join(', ')}`, actual: uCategories.join(', ') });
           }
         }
-        // If user selected categories and this scheme matches NONE of them, skip it
-        if (!categoryMatch && scheme.category.length > 0) {
-          continue; 
+      }
+
+      // 8b. Beneficiary Type / Occupation Strict Filtering
+      // We don't have an "occupation" field on userProfile yet, but if the scheme specifically targets certain groups (excluding "Individual" or "All"),
+      // and we cannot verify the user belongs to it, they must fail. (Strict Filtering)
+      if (scheme.beneficiary_type && scheme.beneficiary_type.length > 0) {
+        const isGeneric = scheme.beneficiary_type.some(bt => {
+          const lower = bt.toLowerCase();
+          return lower === 'individual' || lower === 'all' || lower === 'citizens';
+        });
+        
+        if (!isGeneric) {
+          // The scheme targets a specific group (e.g. "Institution", "Farmer", "Business Entity")
+          // Since our profile doesn't support these specific tags yet, we safely fail them.
+          failures.push({ type: 'beneficiary_type_missing', expected: `Targeted group: ${scheme.beneficiary_type.join(', ')}`, actual: "Profile does not verify this occupation/entity type" });
         }
       }
 
@@ -391,40 +437,53 @@ class SchemeService {
           ...scheme.beneficiary_type
         ].join(' ').toLowerCase();
 
-        // Strict filtering: We want AT LEAST ONE keyword to match perfectly within the text.
         const hasKeywordMatch = extractedKeywords.some(kw => textToSearch.includes(kw));
         if (!hasKeywordMatch) {
           continue; 
         }
       }
 
+      const hasCriteria = (crit.age_min !== null || crit.age_max !== null) ||
+                          (crit.gender !== 'all') ||
+                          (crit.caste && crit.caste.length > 0) ||
+                          (crit.income_max !== null) ||
+                          (crit.bpl_required) ||
+                          (crit.disability_required) ||
+                          (scheme.source_type === 'state' && scheme.state !== null);
+
+      if (!hasCriteria) {
+        missing_info.push({ type: 'scheme_data_missing', expected: 'Structured criteria', actual: 'Not available in dataset' });
+      }
+
+      // Format scheme object for response
+      const schemeFormatted = {
+        id: scheme.id,
+        scheme_name: scheme.scheme_name,
+        source_type: scheme.source_type,
+        state: scheme.state,
+        ministry: scheme.ministry,
+        department: scheme.department,
+        description: scheme.description,
+        benefits: scheme.benefits,
+        official_url: scheme.official_url,
+        apply_url: scheme.apply_url,
+        category: scheme.category,
+        tags: scheme.tags,
+        beneficiary_type: scheme.beneficiary_type
+      };
+
       // Classify the result
-      if (failures.length === 0) {
-        eligible.push({
-          id: scheme.id,
-          scheme_name: scheme.scheme_name,
-          source_type: scheme.source_type,
-          state: scheme.state,
-          ministry: scheme.ministry,
-          department: scheme.department,
-          description: scheme.description,
-          benefits: scheme.benefits,
-          official_url: scheme.official_url,
-          apply_url: scheme.apply_url,
-          match_reasons: []
-        });
-      } else if (failures.length === 1) {
+      if (failures.length === 0 && missing_info.length === 0) {
+        eligible.push(schemeFormatted);
+      } else if (failures.length === 1 && missing_info.length === 0) {
         almost_eligible.push({
-          id: scheme.id,
-          scheme_name: scheme.scheme_name,
-          source_type: scheme.source_type,
-          state: scheme.state,
-          ministry: scheme.ministry,
-          department: scheme.department,
-          description: scheme.description,
-          blocking_criterion: failures[0],
-          official_url: scheme.official_url,
-          apply_url: scheme.apply_url
+          ...schemeFormatted,
+          blocking_criterion: failures[0]
+        });
+      } else if (failures.length === 0 && missing_info.length > 0) {
+        needs_verification.push({
+          ...schemeFormatted,
+          missing_info: missing_info
         });
       }
     }
@@ -432,10 +491,12 @@ class SchemeService {
     return {
       summary: {
         eligible_count: eligible.length,
-        almost_eligible_count: almost_eligible.length
+        almost_eligible_count: almost_eligible.length,
+        needs_verification_count: needs_verification.length
       },
       eligible,
-      almost_eligible
+      almost_eligible,
+      needs_verification
     };
   }
 }

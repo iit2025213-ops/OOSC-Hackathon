@@ -108,20 +108,45 @@ Return ONLY a valid JSON object matching this structure. Do not include markdown
       }
     }
 
-    // Now, determine the personalized "why_eligible" deterministically based on the profile
+    // Now, determine the personalized "why_eligible" dynamically using Gemini and checkEligibility
     let why_eligible = "We could not determine your specific eligibility based on your profile.";
-    if (profile) {
-      // Run match for just this scheme
-      const matchResult = schemeService.matchSchemes(profile);
-      const isEligible = matchResult.eligible.find(s => s.id === id);
-      const isAlmostEligible = matchResult.almost_eligible.find(s => s.id === id);
+    if (profile && process.env.GEMINI_API_KEY) {
+      const check = schemeService.checkEligibility(id, profile);
+      if (check) {
+        const model = getGeminiModel();
+        
+        const passedStrings = check.passed.map(c => c.criterion).join(', ') || 'None';
+        const failedStrings = check.failed.map(c => `${c.criterion} (${c.details})`).join(', ') || 'None';
+        const missingStrings = check.missing.join(', ') || 'None';
+        
+        const whyPrompt = `
+You are an eligibility advisor for Indian government welfare schemes. Your job is to explain, in simple ${language === 'hi' ? 'Hindi' : 'English'}, whether a citizen qualifies for a specific scheme based on the deterministic eligibility check results below.
 
-      if (isEligible) {
-        why_eligible = `Based on the information you provided (Age: ${profile.age || 'N/A'}, Income: ${profile.annual_income || 'N/A'}), you appear to meet all the listed eligibility criteria for this scheme.`;
-      } else if (isAlmostEligible) {
-        why_eligible = `You meet almost all requirements, except: ${isAlmostEligible.blocking_criterion.expected} (Yours: ${isAlmostEligible.blocking_criterion.actual}).`;
-      } else {
-        why_eligible = `Based on the information you provided, you do not appear to meet all the requirements for this scheme.`;
+**Scheme:** ${scheme.scheme_name}
+**User's Calculated Status:** ${check.status}
+
+**Eligibility Check Results:**
+- Criteria Passed: ${passedStrings}
+- Criteria Failed: ${failedStrings}
+- Criteria Unknown/Missing: ${missingStrings}
+
+Write a 2-3 sentence, very simple explanation directly to the citizen about their eligibility status. 
+- If they failed something, explicitly tell them what they failed (e.g. "You do not qualify because your income is too high"). 
+- If data is missing, tell them what information is needed.
+- If they passed, congratulate them.
+Do NOT hallucinate. Keep it extremely brief and direct.
+        `;
+
+        try {
+          const whyResponseText = await generateContentSafe(model, whyPrompt);
+          why_eligible = whyResponseText.trim();
+        } catch (err) {
+          console.error("Failed to generate personalized why_eligible:", err);
+          // Fallback to deterministic string
+          if (check.status === "ELIGIBLE") why_eligible = "Congratulations! You appear to meet all the listed eligibility criteria for this scheme.";
+          else if (check.status === "ALMOST_ELIGIBLE") why_eligible = `You meet almost all requirements, except for: ${failedStrings}`;
+          else why_eligible = "Based on the information provided, you do not appear to meet all the requirements.";
+        }
       }
     }
 

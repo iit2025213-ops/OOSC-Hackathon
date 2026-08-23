@@ -41,6 +41,7 @@ export default function CaseOverviewPage() {
   if (caseData?.title?.startsWith('Application:')) {
     const draftMessage = caseData.messages?.find(m => m.content?.response_type === 'document_draft');
     const pdfUrl = draftMessage?.content?.pdf_url;
+    const pdfBase64 = draftMessage?.content?.pdf_base64;
 
     return (
       <div className="min-h-[calc(100vh-100px)] flex flex-col items-center justify-center p-6 animate-fade-in">
@@ -56,8 +57,9 @@ export default function CaseOverviewPage() {
           
           {pdfUrl ? (
             <a 
-              href={pdfUrl}
-              target="_blank"
+              href={pdfBase64 ? `data:application/pdf;base64,${pdfBase64}` : pdfUrl}
+              download={pdfBase64 ? `${caseData.title.replace(/[^a-zA-Z0-9]/g, '_')}.pdf` : undefined}
+              target={pdfBase64 ? undefined : "_blank"}
               rel="noreferrer"
               className="w-full py-4 bg-primary text-on-primary rounded-xl font-medium hover:bg-primary/90 transition flex justify-center items-center gap-2 mb-4"
             >

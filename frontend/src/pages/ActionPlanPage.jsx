@@ -9,6 +9,7 @@ export default function ActionPlanPage() {
   
   const [caseData, setCaseData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [planState, setPlanState] = useState({});
 
   useEffect(() => {
     const fetchCaseDetails = async () => {
@@ -21,6 +22,9 @@ export default function ActionPlanPage() {
         if (res.ok) {
           const data = await res.json();
           setCaseData(data);
+          if (data.action_plan_state) {
+            setPlanState(data.action_plan_state);
+          }
         }
       } catch (err) {
         console.error(err);
@@ -32,26 +36,37 @@ export default function ActionPlanPage() {
     fetchCaseDetails();
   }, [caseId, authFetch]);
 
-  // Dynamically generate action steps from the Python API's next_steps array
-  const rawSteps = caseData?.analysis?.next_steps || caseData?.next_steps || [
-    "Consult a legal professional for exact instructions.",
-    "Draft a formal complaint based on the legal position."
-  ];
+  // Toggle step state and patch to backend
+  const toggleStep = async (stepIdx) => {
+    const newState = { ...planState, [stepIdx]: !planState[stepIdx] };
+    setPlanState(newState);
+    
+    try {
+      await authFetch(`/cases/${caseId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action_plan_state: newState })
+      });
+    } catch (err) {
+      console.error('Failed to save action plan state', err);
+    }
+  };
+
+  // Dynamically generate action steps from the Python API's next_steps array inside messages
+  const analysisMessage = (caseData?.messages || []).slice().reverse().find(m => m.content?.response_type === 'analysis' || m.content?.analysis);
+  const analysis = analysisMessage?.content?.analysis || analysisMessage?.content || {};
+  const rawSteps = analysis.next_steps || [];
 
   const actionSteps = rawSteps.map((stepText, idx) => ({
     num: String(idx + 1).padStart(2, '0'),
     title: idx === 0 ? 'Initial Action' : `Follow-up Step ${idx}`,
     desc: stepText,
-    status: idx === 0 ? 'active' : 'locked',
-    details: idx === 0 ? [
-      { done: true, text: 'Review AI Legal Position' },
-      { done: false, text: 'Gather required documents' },
-      { done: false, text: 'Execute this step' },
-    ] : []
+    isCompleted: !!planState[idx],
+    idx: idx
   }));
 
-  const completedCount = actionSteps.filter(s => s.status === 'completed').length;
-  const progress = Math.round((completedCount / actionSteps.length) * 100) || 0;
+  const completedCount = actionSteps.filter(s => s.isCompleted).length;
+  const progress = actionSteps.length > 0 ? Math.round((completedCount / actionSteps.length) * 100) : 0;
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center text-on-surface">Loading Action Plan...</div>;
@@ -74,7 +89,14 @@ export default function ActionPlanPage() {
               <span className="font-label-sm text-label-sm text-on-surface-variant">Case #{caseData?.request_id || caseId || '4029'}</span>
             </div>
             <h2 className="font-display-md text-display-md text-on-surface">Your Action Plan</h2>
-            <p className="font-body-lg text-body-lg text-on-surface-variant mt-2">Here is the exact strategy recommended by the AI.</p>
+            <p className="font-body-lg text-body-lg text-on-surface-variant mt-2 mb-4">Here is the exact strategy recommended by the AI.</p>
+            <button 
+              onClick={() => navigate(`/dashboard/case/${caseId}`)}
+              className="bg-primary/10 text-primary border border-primary/20 px-5 py-2.5 rounded-lg font-label-sm text-label-sm hover:bg-primary/20 transition flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined text-sm">smart_toy</span>
+              Discuss Plan with Legal AI
+            </button>
           </div>
           <div className="glass-panel px-6 py-4 rounded-xl flex items-center gap-6 min-w-[280px]">
             <div className="flex-1">
@@ -93,84 +115,56 @@ export default function ActionPlanPage() {
 
       {/* Action Sequence Timeline */}
       <div className="max-w-4xl">
-        <div className="relative border-l border-white/10 ml-6 md:ml-8 pl-8 md:pl-12 space-y-16 pb-12">
-          {actionSteps.map((step) => {
-            if (step.status === 'completed') {
+        {actionSteps.length === 0 ? (
+          <div className="glass-card rounded-2xl p-8 text-center mt-8">
+            <span className="material-symbols-outlined text-4xl text-on-surface-variant/50 mb-4">hourglass_empty</span>
+            <h3 className="font-headline-lg text-headline-lg text-on-surface mb-2">No Action Plan Yet</h3>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              The AI has not generated an action plan for this case. Discuss your issue with the Legal AI to get a strategy.
+            </p>
+          </div>
+        ) : (
+          <div className="relative border-l border-white/10 ml-6 md:ml-8 pl-8 md:pl-12 space-y-16 pb-12 mt-8">
+            {actionSteps.map((step) => {
+              const isCompleted = step.isCompleted;
               return (
-                <div key={step.num} className="relative group">
-                  <div className="absolute -left-[45px] md:-left-[61px] top-0 w-10 h-10 rounded-full bg-surface-container flex items-center justify-center border-2 border-primary/30 text-primary group-hover:border-primary transition-colors">
-                    <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
-                  </div>
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Step {step.num}</span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-label-sm bg-primary/10 text-primary border border-primary/20">Completed</span>
-                  </div>
-                  <h3 className="font-headline-lg text-headline-lg text-on-surface/50 mb-2">{step.title}</h3>
-                  <p className="font-body-md text-body-md text-on-surface-variant/50 max-w-2xl">{step.desc}</p>
-                </div>
-              );
-            }
-            if (step.status === 'active') {
-              return (
-                <div key={step.num} className="relative">
-                  <div className="absolute -left-[45px] md:-left-[61px] top-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center border-4 border-background shadow-[0_0_20px_rgba(255,180,161,0.3)]">
-                    <span className="material-symbols-outlined text-on-primary-fixed text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>mail</span>
-                  </div>
-                  <div className="glass-card rounded-2xl p-6 md:p-8 -mt-6">
-                    <div className="flex items-center gap-4 mb-4">
-                      <span className="font-label-sm text-label-sm text-primary uppercase tracking-widest">Step {step.num}</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-label-sm bg-surface-container-high text-on-surface-variant border border-white/10 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                        In Progress
-                      </span>
+                <div key={step.num} className="relative group transition-opacity duration-300">
+                  <button 
+                    onClick={() => toggleStep(step.idx)}
+                    className={`absolute -left-[45px] md:-left-[61px] top-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm ${
+                      isCompleted 
+                        ? 'bg-surface-container border-2 border-primary/50 text-primary hover:bg-primary/10' 
+                        : 'bg-surface-container-high border-2 border-white/10 text-on-surface-variant hover:border-primary/50 hover:text-primary'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-lg" style={isCompleted ? { fontVariationSettings: "'FILL' 1" } : {}}>
+                      {isCompleted ? 'check' : 'radio_button_unchecked'}
+                    </span>
+                  </button>
+                  <div className={`glass-card rounded-2xl p-6 md:p-8 -mt-6 transition-colors duration-300 ${isCompleted ? 'bg-surface-container-low/20' : 'bg-surface-container-low/60'}`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <span className={`font-label-sm text-label-sm uppercase tracking-widest ${isCompleted ? 'text-on-surface-variant' : 'text-primary'}`}>Step {step.num}</span>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-label-sm border flex items-center gap-1 ${
+                          isCompleted 
+                            ? 'bg-primary/10 text-primary border-primary/20' 
+                            : 'bg-surface-container-high text-on-surface-variant border-white/10'
+                        }`}>
+                          {!isCompleted && <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>}
+                          {isCompleted ? 'Completed' : 'Pending'}
+                        </span>
+                      </div>
                     </div>
-                    <h3 className="font-headline-lg text-headline-lg text-on-surface mb-3">{step.title}</h3>
-                    <div className="mb-8">
-                      <h4 className="font-label-sm text-label-sm text-on-surface-variant mb-2">Why this matters:</h4>
-                      <p className="font-body-md text-body-md text-on-surface max-w-2xl">{step.desc}</p>
-                    </div>
-                    <div className="bg-surface-container/50 rounded-xl p-5 border border-white/5 mb-8">
-                      <h4 className="font-label-sm text-label-sm text-on-surface-variant mb-4">Required Details for Generation:</h4>
-                      <ul className="space-y-3">
-                        {step.details.map((d, i) => (
-                          <li key={i} className="flex items-start gap-3">
-                            <span className={`material-symbols-outlined text-sm mt-0.5 ${d.done ? 'text-primary' : 'text-surface-variant'}`} style={d.done ? { fontVariationSettings: "'FILL' 1" } : {}}>
-                              {d.done ? 'check_circle' : 'radio_button_unchecked'}
-                            </span>
-                            <span className={`font-body-md text-body-md ${d.done ? 'text-on-surface/80' : 'text-on-surface'}`}>{d.text}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <button className="bg-primary text-on-primary-fixed font-label-sm text-label-sm py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors font-bold flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(255,180,161,0.2)]">
-                        <span className="material-symbols-outlined text-sm">auto_awesome</span>
-                        Generate Demand Letter
-                      </button>
-                      <button className="bg-transparent border border-white/10 text-on-surface font-label-sm text-label-sm py-3 px-6 rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
-                        <span className="material-symbols-outlined text-sm">upload</span>
-                        Upload Existing
-                      </button>
+                    <h3 className={`font-headline-lg text-headline-lg mb-3 ${isCompleted ? 'text-on-surface/40 line-through' : 'text-on-surface'}`}>{step.title}</h3>
+                    <div className="mb-4">
+                      <p className={`font-body-md text-body-md max-w-2xl ${isCompleted ? 'text-on-surface-variant/50' : 'text-on-surface'}`}>{step.desc}</p>
                     </div>
                   </div>
                 </div>
               );
-            }
-            // Locked
-            return (
-              <div key={step.num} className="relative group opacity-50">
-                <div className="absolute -left-[45px] md:-left-[61px] top-0 w-10 h-10 rounded-full bg-surface-container flex items-center justify-center border border-white/10 text-on-surface-variant">
-                  <span className="material-symbols-outlined text-lg">lock</span>
-                </div>
-                <div className="flex items-center gap-4 mb-4">
-                  <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Step {step.num}</span>
-                </div>
-                <h3 className="font-headline-lg text-headline-lg text-on-surface mb-2">{step.title}</h3>
-                <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl">{step.desc}</p>
-              </div>
-            );
-          })}
-        </div>
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

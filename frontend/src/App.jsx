@@ -13,6 +13,9 @@ import DashboardLayout from './components/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import StaticPage from './pages/StaticPage';
 import { staticContent } from './pages/staticContent';
+import WorkflowPage from './pages/WorkflowPage';
+import FormFillerPage from './pages/FormFillerPage';
+import SettingsPage from './pages/SettingsPage';
 
 export default function App() {
   return (
@@ -20,6 +23,7 @@ export default function App() {
       {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/auth" element={<AuthPage />} />
+      <Route path="/workflow" element={<WorkflowPage />} />
       
       {/* Static Informational Pages */}
       <Route path="/privacy" element={<StaticPage {...staticContent.privacy} />} />
@@ -100,8 +104,28 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
-      {/* Catch-all */}
+      <Route
+        path="/dashboard/forms"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <FormFillerPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/settings"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <SettingsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      
+      {/* Catch-all redirect */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

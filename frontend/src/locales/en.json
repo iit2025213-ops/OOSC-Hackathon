@@ -1,0 +1,49 @@
+{
+  "sidebar": {
+    "title": "Adhikaar",
+    "subtitle": "Legal Empowerment",
+    "home": "Home",
+    "my_cases": "My Cases",
+    "documents": "Documents",
+    "action_plans": "Action Plans",
+    "scheme_navigator": "Scheme Navigator",
+    "new_case": "New Case",
+    "ai_form_filler": "AI Form Filler",
+    "settings": "Settings"
+  },
+  "home": {
+    "welcome_title": "What can we help you with?",
+    "welcome_subtitle": "Describe your legal or civic issue naturally. We'll guide you to the right forms, next steps, and action plans.",
+    "input_placeholder": "Describe your problem in your own words...",
+    "analyze_btn": "Analyze",
+    "analyzing_btn": "Analyzing",
+    "upload_hint": "PDF, JPG or PNG",
+    "quick_deposit": "Security Deposit",
+    "quick_consumer": "Consumer Complaint",
+    "quick_rti": "RTI Application",
+    "quick_domestic": "Domestic Dispute",
+    "recent_cases": "Recent Cases",
+    "view_all": "View all cases",
+    "untitled_case": "Untitled Case"
+  },
+  "schemes": {
+    "title": "Scheme Navigator",
+    "subtitle": "Discover government welfare schemes you qualify for.",
+    "tab_find": "Find Schemes For Me",
+    "tab_check": "Check A Scheme",
+    "about_you": "About You",
+    "age": "Age",
+    "gender": "Gender",
+    "caste": "Caste / Category",
+    "income": "Annual Family Income (₹)",
+    "location": "Location",
+    "state": "State / UT",
+    "eligibility": "Specific Eligibility",
+    "bpl": "BPL Card Holder",
+    "disability": "Person with Disability",
+    "help_with": "What do you need help with?",
+    "help_placeholder": "Describe your situation (e.g. \"I want to start a dairy farm\" or \"Need funds for daughter's education\"). Our AI will filter the schemes for you.",
+    "match_btn": "Match Schemes",
+    "matching_btn": "Finding Schemes..."
+  }
+}
